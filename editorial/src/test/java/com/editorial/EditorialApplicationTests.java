@@ -1,10 +1,10 @@
-package com.iservice;
+package com.editorial;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class IserviceApplicationTests {
+class EditorialApplicationTests {
 
 	@Test
 	void contextLoads() {
