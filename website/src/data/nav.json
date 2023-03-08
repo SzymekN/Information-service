@@ -1,0 +1,30 @@
+[
+    {
+        "link":"/",
+        "text":"Strona główna"
+    },
+    {
+        "link":"/edukacja-artykuly",
+        "text":"Edukacja"
+    },
+    {
+        "link":"/technologia-artykuly",
+        "text":"Technologia"
+    },
+    {
+        "link":"/pogoda",
+        "text":"Pogoda"
+    },
+    {
+        "link":"/biznes-artykuly",
+        "text":"Biznes"
+    },
+    {
+        "link":"/etc-artykuly",
+        "text":"Etc"
+    },
+    {
+        "link":"/konto",
+        "text":"Konto"
+    }
+]

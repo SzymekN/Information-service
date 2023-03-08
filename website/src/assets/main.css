@@ -1,0 +1,29 @@
+@import './base.css';
+
+#app {
+  font-weight: normal;
+  height: inherit;
+  width: inherit;
+}
+
+a,
+.header_title {
+  text-decoration: none;
+  margin: 0;
+  color: hsla(0, 15%, 6%, 0.62);
+  transition: 0.4s;
+  font-weight: normal;
+  vertical-align: center;
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+    margin: 0;
+  }
+
+  #app {
+    display: grid;
+  }
+}
