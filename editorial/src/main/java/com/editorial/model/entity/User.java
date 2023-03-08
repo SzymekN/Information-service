@@ -40,7 +40,7 @@ public class User {
 
     @Column(name = "enabled")
     @NotNull
-    private boolean enabled;
+    private Boolean enabled;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
@@ -121,7 +121,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username);
+        return Objects.hash(username);
     }
 
     @Override
@@ -133,7 +133,6 @@ public class User {
         if (getClass() != o.getClass())
             return false;
         User other = (User) o;
-        return Objects.equals(id, other.id)
-                && Objects.equals(username, other.username);
+        return Objects.equals(username, other.username);
     }
 }

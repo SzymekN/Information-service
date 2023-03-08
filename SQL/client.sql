@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS `userdb`.`user` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `userdb`.`article` (
   `id_article` BIGINT NOT NULL,
+  `title` VARCHAR(200) NOT NULL,
   `journalist_id_a` BIGINT NOT NULL,
   `article_content` LONGTEXT NOT NULL,
   `date_of_submission` DATETIME NOT NULL,

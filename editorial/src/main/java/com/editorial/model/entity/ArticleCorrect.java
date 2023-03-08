@@ -40,7 +40,7 @@ public class ArticleCorrect {
 
     @Column(name = "is_corrected")
     @NotNull
-    private boolean isCorrected;
+    private Boolean isCorrected;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "journalist_id_c")
@@ -52,7 +52,7 @@ public class ArticleCorrect {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, content, dateOfCorrection);
+        return Objects.hash(title, content, dateOfCorrection);
     }
 
     @Override
@@ -64,8 +64,7 @@ public class ArticleCorrect {
         if (getClass() != o.getClass())
             return false;
         ArticleCorrect other = (ArticleCorrect) o;
-        return Objects.equals(id, other.id)
-                && Objects.equals(title, other.title)
+        return Objects.equals(title, other.title)
                 && Objects.equals(content, other.content)
                 && Objects.equals(dateOfCorrection, other.dateOfCorrection);
     }

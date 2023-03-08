@@ -57,7 +57,7 @@ public class UserDetails {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(name, surname, email, city);
     }
 
     @Override
@@ -69,7 +69,9 @@ public class UserDetails {
         if (getClass() != o.getClass())
             return false;
         UserDetails other = (UserDetails) o;
-        return Objects.equals(id, other.id);
+        return Objects.equals(name, other.name)
+                && Objects.equals(surname, other.surname)
+                && Objects.equals(email, other.email)
+                && Objects.equals(city, other.city);
     }
-
 }

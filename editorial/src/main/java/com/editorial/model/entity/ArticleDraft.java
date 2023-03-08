@@ -43,7 +43,7 @@ public class ArticleDraft {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, content, dateOfCompletion);
+        return Objects.hash(title, content, dateOfCompletion);
     }
 
     @Override
@@ -55,8 +55,7 @@ public class ArticleDraft {
         if (getClass() != o.getClass())
             return false;
         ArticleDraft other = (ArticleDraft) o;
-        return Objects.equals(id, other.id)
-                && Objects.equals(title, other.title)
+        return Objects.equals(title, other.title)
                 && Objects.equals(content, other.content)
                 && Objects.equals(dateOfCompletion, other.dateOfCompletion);
     }

@@ -40,5 +40,4 @@ public class EndorsementId implements Serializable {
         return Objects.equals(articleId, other.articleId)
                 && Objects.equals(userId, other.userId);
     }
-
 }

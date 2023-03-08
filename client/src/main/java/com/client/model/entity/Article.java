@@ -62,7 +62,7 @@ public class Article {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, content, dateOfSubmission);
+        return Objects.hash(title, content, dateOfSubmission);
     }
 
     @Override
@@ -74,8 +74,7 @@ public class Article {
         if (getClass() != o.getClass())
             return false;
         Article other = (Article) o;
-        return Objects.equals(id, other.id)
-                && Objects.equals(title, other.title)
+        return Objects.equals(title, other.title)
                 && Objects.equals(content, other.content)
                 && Objects.equals(dateOfSubmission, other.dateOfSubmission);
     }

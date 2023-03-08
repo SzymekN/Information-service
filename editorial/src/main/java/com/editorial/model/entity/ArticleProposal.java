@@ -35,7 +35,7 @@ public class ArticleProposal {
 
     @Column(name = "is_accepted")
     @NotNull
-    private boolean isAccepted;
+    private Boolean isAccepted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "journalist_id_p")
@@ -43,7 +43,7 @@ public class ArticleProposal {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, keywords);
+        return Objects.hash(title, keywords);
     }
 
     @Override
@@ -55,9 +55,7 @@ public class ArticleProposal {
         if (getClass() != o.getClass())
             return false;
         ArticleProposal other = (ArticleProposal) o;
-        return Objects.equals(id, other.id)
-                && Objects.equals(title, other.title)
+        return Objects.equals(title, other.title)
                 && Objects.equals(keywords, other.keywords);
     }
-
 }

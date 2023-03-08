@@ -1,6 +1,7 @@
 package com.client.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,8 @@ public class Endorsement {
     private EndorsementId id;
 
     @Column(name = "endorsement_value")
-    private boolean value;
+    @NotNull
+    private Boolean value;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("articleId")
