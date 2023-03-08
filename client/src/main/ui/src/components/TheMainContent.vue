@@ -1,16 +1,51 @@
 <script setup>
 import TopNews from "@/components/TopNews.vue";
+import Article from "@/components/MiniArticle.vue"
 </script>
 
 <template>
-  <!--    TODO: component News corresponding to regular articles-->
-  <!--    TU BĘDĄ WRZUCANE KOMPONENTY ARYTKUŁÓW, pierwszy/dwa pierwsze będzie miał inne formatowanie będzie TOP-->
-  <div class="">
+  <div class="section_content">
+
+    <p class = "section_title">O TYM SIĘ MÓWI</p>
+    <hr>
     <TopNews/>
+    <Article/>
+    <Article/>
+    <Article/>
+    <Article/>
+    <Article/>
+    <Article/>
+    <Article/>
+    <Article/>
+
   </div>
+
+  <div class="section_content">
+
+    <p class = "section_title">EDUKACJA</p>
+    <hr>
+    <TopNews/>
+    <Article/>
+    <Article/>
+    <Article/>
+    <Article/>
+    <Article/>
+    <Article/>
+    <Article/>
+    <Article/>
+
+  </div>
+
 </template>
 
 <style>
+.section_title {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-bottom: -1%;
+}
 
-
+.section_content {
+  float: left;
+}
 </style>

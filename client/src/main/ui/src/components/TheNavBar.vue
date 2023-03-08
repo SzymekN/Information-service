@@ -1,17 +1,15 @@
 <script setup>
-defineProps({
-  msg: {
-    type: String,
-    required: true
-  }
-})
+import list from "../data/nav.json"
 </script>
 
 <template>
-  <!--TODO: multiple props to use msg and href in one or delete component and implement in Home.vue-->
-  <div class="buttons">
-    <button><a href="#" class="aButton">{{ msg }}</a></button>
-  </div>
+  <table>
+    <div class="buttons" v-for="item in list">
+      <button><router-link :to="item.link" ><a class="aButton">{{item.text}}</a></router-link></button>
+    </div>
+  </table>
+
+ 
 </template>
 
 
@@ -19,19 +17,19 @@ defineProps({
 
 .buttons {
   float: left;
-  border-top: 1px solid #8f8f8f;
+  border-top: 0.1rem solid #8f8f8f;
   align-content: center;
 }
 
 .buttons button {
   background: linear-gradient(aliceblue, #ffffff);
   border: none;
-  padding: 0.8rem;
-  font-size: 0.9rem;
+  padding: 1rem;
+  font-size: 1rem;
 }
 
-.buttons:hover button {
+.buttons button:hover {
   background: linear-gradient(#d6e7ef, #ffffff);
-  font-size: 1rem;
+  /*border-bottom: 1px solid #8f8f8f;*/
 }
 </style>

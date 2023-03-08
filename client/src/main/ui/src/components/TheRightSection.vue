@@ -1,15 +1,17 @@
 <script setup>
 
+import Weather from "@/views/Weather.vue";
 </script>
 
 <template>
-  <div class="">
-<!--    TODO: Dynamic section; components for accesories-->
-    <p>TU BEDA JAKIES DODATKI typu kalendarz, imieniny, święta</p>
+  <div>
+    <Weather/>
   </div>
 </template>
 
 
 <style scoped>
-
+div{
+  min-height: 1vh;
+}
 </style>
