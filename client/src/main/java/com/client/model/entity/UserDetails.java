@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
@@ -18,7 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Setter
 @Table(name = "user_detail")
-public class UserDetails {
+public class UserDetails implements Serializable {
 
     @Id
     @Column(name = "user_id_d")
