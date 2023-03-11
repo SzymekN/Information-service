@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u from User u JOIN FETCH u.userDetails ud " +
-            "JOIN FETCH u.authority ua where u.username = :username")
+            "JOIN FETCH u.authority ua WHERE u.username = :username")
     User findUserByName(@Param("username") String username);
 }
