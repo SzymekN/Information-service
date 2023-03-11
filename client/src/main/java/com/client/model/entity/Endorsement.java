@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
@@ -15,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "endorsement")
-public class Endorsement {
+public class Endorsement implements Serializable {
 
     @EmbeddedId
     private EndorsementId id;
