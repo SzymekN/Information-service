@@ -23,7 +23,7 @@ import Editor from "../components/Editor.vue";
     <TheNavBar />
   </nav>
 
-  <div id="m">
+  <div>
     <!--MARK: 3. MAIN CONTENT-->
     <main>
       <Editor />
@@ -112,10 +112,6 @@ footer {
   height: 100px;
   bottom: 0;
 
-}
-
-#m {
-    width: 100vw;
 }
 
 </style>
