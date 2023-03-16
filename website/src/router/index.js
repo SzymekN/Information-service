@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router"
 import HomeView from "../views/HomeView.vue"
 import Article from "../components/MiniArticle.vue"
+import EditView from "../views/EditView.vue"
 
 // -artykuly i artykul- do usuniecia mozna przekierowac do 404 za pomoca useRouter np gdy dane zapytanie nie na wynikow 
 const router = createRouter({
@@ -14,6 +15,10 @@ const router = createRouter({
         {
             path: "/:loc?-artykuly",
             component: HomeView,
+        },
+        {
+            path: "/edit",
+            component: EditView,
         },
         {
             path: "/:loc?-artykuly/artykul?:subloc",
