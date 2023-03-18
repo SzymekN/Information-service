@@ -1,0 +1,105 @@
+version: '3'
+services:
+
+  mysql-client:
+    image: mysql:8.0.32
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: userdb
+      MYSQL_USER: adminuser
+      MYSQL_PASSWORD: admin
+    volumes: 
+     - ../SQL/mysql/data/client:/var/lib/mysql
+     - ../SQL/client:/docker-entrypoint-initdb.d
+    networks:
+      - backend
+      
+  mysql-editorial:
+    image: mysql:8.0.32
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: editorialdb
+      MYSQL_USER: adminuser
+      MYSQL_PASSWORD: admin
+    volumes: 
+      - ../SQL/mysql/data/editorial:/var/lib/mysql
+      - ../SQL/editorial:/docker-entrypoint-initdb.d
+    networks:
+      - backend  
+  redis-server:
+    image: redis:7.0.9
+    #ports:
+    #  - "8081:6379"
+    container_name: redis-server
+    command: ["redis-server"]
+    networks:
+      - backend
+        
+  eureka-container:
+    build: ../eureka
+    ports:
+      - "8761:8761"
+    depends_on:
+      - redis-server
+    networks:
+      - backend   
+  gateway:
+    build: ../gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-container
+      - redis-server
+    #environment:
+      #EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-container:8761/eureka/
+      #EUREKA_URL: http://eureka-container:8761/eureka/
+    networks:
+      - backend 
+      
+  client:
+    build: ../client
+    #ports:
+      #- "8086:8086"
+    depends_on:
+      - mysql-client
+      - redis-server
+      - eureka-container
+      - gateway
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-client:3306/userdb?serverTimezone=UTC&characterEncoding=UTF-8&useUnicode=true&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: adminuser
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATA_REDIS_HOST: redis-server
+      #MYSQL_USER: adminuser
+      #MYSQL_PASSWORD: admin
+      #MYSQL_PORT: 3307
+      #MYSQL_DB_NAME: mysql-client
+    networks:
+      - backend
+      
+  editorial:
+    build: ../editorial
+    #ports:
+      #- "8085:8085"    
+    depends_on:
+      - mysql-editorial
+      - redis-server
+      - eureka-container
+      - gateway
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-editorial:3306/editorialdb?serverTimezone=UTC&characterEncoding=UTF-8&useUnicode=true&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: adminuser
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATA_REDIS_HOST: redis-server
+      #MYSQL_USER: adminuser
+      #MYSQL_PASSWORD: admin
+      #MYSQL_PORT: 3308
+      #MYSQL_DB_NAME: mysql-editorial
+    networks:
+      - backend 
+networks:
+  backend:
