@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-@EnableRedisHttpSession
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60)
 @RestController
 public class EditorialApplication {
 

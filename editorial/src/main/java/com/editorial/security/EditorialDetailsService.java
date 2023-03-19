@@ -2,15 +2,15 @@ package com.editorial.security;
 
 import com.editorial.model.entity.User;
 import com.editorial.repository.UserRepository;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@NoArgsConstructor
+@Service
 public class EditorialDetailsService implements UserDetailsService {
 
     private UserRepository userRepository;
