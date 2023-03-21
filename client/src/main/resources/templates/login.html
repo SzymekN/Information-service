@@ -7,14 +7,12 @@
 </head>
 <body>
 <main>
-    <form th:action="@{/authenticate}" method="POST">
+    <form th:action="@{/client/authenticate}" method="POST">
         <input type="text" class="form-control" placeholder="Username" name="username" id="username">
         <label for="username">Username</label>
         <input type="password" class="form-control" placeholder="Password" name="password" id="password">
         <label for="password">Password</label>
 
-
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input type="submit" value="Login"/>
     </form>
 </main>

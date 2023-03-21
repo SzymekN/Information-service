@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 @EnableDiscoveryClient
 @SpringBootApplication
-@EnableRedisHttpSession
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60)
 @Controller
 @RequestMapping("/client")
 public class ClientApplication {
@@ -30,13 +30,16 @@ public class ClientApplication {
 		return "login";
 	}
 
-	@RequestMapping(value="/logout", method= RequestMethod.GET)
+	@RequestMapping(value="/logout", method= {RequestMethod.GET, RequestMethod.POST})
 	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null){
 			new SecurityContextLogoutHandler().logout(request, response, auth);
+			//request.getSession().invalidate();
+			System.out.println("IN LOGOUT - delete handler");
+			//SecurityContextHolder.clearContext();
 		}
-		return "redirect:/client/login";
+		return "redirect:/client/login?logout";
 	}
 
 	@GetMapping("/test")
