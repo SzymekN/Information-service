@@ -35,17 +35,24 @@ function quillReady(){
       
     </div>
 
-    <!-- Preview div - ql-editor class is needed to have styling as in the editor -->
-    <!-- <div id="justText" v-html="content" class="content ql-editor"></div> -->
+<!--     Preview div - ql-editor class is needed to have styling as in the editor-->
+    <p class = "section_title">PODGLĄD ARTYKUŁU</p>
+    <div id="justText" v-html="content" class="content ql-editor"></div>
 
 </template>
 
 
 <style scoped>
- div {
-    margin-top: 15px;
-    width: 100%;
-    float: left;
+ .section_title {
+   font-size: 1.5rem;
+   font-weight: 400;
+   margin: 1rem 0;
+ }
+
+ #editorContainer,
+ #justText {
+   background-color: white;
+   margin-bottom: 1rem;
  }
 
 </style>
