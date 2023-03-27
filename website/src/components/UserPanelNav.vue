@@ -1,5 +1,5 @@
 <script setup>
-import list from "../data/nav.json"
+import list from "../data/userNav.json"
 </script>
 
 <template>
@@ -11,33 +11,31 @@ import list from "../data/nav.json"
 </template>
 
 
+
 <style scoped>
+table {
+  width: 100%;
+}
 
 .buttons {
-  float: left;
-  border-top: 0.1rem solid #8f8f8f;
+  margin: 0.2rem;
   align-content: center;
 }
 
 .buttons button {
-  background: linear-gradient(aliceblue, #ffffff);
+  background-color: rgba(240, 248, 255, 0.6);
   border: none;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  width: 100%;
 }
 
 .buttons button:hover {
-  background: linear-gradient(#d6e7ef, #ffffff);
-  /*border-bottom: 1px solid #8f8f8f;*/
+  background-color: rgba(240, 248, 255);
 }
 
 a {
-  display: inline-block;
+  display: block;
   padding: 0.3rem;
 }
 
-@media (max-width: 640px){
-  .buttons button {
-    font-size: 0.6rem;
-  }
-}
 </style>

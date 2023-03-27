@@ -22,8 +22,4 @@ a,
     place-items: center;
     margin: 0;
   }
-
-  #app {
-    display: grid;
-  }
 }

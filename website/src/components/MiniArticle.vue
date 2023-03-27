@@ -58,4 +58,18 @@ a {
   vertical-align: middle;
 }
 
+@media (max-width: 640px){
+  .article {
+    width: 48%;
+  }
+
+  .article img {
+    max-height: 18.5vmax;
+  }
+
+  .article_title {
+    font-size: 2vmax;
+  }
+}
+
 </style>

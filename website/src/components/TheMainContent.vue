@@ -48,4 +48,10 @@ import Article from "@/components/MiniArticle.vue"
 .section_content {
   float: left;
 }
+
+@media (max-width: 640px){
+  .section_content:first-child {
+    margin-top: 6rem;
+  }
+}
 </style>

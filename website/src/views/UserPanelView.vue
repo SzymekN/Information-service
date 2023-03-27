@@ -1,6 +1,5 @@
 <script setup>
 import TheTitle from "@/components/TheTitle.vue";
-import Editor from "../components/Editor.vue";
 import UserPanelNav from "@/components/UserPanelNav.vue";
 </script>
 
@@ -28,8 +27,7 @@ import UserPanelNav from "@/components/UserPanelNav.vue";
   <div>
     <!--MARK: 3. MAIN CONTENT-->
     <main>
-      <p class = "section_title">STWÓRZ ARTYKUŁ</p>
-      <Editor />
+
     </main>
   </div>
 
@@ -83,12 +81,6 @@ h1 {
   text-align: center;
 }
 
-.section_title {
-  font-size: 2rem;
-  font-weight: 500;
-  margin: 1rem 0;
-}
-
 @media (max-width: 1180px){
   h1 {
     width: 45%;
@@ -111,6 +103,7 @@ h1 {
   header .wrapper {
     display: none;
   }
+
 }
 
 .buttons {
