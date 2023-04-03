@@ -35,8 +35,8 @@ export default {
     const setStep = () => {
       const innerWidth = inner.value.scrollWidth;
       const totalCards = props.cards.length;
-      step = `${innerWidth / totalCards}px`;
-      
+      step = `${(innerWidth / totalCards)-12}px`;
+      console.log(step)
     };
 
     const startInterval = () => {
@@ -57,6 +57,7 @@ export default {
     moveLeft();
     const shiftedCard = props.cards.shift();
     afterTransition(() => {
+      console.log(inner.value.scrollWidth+" "+ props.cards.length)
       resetTranslate();
       props.cards.push(shiftedCard);
       transitioning = false;
@@ -89,7 +90,7 @@ export default {
     const resetTranslate = () => {
       innerStyles.value = {
         transition: "none",
-        transform: `translateX(-${step})`
+        transform: `translateX(-${step})`//
       };
     };
 
@@ -103,11 +104,11 @@ export default {
 inner.value.addEventListener("mouseenter", () => {
   hover = true;
 });
-  setInterval(() => {
-    if (document.querySelector("body > p:hover") != null) {
-        console.log("hovered");
-    }
-}, 10);
+//   setInterval(() => {
+//     if (document.querySelector("body > p:hover") != null) {
+//         console.log("hovered");
+//     }
+// }, 10);
       setStep();
       resetTranslate();
       startInterval();
@@ -136,7 +137,7 @@ inner.value.addEventListener("mouseenter", () => {
 .inner {
   display: flex; /* set display to flex */
   flex-wrap: nowrap; /* prevent the cards from wrapping to a new line */
-  transition: transform 1000ms ease-out;
+  transition: transform 2000ms ease-out;
 }
 
 .card {
