@@ -28,6 +28,7 @@ public class SecurityConfig {
         return http.authorizeHttpRequests(configurer ->
                 configurer.requestMatchers("/").permitAll()
                         .requestMatchers("/client/test").hasRole("USER")
+                        .requestMatchers("/client/articles/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(configurer -> configurer.loginPage("/client/login")
                         .loginProcessingUrl("/client/authenticate").permitAll()

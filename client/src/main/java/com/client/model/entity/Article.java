@@ -36,6 +36,10 @@ public class Article implements Serializable {
     @NotBlank(message = "Content must not be blank!")
     private String content;
 
+    @Column(name = "category")
+    @NotBlank(message = "Category must be picked!")
+    private String category;
+
     @Column(name = "date_of_submission")
     @Past(message = "Invalid date!")
     private Timestamp dateOfSubmission;

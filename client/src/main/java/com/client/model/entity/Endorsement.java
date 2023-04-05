@@ -24,11 +24,11 @@ public class Endorsement implements Serializable {
     private Boolean value;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("articleId")
+    @JoinColumn(name = "fk_article", insertable = false, updatable = false)
     private Article article;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("userId")
+    @JoinColumn(name = "fk_user", insertable = false, updatable = false)
     private User user;
 
     @Override
