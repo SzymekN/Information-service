@@ -5,11 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,8 +17,9 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
+@Builder
 @Table(name = "user")
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,14 +56,20 @@ public class User {
     private List<Article> articles;
 
     public void connectAuthority(Authority authority) {
+        if(authority == null)
+            return;
         this.authority = authority;
     }
 
     public void connectUserDetails(UserDetails userDetails) {
+        if(userDetails == null)
+            return;
         this.userDetails = userDetails;
     }
 
     public void addEndorsement(Endorsement endorsement) {
+        if (endorsement == null)
+            return;
         if (endorsements == null)
             endorsements = new ArrayList<>();
         endorsements.add(endorsement);
@@ -72,11 +77,15 @@ public class User {
     }
 
     public void removeEndorsement(Endorsement endorsement) {
+        if (endorsement == null || endorsements == null)
+            return;
         endorsements.remove(endorsement);
         endorsement.setUser(null);
     }
 
     public void addArticle(Article article) {
+        if(article == null)
+            return;
         if (articles == null)
             articles = new ArrayList<>();
         articles.add(article);
@@ -84,6 +93,8 @@ public class User {
     }
 
     public void removeArticle(Article article) {
+        if(article == null || articles == null)
+            return;
         articles.remove(article);
         article.setJournalist(null);
     }

@@ -15,6 +15,9 @@ import Footer from "@/components/Footer.vue";
       <TheTitle msg="Serwis informacyjny" />
     </div>
 
+    <div class="buttons">
+      <button><a href="#">Zaloguj/Zarejestruj</a></button>
+    </div>
   </header>
 
 <!--MARK: 2. NAVIGATION BAR-->
@@ -84,6 +87,7 @@ main {
   padding: 1% 1% 0 1%;
   position: relative;
   float: left;
+  margin-bottom: 4rem;
 }
 
 section {
@@ -97,19 +101,50 @@ section {
   position: relative;
   padding: 0 1% 0 1%;
   float: left;
+  font-size: 1vmax;
 }
 
 header .wrapper {
   display: flex;
   place-items: flex-start;
   flex-wrap: wrap;
+  flex-direction: column;
+  flex: 2;
 }
 
 footer {
   width: 100%;
-  position: absolute;
-  height: 100px;
-  bottom: 0;
+  position: relative;
+  clear: both;
+}
+.buttons {
+  margin: 0.5rem 2rem;
+  align-content: center;
+}
 
+.buttons button {
+  background-color: rgba(240, 248, 255);
+  border: none;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.buttons button:hover {
+  background-color: #c8d8f1;
+}
+
+a {
+  display: block;
+  padding: 0.3rem;
+}
+
+@media (max-width: 640px){
+  section{
+    display: none;
+  }
+  main {
+    width: 100%;
+    margin: 1rem 0;
+  }
 }
 </style>

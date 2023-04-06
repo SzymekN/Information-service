@@ -5,11 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +18,9 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
+@Builder
 @Table(name = "article")
-public class Article {
+public class Article implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +48,8 @@ public class Article {
     private List<Endorsement> endorsements;
 
     public void addEndorsement(Endorsement endorsement) {
+        if (endorsement == null)
+            return;
         if (endorsements == null)
             endorsements = new ArrayList<>();
         endorsements.add(endorsement);
@@ -56,6 +57,8 @@ public class Article {
     }
 
     public void removeEndorsement(Endorsement endorsement) {
+        if (endorsement == null || endorsements == null)
+            return;
         endorsements.remove(endorsement);
         endorsement.setArticle(null);
     }

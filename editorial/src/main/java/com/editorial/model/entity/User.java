@@ -5,10 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
+@Builder
 @Table(name = "user")
 public class User {
 
@@ -63,14 +61,20 @@ public class User {
     private List<ArticleCorrect> articleCorrectsCorrector;
 
     public void connectAuthority(Authority authority) {
+        if (authority == null)
+            return;
         this.authority = authority;
     }
 
     public void connectUserDetails(UserDetails userDetails) {
+        if (userDetails == null)
+            return;
         this.userDetails = userDetails;
     }
 
     public void addArticleProposal(ArticleProposal articleProposal) {
+        if (articleProposal == null)
+            return;
         if (articleProposals == null)
             articleProposals = new ArrayList<>();
         articleProposals.add(articleProposal);
@@ -78,11 +82,15 @@ public class User {
     }
 
     public void removeArticleProposal(ArticleProposal articleProposal) {
+        if (articleProposal == null || articleProposals == null)
+            return;
         articleProposals.remove(articleProposal);
         articleProposal.setJournalist(null);
     }
 
     public void addArticleDraft(ArticleDraft articleDraft) {
+        if (articleDraft == null)
+            return;
         if (articleDrafts == null)
             articleDrafts = new ArrayList<>();
         articleDrafts.add(articleDraft);
@@ -90,11 +98,15 @@ public class User {
     }
 
     public void removeArticleDraft(ArticleDraft articleDraft) {
+        if (articleDraft == null || articleDrafts == null)
+            return;
         articleDrafts.remove(articleDraft);
         articleDraft.setJournalist(null);
     }
 
     public void addArticleCorrectJournalist(ArticleCorrect articleCorrect) {
+        if (articleCorrect == null)
+            return;
         if (articleCorrectsJournalist == null)
             articleCorrectsJournalist = new ArrayList<>();
         articleCorrectsJournalist.add(articleCorrect);
@@ -102,11 +114,15 @@ public class User {
     }
 
     public void removeArticleCorrectJournalist(ArticleCorrect articleCorrect) {
+        if (articleCorrect == null || articleCorrectsJournalist == null)
+            return;
         articleCorrectsJournalist.remove(articleCorrect);
         articleCorrect.setJournalist(null);
     }
 
     public void addArticleCorrectCorrector(ArticleCorrect articleCorrect) {
+        if (articleCorrect == null)
+            return;
         if (articleCorrectsCorrector == null)
             articleCorrectsCorrector = new ArrayList<>();
         articleCorrectsCorrector.add(articleCorrect);
@@ -114,6 +130,8 @@ public class User {
     }
 
     public void removeArticleCorrectCorrector(ArticleCorrect articleCorrect) {
+        if (articleCorrect == null || articleCorrectsCorrector == null)
+            return;
         articleCorrectsCorrector.remove(articleCorrect);
         articleCorrect.setCorrector(null);
     }

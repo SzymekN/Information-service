@@ -55,4 +55,18 @@ a {
   color: white;
   vertical-align: middle;
 }
+
+@media (max-width: 640px){
+  .top {
+    width: 98%;
+  }
+
+  .top img {
+    max-height: 35vmax;
+  }
+
+  .article_title {
+    font-size: 2vmax;
+  }
+}
 </style>
