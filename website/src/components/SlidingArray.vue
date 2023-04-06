@@ -1,163 +1,152 @@
 <template>
-  <div class="carousel">
-    <div class="inner" ref="inner" :style="innerStyles">
-      <div class="card" v-if="cards" v-for="card in cards" :key="card"><a>
-        {{ card.code }} {{ card.mid }}</a>
+  <div class="react-horizontal-scrolling-menu--wrapper">
+    <div class="react-horizontal-scrolling-menu--scroll-container1" ref="scrollContainer1" style="--play:running; --direction:normal; --duration:15s; --delay:0s; --iteration-count:1;" @animationend="onAnimationEnd">
+      <div class="react-horizontal-scrolling-menu--item" v-for="(card, index) in cards" :key="index">
+        <a class="nts-item">
+          <span class="nts-breakable">{{ card.code }}</span>
+          <span class="nts-value">{{ card.mid }}</span>
+          <span :class="card.changeClass">{{ card.change }}</span>
+        </a>
+      </div>
+    </div>
+    <div class="react-horizontal-scrolling-menu--scroll-container2" ref="scrollContainer2" style="--play:running; --direction:normal; --duration:30s; --delay:0s; --iteration-count:infinite;">
+      <div class="react-horizontal-scrolling-menu--item" v-for="(card, index) in cards" :key="'second-' + index">
+        <a  class="nts-item">
+          <span class="nts-breakable">{{ card.code }}</span>
+          <span class="nts-value">{{ card.mid }}</span>
+          <span :class="card.changeClass">{{ card.change }}</span>
+        </a>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 
+<script>
+import { ref, computed } from 'vue'
 export default {
   props: {
-    cards: {
-      type: Array,
-      default: null
+      cards: {
+        type: Array,
+        default: null
+      },
+      prevCards:{
+        type:Array,
+        default:null
+      }
     },
-    prevCards:{
-      type:Array,
-      default:null
+  setup(props){
+    const cards = ref(props.cards);
+    const prevCards = ref(props.prevCards);
+    const scrollContainer1 = ref("scrollContainer1");
+    const onAnimationEnd = () => {
+      if (scrollContainer1) {
+        scrollContainer1.value.style.animation="scrolling3 running normal 30s 0s infinite linear"
+        scrollContainer1.value.style.opacity="1"
+      }
     }
-  },
-  setup(props, { refs }) {
-    const inner = ref("inner");
-    const innerStyles = ref({});
-    const carousel = ref(null);
-    const intervalDuration=2000;
-    var hover=false;
-    let step = "";
-    let transitioning = false;
-    let intervalId = null;
-
-    const setStep = () => {
-      const innerWidth = inner.value.scrollWidth;
-      const totalCards = props.cards.length;
-      step = `${(innerWidth / totalCards)-12}px`;
-      console.log(step)
-    };
-
-    const startInterval = () => {
-      intervalId = setInterval(() => {
-        next();
-      }, intervalDuration);
-    };
-
-    const stopInterval = () => {
-      clearInterval(intervalId);
-      intervalId = null;
-    };
-
-    const next = () => {
-  if (transitioning) return;
-  if (!hover) {
-    transitioning = true;
-    moveLeft();
-    const shiftedCard = props.cards.shift();
-    afterTransition(() => {
-      console.log(inner.value.scrollWidth+" "+ props.cards.length)
-      resetTranslate();
-      props.cards.push(shiftedCard);
-      transitioning = false;
-    });
-  }
-};
-
-    const moveLeft = () => {
-      innerStyles.value = {
-        transition: props.transition,
-        transform: `translateX(-${step}) translateX(-${step})`
-      };
-    };
-
-    const moveRight = () => {
-      innerStyles.value = {
-        transition: props.transition,
-        transform: `translateX(${step}) translateX(-${step})`
-      };
-    };
-
-    const afterTransition = (callback) => {
-      const listener = () => {
-        callback();
-        inner.value.removeEventListener("transitionend", listener);
-      };
-      inner.value.addEventListener("transitionend", listener);
-    };
-
-    const resetTranslate = () => {
-      innerStyles.value = {
-        transition: "none",
-        transform: `translateX(-${step})`//
-      };
-    };
-
-
-    onMounted(() => {
-
-  inner.value.addEventListener("mouseleave", () => {
-  hover = false;
-});
-
-inner.value.addEventListener("mouseenter", () => {
-  hover = true;
-});
-//   setInterval(() => {
-//     if (document.querySelector("body > p:hover") != null) {
-//         console.log("hovered");
-//     }
-// }, 10);
-      setStep();
-      resetTranslate();
-      startInterval();
-    });
-
-    onBeforeUnmount(() => {
-      stopInterval();
-    });
-
-
-  return {
-    inner,
-    innerStyles
-  };
+    const calcDiff=async()=>{
+      for (let i = 0; i < cards.value.length; i++) {
+        var diff = ((cards.value[i].mid - prevCards.value[i].mid) / prevCards.value[i].mid) * 100;
+        diff=diff.toFixed(2);
+        if(diff>0){
+          cards.value[i].change = "+"+diff+"% ▲"; 
+          cards.value[i].changeClass="notoria profit";
+          
+        }
+        else if(diff<0){
+          cards.value[i].change = diff+"% ▼"; 
+          cards.value[i].changeClass="notoria loss";
+        }
+      }
+    }
+    calcDiff();
+  return {onAnimationEnd,scrollContainer1};
+    }
 }
-};
 </script>
-
 <style>
-.carousel {
-  width: 100%; /* set width to 100% of parent container */
-  max-width: 800px; /* set a maximum width for the carousel */
+.react-horizontal-scrolling-menu--wrapper {
   overflow: hidden;
-}
-
-.inner {
-  display: flex; /* set display to flex */
-  flex-wrap: nowrap; /* prevent the cards from wrapping to a new line */
-  transition: transform 2000ms ease-out;
-}
-
-.card {
-  flex: 1; /* make the width flexible based on the content */
-  margin-right: 10px;
-  height: 50px;
-  background-color: #ffffff;
-  color: rgb(0, 0, 0);
-  border-radius: 4px;
-  align-items: center;
-  justify-content: center;
   display: flex;
-  padding: 0 10px; /* add some padding to the left and right of the card */
-  box-sizing: border-box; /* include the padding in the width of the card */
-  text-align: center; /* center the text horizontally */
-  display: inline-block;
+  flex-wrap: nowrap;
+  max-width: 900px;
 }
-.card-text {
+
+.react-horizontal-scrolling-menu--scroll-container1 {
+  box-sizing: content-box;
+  display: flex;
+  --play: running;
+  --direction: normal;
+  --duration: 153.359s;
+  --delay: 0s;
+  --iteration-count: infinite;
+  animation:scrolling var(--duration) var(--play) var(--delay) var(--iteration-count) linear;
+}
+
+.react-horizontal-scrolling-menu--scroll-container2 {
+
+  box-sizing: content-box;
+  display: flex;
+  --play: running;
+  --direction: normal;
+  --duration: 153.359s;
+  --delay: 0s;
+  --iteration-count: infinite;
+  animation:scrolling2 var(--duration) var(--play) var(--delay) var(--iteration-count) linear;
+}
+
+
+@keyframes scrolling {
+  from { transform: translateX(calc(100%*0.5)); }
+  to { transform: translateX(calc(-100%*0.5)); }
+}
+
+@keyframes scrolling2 {
+  from { transform: translateX(calc(100%*0.5)); }
+  to { transform: translateX(calc(-100%*1.5)); }
+}
+@keyframes scrolling3 {
+  from { transform: translateX(calc(100%*1.5)); }
+  to { transform: translateX(calc(-100%*0.5)); }
+}
+.react-horizontal-scrolling-menu--item {
+  flex: 0 0 auto;
+  margin-right: 20px;
+}
+
+.nts-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
   text-align: center;
-  margin: auto;
+  padding: 15px 0;
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nts-breakable {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+.nts-value {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.notoria.loss {
+  color: #ff0000;
+}
+
+.notoria.profit {
+  color: #00b300;
 }
 
 </style>

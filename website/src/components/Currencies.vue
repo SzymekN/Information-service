@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="cards && cards.length">
-      <SlidingArray :cards="cards"></SlidingArray>
+    <div v-if="cards && cards.length&&prevCards&&prevCards.length">
+      <SlidingArray :cards="cards" :prevCards="prevCards"></SlidingArray>
     </div>
   </div>
 </template>
@@ -18,16 +18,18 @@ export default {
   setup() {
     const { exchangeTable, fetchCurrencies } = useCurrencies();
     const cards = ref([]);
-
+    const prevCards = ref([]);
     const fetchExchangeTable = async () => {
       await fetchCurrencies();
       cards.value = exchangeTable.value[0]?.rates;
+      prevCards.value=exchangeTable.value[1]?.rates;
     };
 
     fetchExchangeTable();
-
+    
     return {
       cards,
+      prevCards
     };
   }
 };
