@@ -1,5 +1,6 @@
 import { ref } from "vue";
 
+import { weatherApiKey } from '../../Keys'
 import { WeatherModel } from './WeatherModel';
 
 const weatherUrl = 'https://api.openweathermap.org/data/2.5/onecall?exclude=minutely,hourly';
@@ -28,7 +29,7 @@ async function success(pos) {
   console.log(`Longitude: ${coords.longitude}`);
   console.log(`More or less ${coords.accuracy} meters.`);
 
-  const response = await fetch(`${weatherUrl}&lat=${coords.latitude}&lon=${coords.longitude}&appid=81b526afdb9b8e5cbfb248526813c344&units=metric&lang=pl`);
+  const response = await fetch(`${weatherUrl}&lat=${coords.latitude}&lon=${coords.longitude}&appid=${ weatherApiKey }&units=metric&lang=pl`);
   weather.value = await response.json();
 }
 
@@ -38,7 +39,6 @@ function error(err) {
 
 async function fetchWeather(): Promise<void> {
   navigator.geolocation.getCurrentPosition(success, error, options);
- 
 }
 
 function getWeatherImageUrl(iconName: string, size: '2x' | '4x') {

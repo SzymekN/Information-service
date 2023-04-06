@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router"
 import HomeView from "../views/HomeView.vue"
 import Article from "../components/MiniArticle.vue"
+import CurrenciesTest from "../components/Currencies.vue"
 import EditView from "../views/EditView.vue"
 import UserPanelView from "@/views/UserPanelView.vue";
 
@@ -12,6 +13,10 @@ const router = createRouter({
             path: "/",
             name: 'home',
             component: HomeView
+        },
+        {
+            path:"/biznes",
+            component:CurrenciesTest
         },
         {
             path: "/:loc?-artykuly",
