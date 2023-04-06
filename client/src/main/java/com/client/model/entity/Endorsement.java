@@ -47,4 +47,11 @@ public class Endorsement implements Serializable {
         Endorsement other = (Endorsement) o;
         return Objects.equals(id, other.id);
     }
+
+    @Override
+    public String toString() {
+        return "Endorsement{" +
+                "id=" + id +
+                '}';
+    }
 }

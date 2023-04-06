@@ -34,7 +34,7 @@ public class User implements Serializable {
     @Column(name = "password")
     @NotBlank(message = "Password must not be blank!")
     @Size(min = 4, max = 75, message = "Password must contain more than 3 and less than 76 characters!")
-    @Pattern(regexp = "^[A-Za-z0-9#%@!&]+$", message = "Password must not contain whitespace characters! It can contain characters such as: A-Z, a-z, 0-9, #%@!&")
+    @Pattern(regexp = "^[A-Za-z0-9#%@!&$./]+$", message = "Password must not contain whitespace characters! It can contain characters such as: A-Z, a-z, 0-9, #%@!&$/.")
     private String password;
 
     @Column(name = "enabled")
@@ -114,5 +114,12 @@ public class User implements Serializable {
             return false;
         User other = (User) o;
         return Objects.equals(username, other.username);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                '}';
     }
 }

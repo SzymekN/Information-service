@@ -25,11 +25,25 @@ public class ArticleDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ArticleDto that = (ArticleDto) o;
-        return title.equals(that.title) && content.equals(that.content) && category.equals(that.category) && dateOfSubmission.equals(that.dateOfSubmission) && positiveEndorsements.equals(that.positiveEndorsements) && negativeEndorsements.equals(that.negativeEndorsements) && authorName.equals(that.authorName);
+        return title.equals(that.title) && content.equals(that.content) && category.equals(that.category) && positiveEndorsements.equals(that.positiveEndorsements) && negativeEndorsements.equals(that.negativeEndorsements) && authorName.equals(that.authorName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(content, category, dateOfSubmission, positiveEndorsements, negativeEndorsements, authorName);
+        return Objects.hash(content, category, positiveEndorsements, negativeEndorsements, authorName);
+    }
+
+    @Override
+    public String toString() {
+        return "ArticleDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", category='" + category + '\'' +
+                ", dateOfSubmission=" + dateOfSubmission +
+                ", positiveEndorsements=" + positiveEndorsements +
+                ", negativeEndorsements=" + negativeEndorsements +
+                ", authorName='" + authorName + '\'' +
+                '}';
     }
 }

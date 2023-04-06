@@ -75,4 +75,14 @@ public class UserDetails implements Serializable {
                 && Objects.equals(email, other.email)
                 && Objects.equals(city, other.city);
     }
+
+    @Override
+    public String toString() {
+        return "UserDetails{" +
+                "name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", city='" + city + '\'' +
+                '}';
+    }
 }

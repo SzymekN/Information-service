@@ -43,4 +43,11 @@ public class Authority implements Serializable {
         Authority other = (Authority) o;
         return Objects.equals(authorityName, other.authorityName);
     }
+
+    @Override
+    public String toString() {
+        return "Authority{" +
+                "authorityName='" + authorityName + '\'' +
+                '}';
+    }
 }

@@ -69,7 +69,7 @@ public class Article implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, content, dateOfSubmission);
+        return Objects.hash(title, content);
     }
 
     @Override
@@ -82,7 +82,13 @@ public class Article implements Serializable {
             return false;
         Article other = (Article) o;
         return Objects.equals(title, other.title)
-                && Objects.equals(content, other.content)
-                && Objects.equals(dateOfSubmission, other.dateOfSubmission);
+                && Objects.equals(content, other.content);
+    }
+    @Override
+    public String toString() {
+        return "Article{" +
+                "title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }
