@@ -73,10 +73,10 @@ class ArticleServiceImplTest {
 
         articles.add(Article.builder()
                     .id(Long.parseLong("1"))
-                    .title("Visit of the president")
+                    .title("visit of the president")
                     .journalist(user)
                     .content("Lorem ipsum dolor sit amet, consectetur")
-                    .category("Politics")
+                    .category("politics")
                     .dateOfSubmission(new Timestamp(System.currentTimeMillis()))
                     .endorsements(new ArrayList<>())
                     .build());
@@ -86,7 +86,7 @@ class ArticleServiceImplTest {
                     .title("Equinox")
                     .journalist(user)
                     .content("The spring equinox here in the northern hemisphere")
-                    .category("Nature")
+                    .category("nature")
                     .dateOfSubmission(new Timestamp(System.currentTimeMillis()))
                     .endorsements(new ArrayList<>())
                     .build());
@@ -96,7 +96,7 @@ class ArticleServiceImplTest {
                     .title("Atomic bomb")
                     .journalist(user)
                     .content("America is far less safe – and the world is far less stable")
-                    .category("Politics")
+                    .category("politics")
                     .dateOfSubmission(new Timestamp(System.currentTimeMillis()))
                     .endorsements(new ArrayList<>())
                     .build());
@@ -119,7 +119,7 @@ class ArticleServiceImplTest {
         List<Article> editedArticles = articles;
         editedArticles.remove(1);
         // when
-        List<Article> articlesFromDb = articleRepository.findByCategory("Politics");
+        List<Article> articlesFromDb = articleRepository.findByCategory("politics");
         // then
         Assertions.assertTrue(articlesFromDb.containsAll(editedArticles));
     }
@@ -137,7 +137,7 @@ class ArticleServiceImplTest {
     @Test
     public void find_by_category() {
         // given & when
-        List<ArticleDto> articlesFromDb = articleService.findByCategory("Politics");
+        List<ArticleDto> articlesFromDb = articleService.findByCategory("politics");
         List<ArticleDto> articlesToDto = articleService.articlesToDto(articles);
         articlesToDto.remove(1);
         // then

@@ -27,13 +27,7 @@ public class ArticleController {
         List<ArticleDto> articles;
 
         if(category == null) articles = articleService.findAll();
-        else {
-            String firstLetterOfCat = category.substring(0, 1);
-            String restOfTheWord = category.substring(1);
-            firstLetterOfCat = firstLetterOfCat.toUpperCase();
-            category = firstLetterOfCat + restOfTheWord;
-            articles = articleService.findByCategory(category);
-        }
+        else articles = articleService.findByCategory(category);
 
         if(articles.isEmpty())
             return ResponseEntity.noContent().build();

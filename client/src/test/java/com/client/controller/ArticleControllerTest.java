@@ -46,15 +46,15 @@ public class ArticleControllerTest {
         articleDtoList = new ArrayList<>();
         articleDtoList.add(ArticleDto.builder()
                 .title("One")
-                .category("Politics")
+                .category("politics")
                 .build());
         articleDtoList.add(ArticleDto.builder()
                 .title("Two")
-                .category("Nature")
+                .category("nature")
                 .build());
         articleDtoList.add(ArticleDto.builder()
                 .title("Three")
-                .category("Politics")
+                .category("politics")
                 .build());
     }
 
@@ -77,8 +77,8 @@ public class ArticleControllerTest {
         // given & when
         List<ArticleDto> articleDtosEdited = articleDtoList;
         articleDtosEdited.remove(1);
-        when(articleService.findByCategory("Politics")).thenReturn(articleDtosEdited);
-        String expected = new ObjectMapper().writeValueAsString(articleService.findByCategory("Politics"));
+        when(articleService.findByCategory("politics")).thenReturn(articleDtosEdited);
+        String expected = new ObjectMapper().writeValueAsString(articleService.findByCategory("politics"));
         // then
         mockMvc.perform(MockMvcRequestBuilders.get("/client/articles")
                         .param("category","politics"))
