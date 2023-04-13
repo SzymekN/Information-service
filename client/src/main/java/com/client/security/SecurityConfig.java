@@ -26,17 +26,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain web(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(configurer ->
-                configurer.requestMatchers("/").permitAll()
-                        .requestMatchers("/client/test").hasRole("USER")
-                        .anyRequest().authenticated())
+                        configurer.requestMatchers("/").permitAll()
+                                .requestMatchers("/client/test").hasRole("USER")
+                                .requestMatchers("/client/articles/**").permitAll()
+                                .anyRequest().authenticated())
                 .formLogin(configurer -> configurer.loginPage("/client/login")
                         .loginProcessingUrl("/client/authenticate").permitAll()
                         .defaultSuccessUrl("/client/test", true))
                 .logout(configurer -> configurer.permitAll()
                         .logoutSuccessUrl("/client/login?logout"))
-                        //.invalidateHttpSession(true)
-                        //.deleteCookies("SESSION"))
-                .exceptionHandling(configurer->configurer.accessDeniedPage("/client/denied"))
+                //.invalidateHttpSession(true)
+                //.deleteCookies("SESSION"))
+                .exceptionHandling(configurer -> configurer.accessDeniedPage("/client/denied"))
                 .build();
     }
 }

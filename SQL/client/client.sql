@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS `userdb`.`article` (
   `title` VARCHAR(200) NOT NULL,
   `journalist_id_a` BIGINT NOT NULL,
   `article_content` LONGTEXT NOT NULL,
+  `category` VARCHAR(200) NOT NULL,
   `date_of_submission` DATETIME NOT NULL,
   PRIMARY KEY (`id_article`),
   INDEX `owner_id_fk_idx` (`journalist_id_a` ASC),

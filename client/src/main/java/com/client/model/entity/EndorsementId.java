@@ -2,10 +2,7 @@ package com.client.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -39,5 +36,13 @@ public class EndorsementId implements Serializable {
         EndorsementId other = (EndorsementId) o;
         return Objects.equals(articleId, other.articleId)
                 && Objects.equals(userId, other.userId);
+    }
+
+    @Override
+    public String toString() {
+        return "EndorsementId{" +
+                "articleId=" + articleId +
+                ", userId=" + userId +
+                '}';
     }
 }
