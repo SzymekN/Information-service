@@ -10,10 +10,10 @@ import java.util.List;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-    @Query("SELECT a from Article a LEFT JOIN FETCH a.endorsements e " +
+    @Query("SELECT a FROM Article a LEFT JOIN FETCH a.endorsements e " +
              "JOIN FETCH a.journalist j")
     List<Article> findAll();
-    @Query("SELECT a from Article a LEFT JOIN FETCH a.endorsements e " +
+    @Query("SELECT a FROM Article a LEFT JOIN FETCH a.endorsements e " +
             "JOIN FETCH a.journalist j WHERE a.category = :category")
     List<Article> findByCategory(@Param("category") String category);
 }
