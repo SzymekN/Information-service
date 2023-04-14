@@ -53,6 +53,8 @@ public class ClientApplication {
 		return "test-id";
 	}
 
-	public static void main(String[] args) { SpringApplication.run(ClientApplication.class, args); }
+	public static void main(String[] args) {
+		System.out.println("DUPSZTAL3");
+		SpringApplication.run(ClientApplication.class, args); }
 
 }

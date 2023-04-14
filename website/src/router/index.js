@@ -1,9 +1,10 @@
 import {createRouter, createWebHistory} from "vue-router"
 import HomeView from "../views/HomeView.vue"
-import Article from "../components/MiniArticle.vue"
+import Article from "../components/Article.vue"
 import CurrenciesTest from "../components/Currencies.vue"
 import EditView from "../views/EditView.vue"
 import UserPanelView from "@/views/UserPanelView.vue";
+import TheMainContent from "@/components/TheMainContent.vue";
 
 // -artykuly i artykul- do usuniecia mozna przekierowac do 404 za pomoca useRouter np gdy dane zapytanie nie na wynikow 
 const router = createRouter({
@@ -12,7 +13,18 @@ const router = createRouter({
         {
             path: "/",
             name: 'home',
-            component: HomeView
+            component: HomeView,
+            redirect: "/home",
+            children: [
+                {
+                    path: "/home",
+                    component: TheMainContent
+                },
+                {
+                    path: 'article',
+                    component: Article
+                }
+            ],
         },
         {
             path:"/biznes",
@@ -30,10 +42,10 @@ const router = createRouter({
             path: "/userpanel",
             component: UserPanelView,
         },
-        {
-            path: "/:loc?-artykuly/artykul?:subloc",
-            component:Article, 
-        },
+        // {
+        //     path: "/article/:subloc?",
+        //     component: Article, 
+        // },
         {
             path: '/404', 
             name: 'NotFound',

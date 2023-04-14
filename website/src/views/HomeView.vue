@@ -1,9 +1,10 @@
 <script setup>
-import TheMainContent from "@/components/TheMainContent.vue";
 import TheNavBar from "@/components/TheNavBar.vue";
 import TheTitle from "@/components/TheTitle.vue";
 import TheRightSection from "@/components/TheRightSection.vue";
 import Footer from "@/components/Footer.vue";
+
+
 </script>
 
 <template>
@@ -28,7 +29,7 @@ import Footer from "@/components/Footer.vue";
   <div>
     <!--MARK: 3. MAIN CONTENT-->
     <main>
-      <TheMainContent />
+      <RouterView/>
     </main>
 
     <!--MARK: 4. DYNAMIC SECTION-->

@@ -1,19 +1,25 @@
 <template>
+  <a :href="`article?id=${articleUrl}`">
   <div class="top">
-    <a href="#">
-      <img src="/17-g-ry-dla-seniora-jak-si.jpg" height="853" width="1200"/>
-    </a>
-    <div class="article_title">
-      <a href="#">
-        <h1>Tytuł artykułu</h1>
-        <p>Treść zachęcająca</p>
+      <img :src="imageUrl" height="853" width="1200"/>
+      <!-- <img src="/17-g-ry-dla-seniora-jak-si.jpg" height="853" width="1200"/> -->
+      <div class="article_title">
+            <h1>{{articleTitle}}</h1>
+            <p>{{articleDescription}}</p>
+          </div>
+        </div>
       </a>
-    </div>
-  </div>
 </template>
 
 <script>
-
+export default {
+  props: {
+    imageUrl: String,
+    articleTitle: String,
+    articleDescription: String,
+    articleUrl: Number,
+  },
+};
 </script>
 
 <style scoped>
