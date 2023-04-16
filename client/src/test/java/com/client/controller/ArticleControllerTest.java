@@ -79,8 +79,8 @@ public class ArticleControllerTest {
     public void get_all_articles_with_param() throws Exception {
         // given
         String category = "politics";
-        // when
         List<ArticleDto> articleDtosEdited = articleDtoList;
+        // when
         articleDtosEdited.remove(1);
         when(articleService.findByCategory(category)).thenReturn(articleDtosEdited);
         String expected = new ObjectMapper().writeValueAsString(articleService.findByCategory(category));
