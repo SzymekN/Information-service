@@ -1,6 +1,6 @@
 <script setup>
 import TopNews from "@/components/TopNews.vue";
-import Article from "@/components/MiniArticle.vue";
+import MiniNews from "@/components/MiniArticle.vue";
 import { ref, onMounted } from 'vue';
 
 
@@ -25,6 +25,11 @@ import { ref, onMounted } from 'vue';
     const div = document.createElement('div');
     div.innerHTML = htmlString;
     return (div.textContent.substring(0,100) || div.innerText.substring(0,100) || '')+'...';
+  }
+  const stripLargerTags = (htmlString) => {
+    const div = document.createElement('div');
+    div.innerHTML = htmlString;
+    return (div.textContent.substring(0,200) || div.innerText.substring(0,100) || '')+'...';
   }
 
   const getImage = (htmlString) => {
@@ -51,11 +56,12 @@ import { ref, onMounted } from 'vue';
       :articleUrl="0"
       :imageUrl="getImage(articles[0].content)"/>
     
-    <Article
+    <MiniNews
       v-if="articles.length"
       v-for="(item, index) in articles.slice(1, 9)"
       :key="index"
       :articleTitle="item.title"
+      :articleDescription="stripLargerTags(articles[index].content)"
       :articleUrl="index+1"
       :imageUrl="getImage(item.content)"/>
 
@@ -66,14 +72,14 @@ import { ref, onMounted } from 'vue';
     <p class = "section_title">EDUKACJA</p>
     <hr>
     <TopNews/>
-    <Article/>
-    <Article/>
-    <Article/>
-    <Article/>
-    <Article/>
-    <Article/>
-    <Article/>
-    <Article/>
+    <MiniNews/>
+    <MiniNews/>
+    <MiniNews/>
+    <MiniNews/>
+    <MiniNews/>
+    <MiniNews/>
+    <MiniNews/>
+    <MiniNews/>
 
   </div>
 
