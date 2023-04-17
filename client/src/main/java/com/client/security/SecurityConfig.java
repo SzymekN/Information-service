@@ -23,13 +23,19 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public SecurityFilterChain web(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(configurer ->
                         configurer.requestMatchers("/").permitAll()
                                 .requestMatchers("/client/test").hasRole("USER")
+                                .requestMatchers("/client/login/google").permitAll()
+                                .requestMatchers("/client/final-page-registration").permitAll()
+                                .requestMatchers("/client/home").permitAll()//hasRole("USER")
+                                .requestMatchers("/client/test2").permitAll()
                                 .requestMatchers("/client/articles/**").permitAll()
-                                .anyRequest().authenticated())
+                                .anyRequest().authenticated()
+                )
                 .formLogin(configurer -> configurer.loginPage("/client/login")
                         .loginProcessingUrl("/client/authenticate").permitAll()
                         .defaultSuccessUrl("/client/test", true))
@@ -38,6 +44,7 @@ public class SecurityConfig {
                 //.invalidateHttpSession(true)
                 //.deleteCookies("SESSION"))
                 .exceptionHandling(configurer -> configurer.accessDeniedPage("/client/denied"))
+                .csrf().disable()
                 .build();
     }
 }
