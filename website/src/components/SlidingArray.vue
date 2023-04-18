@@ -70,7 +70,8 @@ export default {
   overflow: hidden;
   display: flex;
   flex-wrap: nowrap;
-  max-width: 900px;
+  background: linear-gradient(white, aliceblue, white);
+  border-radius: 25px;
 }
 
 .react-horizontal-scrolling-menu--scroll-container1 {
@@ -123,7 +124,7 @@ export default {
   height: 100%;
   text-align: center;
   padding: 15px 0;
-  color: #ffffff;
+  color: rgba(34, 34, 34, 0.80);
   text-decoration: none;
   white-space: nowrap;
 }
@@ -133,12 +134,14 @@ export default {
   text-overflow: ellipsis;
   max-width: 100px;
   white-space: nowrap;
+  color: rgba(34, 34, 34, 0.80);
 }
 
 .nts-value {
   font-size: 20px;
   font-weight: bold;
   margin-top: 5px;
+  color: rgba(34, 34, 34, 0.80);
 }
 
 .notoria.loss {
