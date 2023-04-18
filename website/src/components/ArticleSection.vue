@@ -1,13 +1,11 @@
 <script setup>
 import TopNews from "@/components/TopNews.vue";
 import Article from "@/components/MiniArticle.vue";
-import ArticleSection from "@/components/ArticleSection.vue";
 import { ref, onMounted } from 'vue';
 
+const articles = ref([]);
 
-  const articles = ref([]);
-
-  const fetchArticles = async () => {
+const fetchArticles = async () => {
     try {
       const response = await fetch('http://localhost:8080/client/articles');
       const data = await response.json();
@@ -42,10 +40,6 @@ import { ref, onMounted } from 'vue';
 </script>
 
 <template>
-  <div class="section_content">
-
-    <p class = "section_title">O TYM SIĘ MÓWI</p>
-    <hr>
     <TopNews 
       v-if="articles.length"
       :articleTitle="articles[0].title"
@@ -60,43 +54,5 @@ import { ref, onMounted } from 'vue';
       :articleTitle="item.title"
       :articleUrl="index+1"
       :imageUrl="getImage(item.content)"/>
-      <!-- <ArticleSection/> -->
-  </div>
-
-  <div class="section_content">
-
-    <p class = "section_title">EDUKACJA</p>
-    <hr>
-    <TopNews/>
-    <Article/>
-    <Article/>
-    <Article/>
-    <Article/>
-    <Article/>
-    <Article/>
-    <Article/>
-    <Article/>
-
-      <!-- <ArticleSection/> -->
-
-  </div>
-
+      
 </template>
-
-<style scoped>
-.section_title {
-  font-size: 2rem;
-  font-weight: 500;
-  margin-bottom: -1%;
-}
-
-.section_content {
-  float: left;
-}
-
-@media (max-width: 640px){
-  .section_content:first-child {
-    margin-top: 6rem;
-  }
-}
-</style>

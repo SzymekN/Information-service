@@ -4,6 +4,33 @@ import TheTitle from "@/components/TheTitle.vue";
 import TheRightSection from "@/components/TheRightSection.vue";
 import Footer from "@/components/Footer.vue";
 import list from "../data/login.json"
+import jsCookie from "js-cookie";
+
+  const logout = () => {
+    //   fetch('/logout', {
+    //   method: 'GET',
+    //   credentials: 'same-origin',
+    // })
+    // .then(response => {
+    //   // Handle the response from the server
+    //   if (response.ok) {
+    //     // Logout successful, do something
+    //     console.log('Logged out successfully');
+    //   } else {
+    //     // Logout failed, do something
+    //     console.error('Logout failed');
+    //   }
+    // })
+    // .catch(error => {
+    //   // Handle errors that may occur during the request
+    //   console.error('Logout failed', error);
+    // });
+    jsCookie.remove('role');
+    console.log(jsCookie.get('role'));
+    window.location.href = '/home';
+
+  }
+
 </script>
 
 <template>
@@ -16,7 +43,8 @@ import list from "../data/login.json"
     </div>
 
     <div class="buttons" v-for="item in list">
-      <button><router-link :to="item.link" ><a>{{item.text}}</a></router-link></button>
+      <button><router-link :to="item.link" v-if="!jsCookie.get('role')"><a>{{item.text}}</a></router-link></button>
+      <button><router-link :to="'#'" v-if="jsCookie.get('role')" @click="logout()"><a>{{"Wyloguj"}}</a></router-link></button>
     </div>
   </header>
 

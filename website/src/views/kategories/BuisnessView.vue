@@ -179,6 +179,7 @@ a {
 
 .section_content {
   float: left;
+  width: 100%;
 }
 
 @media (max-width: 640px){
