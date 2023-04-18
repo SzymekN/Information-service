@@ -58,6 +58,10 @@ export default {
           cards.value[i].change = diff+"% ▼"; 
           cards.value[i].changeClass="notoria loss";
         }
+        else{
+          cards.value[i].change = diff+"% -"
+          cards.value[i].changeClass="notoria even";
+        }
       }
     }
     calcDiff();
@@ -147,6 +151,10 @@ export default {
 
 .notoria.profit {
   color: #00b300;
+}
+
+.notoria.even {
+  color: #4c4c4c;
 }
 
 </style>
