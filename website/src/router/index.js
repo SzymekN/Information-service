@@ -5,6 +5,8 @@ import CurrenciesTest from "../components/Currencies.vue"
 import EditView from "../views/EditView.vue"
 import UserPanelView from "@/views/UserPanelView.vue";
 import TheMainContent from "@/components/TheMainContent.vue";
+import BuisnessView from "@/views/kategories/BuisnessView.vue";
+import LoginView from "@/views/LoginView.vue";
 
 // -artykuly i artykul- do usuniecia mozna przekierowac do 404 za pomoca useRouter np gdy dane zapytanie nie na wynikow 
 const router = createRouter({
@@ -27,8 +29,8 @@ const router = createRouter({
             ],
         },
         {
-            path:"/biznes",
-            component:CurrenciesTest
+            path: "/biznes",
+            component: BuisnessView
         },
         {
             path: "/:loc?-artykuly",
@@ -41,6 +43,10 @@ const router = createRouter({
         {
             path: "/userpanel",
             component: UserPanelView,
+        },
+        {
+            path: "/login",
+            component: LoginView,
         },
         // {
         //     path: "/article/:subloc?",

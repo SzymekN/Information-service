@@ -1,15 +1,21 @@
 <script setup>
+import TheMainContent from "@/components/TheMainContent.vue";
 import TheNavBar from "@/components/TheNavBar.vue";
 import TheTitle from "@/components/TheTitle.vue";
 import TheRightSection from "@/components/TheRightSection.vue";
 import Footer from "@/components/Footer.vue";
-import list from "../data/login.json"
+import SlidingArray from "@/components/SlidingArray.vue";
+import Currencies from "@/components/Currencies.vue";
+import TopNews from "@/components/TopNews.vue";
+import Article from "@/components/MiniArticle.vue"
+import list from "../../data/login.json"
+
 </script>
 
 <template>
-<!--MARK: 1. HEADER-->
+  <!--MARK: 1. HEADER-->
   <header>
-    <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />
+    <img alt="Vue logo" class="logo" src="../../assets/globe.png" width="50" height="50" />
 
     <div class="wrapper">
       <TheTitle msg="Serwis informacyjny" />
@@ -20,7 +26,7 @@ import list from "../data/login.json"
     </div>
   </header>
 
-<!--MARK: 2. NAVIGATION BAR-->
+  <!--MARK: 2. NAVIGATION BAR-->
   <nav>
     <TheNavBar />
   </nav>
@@ -28,17 +34,34 @@ import list from "../data/login.json"
   <div>
     <!--MARK: 3. MAIN CONTENT-->
     <main>
-      <RouterView/>
+      <Currencies/>
+      <div class="section_content">
+
+        <p class = "section_title">O TYM SIĘ MÓWI W BIZNESIE</p>
+        <hr>
+        <TopNews/>
+        <TopNews/>
+        <TopNews/>
+        <Article/>
+        <Article/>
+        <Article/>
+        <Article/>
+        <Article/>
+        <Article/>
+        <Article/>
+        <Article/>
+
+      </div>
     </main>
 
     <!--MARK: 4. DYNAMIC SECTION-->
-    <section>
-      <TheRightSection />
-    </section>
+<!--    <section>-->
+
+<!--    </section>-->
   </div>
 
 
-<!--  MARK: 5. FOOTER-->
+  <!--  MARK: 5. FOOTER-->
   <footer>
     <Footer/>
   </footer>
@@ -79,8 +102,8 @@ nav {
 }
 
 main {
-  width: 80%;
-  margin-top: 7.5rem;
+  width: 98%;
+  margin-top: 10rem;
   margin-left: 1%;
   justify-content: left;
   min-height: 100%;
@@ -145,6 +168,22 @@ a {
   main {
     width: 100%;
     margin: 1rem 0;
+  }
+}
+
+.section_title {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-bottom: -1%;
+}
+
+.section_content {
+  float: left;
+}
+
+@media (max-width: 640px){
+  .section_content:first-child {
+    margin-top: 6rem;
   }
 }
 </style>
