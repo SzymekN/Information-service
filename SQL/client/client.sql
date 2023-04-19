@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `userdb`.`user_detail` (
   `name` VARCHAR(45) NOT NULL,
   `surname` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `city` VARCHAR(45) NOT NULL,
+  `supplier` VARCHAR(30) NOT NULL,
   INDEX `user_id_fk_idx` (`user_id_d` ASC),
   CONSTRAINT `user_id_fk`
     FOREIGN KEY (`user_id_d`)

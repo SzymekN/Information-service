@@ -66,7 +66,7 @@ class ArticleServiceImplTest {
                         .name("Test")
                         .surname("TestSurname")
                         .email("Test1@email.com")
-                        .city("TestCity")
+                        .supplier("APP")
                         .build())
                 .endorsements(new ArrayList<>())
                 .build();

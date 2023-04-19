@@ -2,6 +2,7 @@ package com.client.security;
 
 import com.client.model.entity.User;
 import com.client.repository.UserRepository;
+import com.client.util.ExternalAuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,8 +22,11 @@ public class ClientDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, ExternalAuthenticationException {
         User user = Optional.of(userRepository.findUserByName(username)).orElseThrow(() -> new UsernameNotFoundException("Username not found!"));
+        if(!"APP".equals(user.getUserDetails().getSupplier())) {
+            throw new ExternalAuthenticationException(user.getUserDetails().getSupplier());
+        }
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())

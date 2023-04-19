@@ -3,6 +3,7 @@ package com.client.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,19 +29,23 @@ public class SecurityConfig {
     public SecurityFilterChain web(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(configurer ->
                         configurer.requestMatchers("/").permitAll()
-                                .requestMatchers("/client/test").hasRole("USER")
                                 .requestMatchers("/client/login/google").permitAll()
-                                .requestMatchers("/client/final-page-registration").permitAll()
-                                .requestMatchers("/client/home").permitAll()//hasRole("USER")
+                                .requestMatchers("/client/home").permitAll()//.hasRole("USER")
                                 .requestMatchers("/client/test2").permitAll()
+                                .requestMatchers("/client/test").hasRole("USER")
                                 .requestMatchers("/client/articles/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(configurer -> configurer.loginPage("/client/login")
                         .loginProcessingUrl("/client/authenticate").permitAll()
-                        .defaultSuccessUrl("/client/test", true))
-                .logout(configurer -> configurer.permitAll()
-                        .logoutSuccessUrl("/client/login?logout"))
+                        .defaultSuccessUrl("/client/test", true)
+                )
+                .logout(configurer -> configurer
+                        .logoutUrl("/client/logout")
+                        .logoutSuccessUrl("/client/login?logout")
+                        //.invalidateHttpSession(true)
+                        .deleteCookies("ROLE")
+                        .permitAll())
                 //.invalidateHttpSession(true)
                 //.deleteCookies("SESSION"))
                 .exceptionHandling(configurer -> configurer.accessDeniedPage("/client/denied"))

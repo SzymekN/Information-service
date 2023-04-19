@@ -40,10 +40,10 @@ public class UserDetails implements Serializable {
     @NotBlank(message = "Email must not be blank!")
     private String email;
 
-    @Column(name = "city")
-    @NotBlank(message = "City must not be blank!")
-    @Size(min = 2, max = 45, message = "City must contain more than 1 and less than 46 characters!")
-    private String city;
+    @Column(name = "supplier")
+    @NotBlank
+    private String supplier;
+
 
     @OneToOne
     @MapsId
@@ -58,7 +58,7 @@ public class UserDetails implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, surname, email, city);
+        return Objects.hash(name, surname, email, supplier);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class UserDetails implements Serializable {
         return Objects.equals(name, other.name)
                 && Objects.equals(surname, other.surname)
                 && Objects.equals(email, other.email)
-                && Objects.equals(city, other.city);
+                && Objects.equals(supplier, other.supplier);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class UserDetails implements Serializable {
                 "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", city='" + city + '\'' +
+                ", supplier='" + email + '\'' +
                 '}';
     }
 }

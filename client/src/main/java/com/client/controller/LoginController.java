@@ -1,7 +1,9 @@
 package com.client.controller;
 
+import com.client.model.dto.LoginDto;
 import com.client.service.BasicServiceImpl;
 import com.client.service.LoginServiceImpl;
+import com.client.util.ExternalAuthenticationException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/client")
@@ -30,11 +36,13 @@ public class LoginController {
     private static final String REGISTRATION_PAGE = "/client/final-page-registration";
     private final LoginServiceImpl loginService;
     private final BasicServiceImpl basicService;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public LoginController(LoginServiceImpl loginService, BasicServiceImpl basicService) {
+    public LoginController(LoginServiceImpl loginService, BasicServiceImpl basicService, AuthenticationManager authenticationManager) {
         this.loginService = loginService;
         this.basicService = basicService;
+        this.authenticationManager = authenticationManager;
     }
 
     @Value("${eureka.instance.instance-id}")
@@ -46,9 +54,29 @@ public class LoginController {
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String clientSecret;
 
+
     @GetMapping("/login")
-    public String idTest() {
-        return "login";
+    public ResponseEntity<String> showLogoutMessage(@RequestParam(name = "logout", required = false) String logout) {
+        if (logout != null) {
+            return ResponseEntity.ok("You have been successfully logged out.");
+        }
+        return ResponseEntity.ok("Login page.");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(),loginDto.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            basicService.roleCookieCreation(request, response);
+            System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next());
+            return ResponseEntity.ok("Login successful!");
+        }catch (AuthenticationException e) {
+            if (e.getCause() instanceof ExternalAuthenticationException a)
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You cannot log in this way. You must log in via " + a.getMessage());
+            else
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password!");
+        }
     }
 
     @GetMapping("/login/google")
@@ -73,7 +101,7 @@ public class LoginController {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("code", code);
         map.add("client_id", clientId);
         map.add("client_secret", clientSecret);
@@ -82,7 +110,7 @@ public class LoginController {
 
         String tokenEndpoint = "https://oauth2.googleapis.com/token";
 
-        HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(tokenEndpoint, request, String.class);
         String responseBody = response.getBody();
 
@@ -104,55 +132,40 @@ public class LoginController {
 
         System.out.println(accessResponseString);
 
-//        if (response.getStatusCode() == HttpStatus.OK) {
-//            JSONObject jsonObject = new JSONObject(accessResponse.getBody());
-//            String email = jsonObject.getString("email");
-//            String givenName = jsonObject.getString("given_name");
-//            String familyName = jsonObject.getString("family_name");
-//            System.out.println(email + " " + givenName + " " + familyName);
-//        }
-
         if (response.getStatusCode() == HttpStatus.OK) {
             JSONObject jsonObject = new JSONObject(accessResponse.getBody());
             String email = jsonObject.getString("email");
             String givenName = jsonObject.getString("given_name");
             String familyName = jsonObject.getString("family_name");
             System.out.println(email + " " + givenName + " " + familyName);
-            if(loginService.checkIfUserExistsByEmail(email))
-                return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(HOME_PAGE)).build();
-            else
-                return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(REGISTRATION_PAGE)).build();
+            if (!loginService.checkIfUserExistsByEmail(email)) {
+
+            }
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(HOME_PAGE)).build();
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).location(URI.create("/client/error")).build();
     }
 
     @GetMapping("/home")
-    public String getHomePage(){
-        return "Successful login!";
+    public ResponseEntity<String> getHomePage() {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next());
+        return ResponseEntity.ok("Successful login!");
     }
 
-    @GetMapping("/final-page-registration")
-    public ResponseEntity<String> getFinalRegistrationPage(){
-        return ResponseEntity.ok("Fill out the registration form!");
-    }
-
-    @RequestMapping(value="/logout", method= {RequestMethod.GET, RequestMethod.POST})
-    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null){
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-            basicService.roleCookieRemoval(request, response);
-            System.out.println("IN LOGOUT - delete handler");
-        }
-        return "redirect:/client/login?logout";
-    }
+//    @PostMapping(value="/logout")
+//    public ResponseEntity<String> logoutPage(HttpServletRequest request, HttpServletResponse response) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth != null) {
+//            new SecurityContextLogoutHandler().logout(request, response, auth);
+//            basicService.roleCookieRemoval(request, response);
+//            System.out.println("IN LOGOUT - delete handler");
+//        }
+//        return ResponseEntity.status(HttpStatus.OK).body("Correct logout");
+//    }
 
     @GetMapping("/test")
-    public String testIdAfterLogin(Model model, HttpServletRequest request, HttpServletResponse response) {
-        basicService.roleCookieCreation(request, response);
-        model.addAttribute("instanceId", "ID: " + instanceId);
-        return "test-id";
+    public ResponseEntity<String> testIdAfterLogin() {
+        return ResponseEntity.ok("WELCOME");
     }
-
 }

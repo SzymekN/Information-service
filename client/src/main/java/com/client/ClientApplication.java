@@ -129,7 +129,7 @@ public class ClientApplication {
 
 	@GetMapping("/test")
 	public String testIdAfterLogin(Model model, HttpServletRequest request, HttpServletResponse response) {
-		//basicService.roleCookieCreation(request, response);
+		basicService.roleCookieCreation(request, response);
 		model.addAttribute("instanceId", "ID: " + instanceId);
 		return "test-id";
 	}
