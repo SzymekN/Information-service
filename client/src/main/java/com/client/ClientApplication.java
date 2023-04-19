@@ -54,7 +54,6 @@ public class ClientApplication {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("DUPSZTAL3");
 		SpringApplication.run(ClientApplication.class, args); }
 
 }

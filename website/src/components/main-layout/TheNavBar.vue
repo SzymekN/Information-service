@@ -1,6 +1,6 @@
 <script setup>
 import jsCookie from "js-cookie";
-import list from "../data/nav.json"
+import list from "../../data/nav.json"
 </script>
 
 <template>

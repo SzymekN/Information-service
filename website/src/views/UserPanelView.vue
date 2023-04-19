@@ -1,6 +1,6 @@
 <script setup>
-import TheTitle from "@/components/TheTitle.vue";
-import UserPanelNav from "@/components/UserPanelNav.vue";
+import TheTitle from "@/components/main-layout/TheTitle.vue";
+import UserPanelNav from "@/components/user-layout/UserPanelNav.vue";
 </script>
 
 <template>
@@ -27,7 +27,7 @@ import UserPanelNav from "@/components/UserPanelNav.vue";
   <div>
     <!--MARK: 3. MAIN CONTENT-->
     <main>
-
+      <RouterView/>
     </main>
   </div>
 
@@ -61,6 +61,8 @@ nav {
 main {
   width: 80%;
   justify-content: left;
+  margin-top: 0;
+  margin-left: 0;
   min-height: 150vh;
   padding: 1% 1% 0 1%;
   position: relative;

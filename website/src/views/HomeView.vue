@@ -1,8 +1,7 @@
 <script setup>
-import TheNavBar from "@/components/TheNavBar.vue";
-import TheTitle from "@/components/TheTitle.vue";
-import TheRightSection from "@/components/TheRightSection.vue";
-import Footer from "@/components/Footer.vue";
+import TheNavBar from "@/components/main-layout/TheNavBar.vue";
+import TheTitle from "@/components/main-layout/TheTitle.vue";
+import Footer from "@/components/main-layout/Footer.vue";
 import list from "../data/login.json"
 import jsCookie from "js-cookie";
 
@@ -60,9 +59,9 @@ import jsCookie from "js-cookie";
     </main>
 
     <!--MARK: 4. DYNAMIC SECTION-->
-    <section>
+    <!-- <section>
       <TheRightSection />
-    </section>
+    </section> -->
   </div>
 
 
@@ -106,31 +105,10 @@ nav {
   z-index: 1;
 }
 
-main {
+/* main {
   width: 80%;
   margin-top: 7.5rem;
-  margin-left: 1%;
-  justify-content: left;
-  min-height: 100%;
-  padding: 1% 1% 0 1%;
-  position: relative;
-  float: left;
-  margin-bottom: 4rem;
-}
-
-section {
-  width: 17%;
-  background-color: rgba(240, 248, 255, 0.2);
-  top: 0;
-  margin-top: 7.5rem;
-  margin-right: 1%;
-  justify-content: center;
-  min-height: 100%;
-  position: relative;
-  padding: 0 1% 0 1%;
-  float: left;
-  font-size: 1vmax;
-}
+} */
 
 header .wrapper {
   display: flex;

@@ -1,11 +1,12 @@
 import {createRouter, createWebHistory} from "vue-router"
 import HomeView from "../views/HomeView.vue"
-import Article from "../components/Article.vue"
-import CurrenciesTest from "../components/Currencies.vue"
+import Article from "@/components/articles/Article.vue"
 import EditView from "../views/EditView.vue"
-import Business from "../components/Business.vue";
+import Editor from "@/components/user-layout/Editor.vue"
+import UserInfo from "@/components/user-layout/UserInfo.vue"
+import Business from "@/components/sub-pages/Business.vue";
 import UserPanelView from "@/views/UserPanelView.vue";
-import TheMainContent from "@/components/TheMainContent.vue";
+import TheMainContent from "@/components/sub-pages/TheMainContent.vue";
 import LoginView from "@/views/LoginView.vue";
 import BuisnessView from "@/views/kategories/BuisnessView.vue";
 
@@ -33,6 +34,7 @@ const router = createRouter({
                 }
             ],
         },
+        // TODO: DEPRECIATED - DELETE AFTER REFACTOR
         {
             path: "/biznes",
             component: BuisnessView
@@ -41,13 +43,30 @@ const router = createRouter({
             path: "/:loc?-artykuly",
             component: HomeView,
         },
+        // TODO: DEPRECIATED - DELETE AFTER REFACTOR
         {
             path: "/edit",
             component: EditView,
         },
         {
             path: "/userpanel",
+            name: 'userpanel',
+            redirect: "/userpanel/info",
             component: UserPanelView,
+            children: [
+                {
+                    path: '/userpanel/info',
+                    component: UserInfo
+                },
+                {
+                    path: "/userpanel/edit",
+                    component: Editor
+                },
+                {
+                    path: "/userpanel/profil",
+                    redirect: '/userpanel/info'
+                },
+            ],
         },
         {
             path: "/login",

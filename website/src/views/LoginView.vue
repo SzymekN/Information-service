@@ -1,5 +1,5 @@
 <script setup>
-import TheTitle from "@/components/TheTitle.vue";
+import TheTitle from "@/components/main-layout/TheTitle.vue";
 import Cookie from "js-cookie";
 
 // export default {
@@ -8,6 +8,7 @@ import Cookie from "js-cookie";
 //   components: {TheTitle}
 // }
 
+  //TODO: change it to request to backend instead of fake
   const login = () =>{
     const email = document.querySelector('input[name="email"]').value;
     const password = document.querySelector('input[name="pass"]').value;

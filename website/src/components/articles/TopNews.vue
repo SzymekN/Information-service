@@ -1,13 +1,14 @@
 <template>
-  <a :href="`article?id=${articleUrl}`">
-  <div class="article">
-      <img :src="imageUrl" height="853" width="1200" alt="OBRAZ JEST NIEDOSTĘPNY"/>
+  <router-link :to="`article?id=${articleUrl}`">
+  <div class="top">
+      <img :src="imageUrl" height="853" width="1200"/>
+      <!-- <img src="/17-g-ry-dla-seniora-jak-si.jpg" height="853" width="1200"/> -->
       <div class="article_title">
-        <p>{{articleTitle}}</p>
-      </div>
-      
-    </div>
-  </a>
+            <h1>{{articleTitle}}</h1>
+            <p>{{articleDescription}}</p>
+          </div>
+        </div>
+  </router-link>
 </template>
 
 <script>
@@ -15,29 +16,28 @@ export default {
   props: {
     imageUrl: String,
     articleTitle: String,
+    articleDescription: String,
     articleUrl: Number,
   },
 };
 </script>
 
 <style scoped>
-
-.article {
-  width: 23%;
+.top {
+  width: 48%;
   float: left;
+  margin: 2% 2% 0 0;
   background: aliceblue;
   font-size: 1vmax;
-  margin: 2% 2% 0 0;
 }
 
-.article img {
+.top img {
+  float: left;
   max-width: 100%;
-  max-height: 10vmax;
-  margin-right: 2%;
-  display: block;
+  max-height: 21.5vmax;
 }
 
-.article img:hover {
+.top img:hover {
   filter: brightness(80%);
 }
 
@@ -63,17 +63,16 @@ a {
 }
 
 @media (max-width: 640px){
-  .article {
-    width: 48%;
+  .top {
+    width: 98%;
   }
 
-  .article img {
-    max-height: 18.5vmax;
+  .top img {
+    max-height: 35vmax;
   }
 
   .article_title {
     font-size: 2vmax;
   }
 }
-
 </style>
