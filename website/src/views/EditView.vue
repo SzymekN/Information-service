@@ -1,7 +1,8 @@
+<!-- TODO: DELETE THIS FILE AFTER REFACTOR -->
 <script setup>
-import TheTitle from "@/components/TheTitle.vue";
-import Editor from "../components/Editor.vue";
-import UserPanelNav from "@/components/UserPanelNav.vue";
+import TheTitle from "@/components/main-layout/TheTitle.vue";
+import Editor from "@/components/user-layout/Editor.vue";
+import UserPanelNav from "@/components/user-layout/UserPanelNav.vue";
 </script>
 
 <template>
@@ -63,6 +64,8 @@ nav {
 main {
   width: 80%;
   justify-content: left;
+  margin-top: 0;
+  margin-left: 0;
   min-height: 150vh;
   padding: 1% 1% 0 1%;
   position: relative;

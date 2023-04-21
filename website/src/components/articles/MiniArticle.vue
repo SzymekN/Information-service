@@ -1,5 +1,5 @@
 <template>
-  <a :href="`article?id=${articleUrl}`">
+  <router-link :to="`article?id=${articleUrl}`">
   <div class="article">
       <img :src="imageUrl" height="853" width="1200" alt="OBRAZ JEST NIEDOSTĘPNY"/>
       <div class="article_title">
@@ -8,7 +8,7 @@
       </div>
       
     </div>
-  </a>
+  </router-link>
 </template>
 
 <script>

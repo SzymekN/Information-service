@@ -1,5 +1,5 @@
 <script setup>
-import list from "../data/userNav.json"
+import list from "@/data/userNav.json"
 </script>
 
 <template>
