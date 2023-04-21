@@ -53,6 +53,7 @@ public class ClientApplication {
 		return "test-id";
 	}
 
-	public static void main(String[] args) { SpringApplication.run(ClientApplication.class, args); }
+	public static void main(String[] args) {
+		SpringApplication.run(ClientApplication.class, args); }
 
 }

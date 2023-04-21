@@ -1,6 +1,6 @@
 <script setup>
 
-import Weather from "@/components/Weather.vue";
+import Weather from "@/components/api-weather/Weather.vue";
 </script>
 
 <template>

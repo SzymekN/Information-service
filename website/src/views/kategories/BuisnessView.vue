@@ -1,13 +1,11 @@
+<!-- TODO: DELETE THIS FILE AFTER REFACTOR -->
 <script setup>
-import TheMainContent from "@/components/TheMainContent.vue";
-import TheNavBar from "@/components/TheNavBar.vue";
-import TheTitle from "@/components/TheTitle.vue";
-import TheRightSection from "@/components/TheRightSection.vue";
-import Footer from "@/components/Footer.vue";
-import SlidingArray from "@/components/SlidingArray.vue";
-import Currencies from "@/components/Currencies.vue";
-import TopNews from "@/components/TopNews.vue";
-import Article from "@/components/MiniArticle.vue"
+import TheNavBar from "@/components/main-layout/TheNavBar.vue";
+import TheTitle from "@/components/main-layout/TheTitle.vue";
+import Footer from "@/components/main-layout/Footer.vue";
+import Currencies from "@/components/api-currencies/Currencies.vue";
+import TopNews from "@/components/articles/TopNews.vue";
+import Article from "@/components/articles/MiniArticle.vue"
 import list from "../../data/login.json"
 
 </script>
@@ -101,17 +99,6 @@ nav {
   z-index: 1;
 }
 
-main {
-  width: 98%;
-  margin-top: 10rem;
-  margin-left: 1%;
-  justify-content: left;
-  min-height: 100%;
-  padding: 1% 1% 0 1%;
-  position: relative;
-  float: left;
-  margin-bottom: 4rem;
-}
 
 section {
   width: 17%;
@@ -179,6 +166,7 @@ a {
 
 .section_content {
   float: left;
+  width: 100%;
 }
 
 @media (max-width: 640px){

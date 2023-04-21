@@ -1,11 +1,12 @@
 <script setup>
-import list from "../data/nav.json"
+import jsCookie from "js-cookie";
+import list from "../../data/nav.json"
 </script>
 
 <template>
   <table>
     <div class="buttons" v-for="item in list">
-      <button><router-link :to="item.link" ><a>{{item.text}}</a></router-link></button>
+      <button v-if="item.text != 'Konto' || (item.text == 'Konto' && jsCookie.get('role'))"><router-link :to="item.link" ><a>{{item.text}}</a></router-link></button>
     </div>
   </table>
 </template>

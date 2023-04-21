@@ -1,11 +1,14 @@
 import {createRouter, createWebHistory} from "vue-router"
 import HomeView from "../views/HomeView.vue"
-import Article from "../components/MiniArticle.vue"
-import CurrenciesTest from "../components/Currencies.vue"
+import Article from "@/components/articles/Article.vue"
 import EditView from "../views/EditView.vue"
+import Editor from "@/components/user-layout/Editor.vue"
+import UserInfo from "@/components/user-layout/UserInfo.vue"
+import Business from "@/components/sub-pages/Business.vue";
 import UserPanelView from "@/views/UserPanelView.vue";
-import BuisnessView from "@/views/kategories/BuisnessView.vue";
+import TheMainContent from "@/components/sub-pages/TheMainContent.vue";
 import LoginView from "@/views/LoginView.vue";
+import BuisnessView from "@/views/kategories/BuisnessView.vue";
 
 // -artykuly i artykul- do usuniecia mozna przekierowac do 404 za pomoca useRouter np gdy dane zapytanie nie na wynikow 
 const router = createRouter({
@@ -14,8 +17,24 @@ const router = createRouter({
         {
             path: "/",
             name: 'home',
-            component: HomeView
+            component: HomeView,
+            redirect: "/home",
+            children: [
+                {
+                    path: "/home",
+                    component: TheMainContent
+                },
+                {
+                    path: '/article',
+                    component: Article
+                },
+                {
+                    path: '/business',
+                    component: Business
+                }
+            ],
         },
+        // TODO: DEPRECIATED - DELETE AFTER REFACTOR
         {
             path: "/biznes",
             component: BuisnessView
@@ -24,22 +43,39 @@ const router = createRouter({
             path: "/:loc?-artykuly",
             component: HomeView,
         },
+        // TODO: DEPRECIATED - DELETE AFTER REFACTOR
         {
             path: "/edit",
             component: EditView,
         },
         {
             path: "/userpanel",
+            name: 'userpanel',
+            redirect: "/userpanel/info",
             component: UserPanelView,
-        },
-        {
-            path: "/:loc?-artykuly/artykul?:subloc",
-            component: Article,
+            children: [
+                {
+                    path: '/userpanel/info',
+                    component: UserInfo
+                },
+                {
+                    path: "/userpanel/edit",
+                    component: Editor
+                },
+                {
+                    path: "/userpanel/profil",
+                    redirect: '/userpanel/info'
+                },
+            ],
         },
         {
             path: "/login",
             component: LoginView,
         },
+        // {
+        //     path: "/article/:subloc?",
+        //     component: Article, 
+        // },
         {
             path: '/404', 
             name: 'NotFound',

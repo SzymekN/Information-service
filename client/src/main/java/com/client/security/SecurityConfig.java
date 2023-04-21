@@ -25,7 +25,7 @@ public class SecurityConfig {
     }
     @Bean
     public SecurityFilterChain web(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests(configurer ->
+        return http.cors().and().authorizeHttpRequests(configurer ->
                         configurer.requestMatchers("/").permitAll()
                                 .requestMatchers("/client/test").hasRole("USER")
                                 .requestMatchers("/client/articles/**").permitAll()
@@ -38,6 +38,7 @@ public class SecurityConfig {
                 //.invalidateHttpSession(true)
                 //.deleteCookies("SESSION"))
                 .exceptionHandling(configurer -> configurer.accessDeniedPage("/client/denied"))
+                .csrf().disable()
                 .build();
     }
 }

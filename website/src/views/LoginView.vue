@@ -1,11 +1,32 @@
-<script>
-import TheTitle from "@/components/TheTitle.vue";
-import list from "../data/nav.json";
-export default {
-  name: "LoginView",
-  methods: {list},
-  components: {TheTitle}
-}
+<script setup>
+import TheTitle from "@/components/main-layout/TheTitle.vue";
+import Cookie from "js-cookie";
+
+// export default {
+//   name: "LoginView",
+//   methods: {list},
+//   components: {TheTitle}
+// }
+
+  //TODO: change it to request to backend instead of fake
+  const login = () =>{
+    const email = document.querySelector('input[name="email"]').value;
+    const password = document.querySelector('input[name="pass"]').value;
+  
+    // Do something with the email and password values
+    if (email == "admin"){
+      Cookie.set('role', 'admin')
+      window.location.href = '/home';
+    }
+
+    if (email == "user"){
+      Cookie.set('role', 'user')
+      window.location.href = '/home';
+    }
+
+    console.log(email, password);
+  }
+
 </script>
 
 <template>
@@ -21,7 +42,7 @@ export default {
           <img src="../../public/img-01.png" alt="IMG">
         </div>
 
-        <form class="login100-form validate-form">
+        <form class="login100-form validate-form" action="localhost:8080">
 					<span class="login100-form-title">
 						Logowanie
 					</span>
@@ -42,8 +63,8 @@ export default {
 						</span>
           </div>
 
-          <div class="container-login100-form-btn">
-            <button class="login100-form-btn">
+          <div class="container-login100-form-btn" >
+            <button class="login100-form-btn" @click="login()">
               Zaloguj się
             </button>
           </div>

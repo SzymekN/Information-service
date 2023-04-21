@@ -1,10 +1,35 @@
 <script setup>
-import TheMainContent from "@/components/TheMainContent.vue";
-import TheNavBar from "@/components/TheNavBar.vue";
-import TheTitle from "@/components/TheTitle.vue";
-import TheRightSection from "@/components/TheRightSection.vue";
-import Footer from "@/components/Footer.vue";
+import TheNavBar from "@/components/main-layout/TheNavBar.vue";
+import TheTitle from "@/components/main-layout/TheTitle.vue";
+import Footer from "@/components/main-layout/Footer.vue";
 import list from "../data/login.json"
+import jsCookie from "js-cookie";
+
+  const logout = () => {
+    //   fetch('/logout', {
+    //   method: 'GET',
+    //   credentials: 'same-origin',
+    // })
+    // .then(response => {
+    //   // Handle the response from the server
+    //   if (response.ok) {
+    //     // Logout successful, do something
+    //     console.log('Logged out successfully');
+    //   } else {
+    //     // Logout failed, do something
+    //     console.error('Logout failed');
+    //   }
+    // })
+    // .catch(error => {
+    //   // Handle errors that may occur during the request
+    //   console.error('Logout failed', error);
+    // });
+    jsCookie.remove('role');
+    console.log(jsCookie.get('role'));
+    window.location.href = '/home';
+
+  }
+
 </script>
 
 <template>
@@ -17,7 +42,8 @@ import list from "../data/login.json"
     </div>
 
     <div class="buttons" v-for="item in list">
-      <button><router-link :to="item.link" ><a>{{item.text}}</a></router-link></button>
+      <button><router-link :to="item.link" v-if="!jsCookie.get('role')"><a>{{item.text}}</a></router-link></button>
+      <button><router-link :to="'#'" v-if="jsCookie.get('role')" @click="logout()"><a>{{"Wyloguj"}}</a></router-link></button>
     </div>
   </header>
 
@@ -29,13 +55,13 @@ import list from "../data/login.json"
   <div>
     <!--MARK: 3. MAIN CONTENT-->
     <main>
-      <TheMainContent />
+      <RouterView/>
     </main>
 
     <!--MARK: 4. DYNAMIC SECTION-->
-    <section>
+    <!-- <section>
       <TheRightSection />
-    </section>
+    </section> -->
   </div>
 
 
@@ -79,31 +105,10 @@ nav {
   z-index: 1;
 }
 
-main {
+/* main {
   width: 80%;
   margin-top: 7.5rem;
-  margin-left: 1%;
-  justify-content: left;
-  min-height: 100%;
-  padding: 1% 1% 0 1%;
-  position: relative;
-  float: left;
-  margin-bottom: 4rem;
-}
-
-section {
-  width: 17%;
-  background-color: rgba(240, 248, 255, 0.2);
-  top: 0;
-  margin-top: 7.5rem;
-  margin-right: 1%;
-  justify-content: center;
-  min-height: 100%;
-  position: relative;
-  padding: 0 1% 0 1%;
-  float: left;
-  font-size: 1vmax;
-}
+} */
 
 header .wrapper {
   display: flex;

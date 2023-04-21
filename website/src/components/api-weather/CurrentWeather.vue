@@ -10,10 +10,10 @@
     </div>
 
 </template>
-<script lang="ts">
+<script>
 import { defineComponent } from 'vue'
 
-import { useWeather } from '../components/WeatherService';
+import { useWeather } from '@/scripts/WeatherService';
 
 
 export default defineComponent({

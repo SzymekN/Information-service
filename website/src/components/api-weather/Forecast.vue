@@ -8,10 +8,10 @@
     </div>
 </div>
 </template>
-<script lang="ts">
+<script>
 import { defineComponent, onMounted } from 'vue'
 
-import { useWeather } from '../components/WeatherService'
+import { useWeather } from '@/scripts/WeatherService'
 export default defineComponent({
   setup () {
     const { weather, fetchWeather, getWeatherImageUrl, formatTemperature } = useWeather();
