@@ -1,6 +1,6 @@
 <script setup>
 import TopNews from "./TopNews.vue";
-import Article from "./MiniArticle.vue";
+import MiniArticle from "./MiniArticle.vue";
 import { ref, onMounted } from 'vue';
 
 const articles = ref([]);
