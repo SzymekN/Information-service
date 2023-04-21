@@ -51,7 +51,6 @@ export default {
   background:  rgba(0, 0, 0, 0.5);
   width: 100%;
   height: 45%;
-
   padding: 0 1% 0 1%;
   top: 77.5%;
   left: 50%;
@@ -59,7 +58,6 @@ export default {
   color: #fff;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
-  
   transition: height 0.5s ease, transform 0.5s ease;
   overflow: hidden;
   
@@ -67,9 +65,7 @@ export default {
 .article_title p{
   margin-top:0.7rem;
 }
-.article_hover:hover .article_title {
-  transform: translateY(-50%);
-}
+
 .article:hover .article_title {
   height: 100%;
   transform: translate(-50%, -78%);
@@ -86,7 +82,11 @@ export default {
 }
 .article_description p{
   width:80%;
-  
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .article_title .article_description {

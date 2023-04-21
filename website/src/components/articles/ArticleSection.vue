@@ -19,13 +19,7 @@ const fetchArticles = async () => {
   };
 
   onMounted(fetchArticles);
-
-  const stripTags = (htmlString) => {
-    const div = document.createElement('div');
-    div.innerHTML = htmlString;
-    return (div.textContent.substring(0,100) || div.innerText.substring(0,100) || '')+'...';
-  }
-
+  
   const getImage = (htmlString) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');
@@ -43,7 +37,7 @@ const fetchArticles = async () => {
     <TopNews 
       v-if="articles.length"
       :articleTitle="articles[0].title"
-      :articleDescription="stripTags(articles[0].content)"
+      :articleDescription="articles[0].content"
       :articleUrl="0"
       :imageUrl="getImage(articles[0].content)"/>
     
@@ -52,6 +46,7 @@ const fetchArticles = async () => {
       v-for="(item, index) in articles.slice(1, 9)"
       :key="index"
       :articleTitle="item.title"
+      :articleDescription="articles[index].content"
       :articleUrl="index+1"
       :imageUrl="getImage(item.content)"/>
       
