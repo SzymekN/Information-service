@@ -47,7 +47,7 @@ const fetchArticles = async () => {
       :articleUrl="0"
       :imageUrl="getImage(articles[0].content)"/>
     
-    <Article
+    <MiniArticle
       v-if="articles.length"
       v-for="(item, index) in articles.slice(1, 9)"
       :key="index"
