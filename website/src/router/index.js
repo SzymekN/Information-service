@@ -4,6 +4,7 @@ import Article from "@/components/articles/Article.vue"
 import EditView from "../views/EditView.vue"
 import Editor from "@/components/user-layout/Editor.vue"
 import UserInfo from "@/components/user-layout/UserInfo.vue"
+import Topics from "@/components/user-layout/Topics.vue"
 import Business from "@/components/sub-pages/Business.vue";
 import UserPanelView from "@/views/UserPanelView.vue";
 import TheMainContent from "@/components/sub-pages/TheMainContent.vue";
@@ -63,7 +64,11 @@ const router = createRouter({
                     component: Editor
                 },
                 {
-                    path: "/userpanel/profil",
+                    path: "/userpanel/topics",
+                    component: Topics
+                },
+                {
+                    path: "/userpanel/profile",
                     redirect: '/userpanel/info'
                 },
             ],
