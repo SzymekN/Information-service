@@ -32,5 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
+### Fronted ###
+/website/node_modules
+/website/Keys.ts
+
 ### Other ###
 mysql
