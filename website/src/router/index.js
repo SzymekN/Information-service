@@ -9,6 +9,7 @@ import UserPanelView from "@/views/UserPanelView.vue";
 import TheMainContent from "@/components/sub-pages/TheMainContent.vue";
 import LoginView from "@/views/LoginView.vue";
 import BuisnessView from "@/views/kategories/BuisnessView.vue";
+import Sport from "../components/sub-pages/Sport.vue"
 
 // -artykuly i artykul- do usuniecia mozna przekierowac do 404 za pomoca useRouter np gdy dane zapytanie nie na wynikow 
 const router = createRouter({
@@ -31,6 +32,10 @@ const router = createRouter({
                 {
                     path: '/business',
                     component: Business
+                },
+                {
+                    path: '/sport',
+                    component: Sport
                 }
             ],
         },
