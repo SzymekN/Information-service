@@ -52,7 +52,6 @@ const router = createRouter({
             ],
         },
         // TODO: DEPRECIATED - DELETE AFTER REFACTOR
-        // TODO: DEPRECIATED - DELETE AFTER REFACTOR
         {
             path: "/biznes",
             component: BuisnessView
@@ -62,15 +61,12 @@ const router = createRouter({
             component: HomeView,
         },
         // TODO: DEPRECIATED - DELETE AFTER REFACTOR
-        // TODO: DEPRECIATED - DELETE AFTER REFACTOR
         {
             path: "/edit",
             component: EditView,
         },
         {
             path: "/userpanel",
-            name: 'userpanel',
-            redirect: "/userpanel/info",
             name: 'userpanel',
             redirect: "/userpanel/info",
             component: UserPanelView,
