@@ -1,12 +1,10 @@
 package com.editorial.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
@@ -16,27 +14,19 @@ import java.util.Objects;
 @Setter
 @Builder
 @Table(name = "user_detail")
-public class UserDetails {
+public class UserDetails implements Serializable {
 
     @Id
     @Column(name = "user_id_d")
     private Long id;
 
     @Column(name = "name")
-    @NotBlank(message = "Name must not be blank!")
-    @Size(min = 3, max = 45, message = "Name must contain more than 2 and less than 46 characters!")
-    @Pattern(regexp = "[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+", message = "The user's name can only contain letters.")
     private String name;
 
     @Column(name = "surname")
-    @NotBlank(message = "Surname must not be blank!")
-    @Size(min = 2, max = 45, message = "Surname must contain more than 1 and less than 46 characters!")
     private String surname;
 
     @Column(name = "email")
-    @Email(regexp = ".+[@].+[\\.].+", message = "Invalid address!")
-    @Size(max = 45, message = "Email must contain less than 46 characters!")
-    @NotBlank(message = "Email must not be blank!")
     private String email;
 
     @Column(name = "supplier")

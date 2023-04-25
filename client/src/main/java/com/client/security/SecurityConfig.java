@@ -3,7 +3,6 @@ package com.client.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,17 +28,17 @@ public class SecurityConfig {
     public SecurityFilterChain web(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(configurer ->
                         configurer.requestMatchers("/").permitAll()
+                                .requestMatchers("/client/login").permitAll()
+                                .requestMatchers("/client/login2").permitAll()
                                 .requestMatchers("/client/login/google").permitAll()
-                                .requestMatchers("/client/home").permitAll()//.hasRole("USER")
-                                .requestMatchers("/client/test2").permitAll()
+                                .requestMatchers("/client/login/oauth2/code/google").permitAll()
+                                .requestMatchers("/client/registration").permitAll()
+                                .requestMatchers("/client/registration/from-editorial").permitAll()
                                 .requestMatchers("/client/test").hasRole("USER")
                                 .requestMatchers("/client/articles/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .formLogin(configurer -> configurer.loginPage("/client/login")
-                        .loginProcessingUrl("/client/authenticate").permitAll()
-                        .defaultSuccessUrl("/client/test", true)
-                )
+                .formLogin(configurer -> configurer.loginPage("/client/login"))
                 .logout(configurer -> configurer
                         .logoutUrl("/client/logout")
                         .logoutSuccessUrl("/client/login?logout")

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LoginServiceImpl implements LoginService{
+public class LoginServiceImpl implements LoginService {
 
     private final UserRepository userRepository;
 
@@ -16,6 +16,6 @@ public class LoginServiceImpl implements LoginService{
 
     @Override
     public boolean checkIfUserExistsByEmail(String email) {
-         return userRepository.existsUsersByEmail(email);
+        return userRepository.existsUsersByEmail(email);
     }
 }

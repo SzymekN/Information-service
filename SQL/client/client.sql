@@ -10,7 +10,7 @@ CREATE SCHEMA IF NOT EXISTS `userdb`;
 -- Table `userdb`.`user`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `userdb`.`user` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
   `password` VARCHAR(75) NOT NULL,
   `enabled` TINYINT(1) NOT NULL,
@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS `userdb`.`authority` (
   INDEX `role_id_fk_idx` (`user_id_a` ASC),
   CONSTRAINT `role_id_fk`
     FOREIGN KEY (`user_id_a`)
-    REFERENCES `userdb`.`user` (`id`));
+    REFERENCES `userdb`.`user` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE);
 -- -----------------------------------------------------
 -- Table `userdb`.`endorsement`
 -- -----------------------------------------------------
@@ -67,4 +68,5 @@ CREATE TABLE IF NOT EXISTS `userdb`.`user_detail` (
   INDEX `user_id_fk_idx` (`user_id_d` ASC),
   CONSTRAINT `user_id_fk`
     FOREIGN KEY (`user_id_d`)
-    REFERENCES `userdb`.`user` (`id`));
+    REFERENCES `userdb`.`user` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE);

@@ -1,4 +1,4 @@
-package com.client.model.dto;
+package com.editorial.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
