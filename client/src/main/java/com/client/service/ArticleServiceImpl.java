@@ -4,6 +4,8 @@ import com.client.model.dto.ArticleDto;
 import com.client.model.entity.Article;
 import com.client.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +30,20 @@ public class ArticleServiceImpl implements ArticleService {
     public List<ArticleDto> findByCategory(String category) {
         List<Article> articles = articleRepository.findByCategory(category);
         return articlesToDto(articles);
+    }
+
+    @Override
+    public List<ArticleDto> findAllPaged(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Slice<Article> pagedArticles = articleRepository.findAllPaged(pageRequest);
+        return articlesToDto(pagedArticles.getContent());
+    }
+
+    @Override
+    public List<ArticleDto> findByCategoryPaged(int page, int size, String category) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Slice<Article> pagedArticles = articleRepository.findByCategoryPaged(category, pageRequest);
+        return articlesToDto(pagedArticles.getContent());
     }
 
     public List<ArticleDto> articlesToDto(List<Article> articles) {

@@ -43,7 +43,6 @@ class ArticleServiceImplTest {
     private ArticleServiceImpl articleService;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     private User user;
     private List<Article> articles;
 
@@ -144,4 +143,38 @@ class ArticleServiceImplTest {
         Assertions.assertTrue(articlesFromDb.containsAll(articlesToDto));
     }
 
+    @Test
+    public void find_all_paged() {
+        // given
+        int page = 0;
+        int size = 2;
+        List<ArticleDto> articlesToDto =
+                articleService.articlesToDto(List.of(articles.get(0), articles.get(1)));
+        // when
+        List<ArticleDto> articlesFromDb = articleService.findAllPaged(page, size);
+        // then
+        Assertions.assertTrue(articlesFromDb.containsAll(articlesToDto));
+    }
+
+    @Test
+    public void find_all_by_category_paged() {
+        // given
+        int page = 0;
+        int size = 2;
+        List<ArticleDto> articlesToDto =
+                articleService.articlesToDto(List.of(articles.get(0), articles.get(2)));
+        // when
+        List<ArticleDto> articlesFromDb = articleService.findByCategoryPaged(page, size, "politics");
+        // then
+        Assertions.assertTrue(articlesFromDb.containsAll(articlesToDto));
+    }
+
+    @Test
+    public void find_all_paged_invalid_args() {
+        // given
+        int page = -1;
+        int size = -1;
+        // when & then
+        Assertions.assertThrows(IllegalArgumentException.class , () -> articleService.findByCategoryPaged(page, size, "politics"));
+    }
 }

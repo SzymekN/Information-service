@@ -1,53 +1,30 @@
+<!-- TODO: DELETE THIS FILE AFTER REFACTOR -->
 <script setup>
 import TheNavBar from "@/components/main-layout/TheNavBar.vue";
 import TheTitle from "@/components/main-layout/TheTitle.vue";
 import Footer from "@/components/main-layout/Footer.vue";
-import list from "../data/login.json"
-import jsCookie from "js-cookie";
-
-  const logout = () => {
-    //   fetch('/logout', {
-    //   method: 'GET',
-    //   credentials: 'same-origin',
-    // })
-    // .then(response => {
-    //   // Handle the response from the server
-    //   if (response.ok) {
-    //     // Logout successful, do something
-    //     console.log('Logged out successfully');
-    //   } else {
-    //     // Logout failed, do something
-    //     console.error('Logout failed');
-    //   }
-    // })
-    // .catch(error => {
-    //   // Handle errors that may occur during the request
-    //   console.error('Logout failed', error);
-    // });
-    jsCookie.remove('role');
-    console.log(jsCookie.get('role'));
-    window.location.href = '/home';
-
-  }
+import Currencies from "@/components/api-currencies/Currencies.vue";
+import TopNews from "@/components/articles/TopNews.vue";
+import Article from "@/components/articles/MiniArticle.vue"
+import list from "../../data/login.json"
 
 </script>
 
 <template>
-<!--MARK: 1. HEADER-->
+  <!--MARK: 1. HEADER-->
   <header>
-    <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />
+    <img alt="Vue logo" class="logo" src="../../assets/globe.png" width="50" height="50" />
 
     <div class="wrapper">
       <TheTitle msg="Serwis informacyjny" />
     </div>
 
     <div class="buttons" v-for="item in list">
-      <button><router-link :to="item.link" v-if="!jsCookie.get('role')"><a>{{item.text}}</a></router-link></button>
-      <button><router-link :to="'#'" v-if="jsCookie.get('role')" @click="logout()"><a>{{"Wyloguj"}}</a></router-link></button>
+      <button><router-link :to="item.link" ><a>{{item.text}}</a></router-link></button>
     </div>
   </header>
 
-<!--MARK: 2. NAVIGATION BAR-->
+  <!--MARK: 2. NAVIGATION BAR-->
   <nav>
     <TheNavBar />
   </nav>
@@ -55,17 +32,34 @@ import jsCookie from "js-cookie";
   <div>
     <!--MARK: 3. MAIN CONTENT-->
     <main>
-      <RouterView/>
+      <Currencies/>
+      <div class="section_content">
+
+        <p class = "section_title">O TYM SIĘ MÓWI W BIZNESIE</p>
+        <hr>
+        <TopNews/>
+        <TopNews/>
+        <TopNews/>
+        <Article/>
+        <Article/>
+        <Article/>
+        <Article/>
+        <Article/>
+        <Article/>
+        <Article/>
+        <Article/>
+
+      </div>
     </main>
 
     <!--MARK: 4. DYNAMIC SECTION-->
-    <!-- <section>
-      <TheRightSection />
-    </section> -->
+<!--    <section>-->
+
+<!--    </section>-->
   </div>
 
 
-<!--  MARK: 5. FOOTER-->
+  <!--  MARK: 5. FOOTER-->
   <footer>
     <Footer/>
   </footer>
@@ -105,10 +99,20 @@ nav {
   z-index: 1;
 }
 
-/* main {
-  width: 80%;
+
+section {
+  width: 17%;
+  background-color: rgba(240, 248, 255, 0.2);
+  top: 0;
   margin-top: 7.5rem;
-} */
+  margin-right: 1%;
+  justify-content: center;
+  min-height: 100%;
+  position: relative;
+  padding: 0 1% 0 1%;
+  float: left;
+  font-size: 1vmax;
+}
 
 header .wrapper {
   display: flex;
@@ -151,6 +155,23 @@ a {
   main {
     width: 100%;
     margin: 1rem 0;
+  }
+}
+
+.section_title {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-bottom: -1%;
+}
+
+.section_content {
+  float: left;
+  width: 100%;
+}
+
+@media (max-width: 640px){
+  .section_content:first-child {
+    margin-top: 6rem;
   }
 }
 </style>

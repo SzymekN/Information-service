@@ -1,19 +1,23 @@
 <template>
+  <router-link :to="`article?id=${articleUrl}`">
   <div class="article">
-    <a href="/client/src/main/ui/public">
-      <img src="/17-g-ry-dla-seniora-jak-si.jpg" height="853" width="1200" alt="OBRAZ JEST NIEDOSTĘPNY"/>
-    </a>
-    <div class="article_title">
-      <a href="/client/src/main/ui/public">
-        <p>Tytuł artykułu</p>
-      </a>
+      <img :src="imageUrl" height="853" width="1200" alt="OBRAZ JEST NIEDOSTĘPNY"/>
+      <div class="article_title">
+        <p>{{articleTitle}}</p>
+      </div>
+      
     </div>
-
-  </div>
+  </router-link>
 </template>
 
 <script>
-
+export default {
+  props: {
+    imageUrl: String,
+    articleTitle: String,
+    articleUrl: Number,
+  },
+};
 </script>
 
 <style scoped>

@@ -5,6 +5,8 @@ import com.client.model.dto.ArticleDto;
 import java.util.List;
 
 public interface ArticleService {
-    public List<ArticleDto> findAll();
-    public List<ArticleDto> findByCategory(String category);
+    List<ArticleDto> findAll();
+    List<ArticleDto> findByCategory(String category);
+    List<ArticleDto> findAllPaged(int page, int size);
+    List<ArticleDto> findByCategoryPaged(int page, int size, String category);
 }
