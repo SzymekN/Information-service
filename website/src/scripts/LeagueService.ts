@@ -18,7 +18,7 @@ async function fetchLeagues(leagueId: string): Promise<Ref<LeagueScores[]>> {
     const leagueScoresArray = await response.json();
 
     leagueScores.value = leagueScoresArray.table;
-    console.log(leagueScores[0]);
+   
     return leagueScores;
   } catch (error) {
     console.error(error);

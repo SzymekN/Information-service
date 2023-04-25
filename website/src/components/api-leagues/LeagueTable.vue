@@ -33,7 +33,7 @@
                 <td>{{ club.strTeam }}</td>
                 <td>
                   <div class="form">
-                    <span v-for="letter in club.strForm.split('')" :key="letter" :class="{ 'win': letter === 'W', 'draw': letter === 'D', 'loss': letter === 'L' }">{{ letter }}</span>
+                    <span v-for="letter in club.strForm.split('')" :key="index" :class="{ 'win': letter === 'W', 'draw': letter === 'D', 'loss': letter === 'L' }">{{ letter }}</span>
                   </div>
                 </td>
                 <td><div>{{ club.intPlayed }}</div></td>
@@ -66,7 +66,7 @@ export default {
     
     console.log(clubs)
     const fetchLeagueTable = async (leagueId) => {
-      clubs.value = [];
+      // clubs.value = [];
       await fetchLeagues(leagueId);
       clubs.value = [];
       clubs.value = leagueScores.value;
