@@ -56,24 +56,38 @@
   <script>
 import { ref } from "vue";
 import { useLeagues } from "../../scripts/LeagueService";
-
+import {setWithExpiry,getWithExpiry} from "@/scripts/HandleItems.ts"
 export default {
 
   setup() {
+    var league=localStorage.getItem("league");
     const { leagueScores, fetchLeagues } = useLeagues();
-
     const clubs = ref([]);
+
+    if(!league)
+      league=4422;
     
-    console.log(clubs)
+    // clubs.value=getWithExpiry(league);
+   
+
+
     const fetchLeagueTable = async (leagueId) => {
-      // clubs.value = [];
-      await fetchLeagues(leagueId);
-      clubs.value = [];
-      clubs.value = leagueScores.value;
-    };
+      var leagueValues=getWithExpiry(leagueId);
+      console.log(leagueValues)
+      if(leagueValues==null){
+        await fetchLeagues(leagueId);
+        clubs.value = [];
+        clubs.value=leagueScores.value;
 
-    fetchLeagueTable(4422);
+        if(getWithExpiry(leagueId)==null)
+          setWithExpiry(leagueId,leagueScores.value,180000);
+      }
+      else
+        clubs.value = leagueValues;
+      localStorage.setItem("league",leagueId);
+    }
 
+      fetchLeagueTable(league);
     return {
       clubs,
       fetchLeagueTable
