@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
@@ -15,7 +16,7 @@ import java.util.Objects;
 @Setter
 @Builder
 @Table(name = "article_proposal")
-public class ArticleProposal {
+public class ArticleProposal implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

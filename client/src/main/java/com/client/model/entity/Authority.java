@@ -27,6 +27,10 @@ public class Authority implements Serializable {
     @JoinColumn(name = "user_id_a")
     private User user;
 
+    public Authority(String authorityName) {
+        this.authorityName = authorityName;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(authorityName);

@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ import java.util.Objects;
 @Setter
 @Builder
 @Table(name = "article_correct")
-public class ArticleCorrect {
+public class ArticleCorrect implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
