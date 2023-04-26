@@ -8,8 +8,6 @@ import lombok.*;
 
 import java.util.Objects;
 
-import static com.editorial.util.Constants.APP_SUPPLIER;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -40,7 +38,7 @@ public class UserRegistrationDto {
     @NotBlank(message = "Email must not be blank!")
     private String email;
 
-    private String supplier = APP_SUPPLIER;
+    private String supplier;
 
     private String authorityName;
 

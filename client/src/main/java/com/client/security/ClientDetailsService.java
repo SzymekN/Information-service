@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.client.util.Constants.ROLE_USER;
+import static com.client.util.AccountConstants.ROLE_USER;
 
 @Service
 public class ClientDetailsService implements UserDetailsService {
@@ -37,7 +37,7 @@ public class ClientDetailsService implements UserDetailsService {
                 .build();
     }
 
-    public UserDetails loadUserByUsernameOAuth2(UserRegistrationDto userRegistrationDto){
+    public UserDetails loadUserByUsernameOAuth2(UserRegistrationDto userRegistrationDto) {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(userRegistrationDto.getUsername())
                 .password(userRegistrationDto.getPassword())

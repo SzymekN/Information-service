@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import static com.editorial.util.Constants.CLIENT_REGISTRATION_URL;
+import static com.editorial.util.AccountConstants.APP_SUPPLIER;
+import static com.editorial.util.UrlConstants.CLIENT_REGISTRATION_URL;
 
 @RestController
 @RequestMapping("/editorial")
@@ -26,19 +27,20 @@ public class RegisterController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<String> createUserAccount(@Valid @RequestBody UserRegistrationDto userRegistrationDto){
-        if(registerService.checkIfUserExistsByEmail(userRegistrationDto.getEmail()))
+    public ResponseEntity<String> createUserAccount(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
+        if (registerService.checkIfUserExistsByEmail(userRegistrationDto.getEmail()))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided e-mail is already taken!");
 
         RestTemplate restTemplate = new RestTemplate();
+        userRegistrationDto.setSupplier(APP_SUPPLIER);
         registerService.registerUser(userRegistrationDto);
-        restTemplate.postForEntity(CLIENT_REGISTRATION_URL,userRegistrationDto, String.class);
+        restTemplate.postForEntity(CLIENT_REGISTRATION_URL, userRegistrationDto, String.class);
         return ResponseEntity.ok("Correct registration process.");
     }
 
     @PostMapping("/registration/from-client")
-    public ResponseEntity<String> createUserAccountByClient(@Valid @RequestBody UserRegistrationDto userRegistrationDto){
-        if(registerService.checkIfUserExistsByEmail(userRegistrationDto.getEmail()))
+    public ResponseEntity<String> createUserAccountByClient(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
+        if (registerService.checkIfUserExistsByEmail(userRegistrationDto.getEmail()))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided e-mail is already taken!");
 
         registerService.registerUser(userRegistrationDto);

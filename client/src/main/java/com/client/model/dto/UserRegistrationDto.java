@@ -11,7 +11,8 @@ import org.json.JSONObject;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.client.util.Constants.*;
+import static com.client.util.AccountConstants.GOOGLE_SUPPLIER;
+import static com.client.util.AccountConstants.ROLE_USER;
 
 @Getter
 @Setter
@@ -43,9 +44,9 @@ public class UserRegistrationDto {
     @NotBlank(message = "Email must not be blank!")
     private String email;
 
-    private String supplier = APP_SUPPLIER;
+    private String supplier;
 
-    private String authorityName = ROLE_USER;
+    private String authorityName;
 
     public static UserRegistrationDto jsonToDto(JSONObject googleUserData) throws JSONException {
         return UserRegistrationDto.builder()
