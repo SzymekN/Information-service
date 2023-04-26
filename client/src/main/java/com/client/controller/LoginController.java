@@ -2,8 +2,6 @@ package com.client.controller;
 
 import com.client.model.dto.LoginDto;
 import com.client.model.dto.UserRegistrationDto;
-import com.client.security.ClientDetailsService;
-import com.client.service.BasicServiceImpl;
 import com.client.service.GoogleAuthServiceImpl;
 import com.client.service.LoginServiceImpl;
 import com.client.service.RegisterServiceImpl;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -34,9 +31,6 @@ public class LoginController {
 
     private final LoginServiceImpl loginService;
     private final RegisterServiceImpl registerService;
-    private final ClientDetailsService clientDetailsService;
-    private final BasicServiceImpl basicService;
-    private final AuthenticationManager authenticationManager;
     private final GoogleAuthServiceImpl googleAuthService;
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
@@ -46,12 +40,9 @@ public class LoginController {
     private String clientSecret;
 
     @Autowired
-    public LoginController(LoginServiceImpl loginService, RegisterServiceImpl registerService, ClientDetailsService clientDetailsService, BasicServiceImpl basicService, AuthenticationManager authenticationManager, GoogleAuthServiceImpl googleAuthService) {
+    public LoginController(LoginServiceImpl loginService, RegisterServiceImpl registerService, GoogleAuthServiceImpl googleAuthService) {
         this.loginService = loginService;
         this.registerService = registerService;
-        this.clientDetailsService = clientDetailsService;
-        this.basicService = basicService;
-        this.authenticationManager = authenticationManager;
         this.googleAuthService = googleAuthService;
     }
 
@@ -64,7 +55,7 @@ public class LoginController {
         return ResponseEntity.ok("Login page.");
     }
 
-    @PostMapping("/login2")
+    @PostMapping("/login/v2")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
         try {
             loginService.setUserSession(request, response, null, loginDto);

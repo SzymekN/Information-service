@@ -43,7 +43,7 @@ public class RegisterController {
         return ResponseEntity.ok("Correct registration process.");
     }
 
-    @PostMapping("/registration/from-editorial")
+    @PostMapping("/registration/fe")
     public ResponseEntity<String> createUserAccountByEditorial(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
         if (loginService.checkIfUserExistsByEmail(userRegistrationDto.getEmail()))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided e-mail is already taken!");

@@ -29,11 +29,11 @@ public class SecurityConfig {
         return http.cors().and().authorizeHttpRequests(configurer ->
                         configurer.requestMatchers("/").permitAll()
                                 .requestMatchers("/client/login").permitAll()
-                                .requestMatchers("/client/login2").permitAll()
+                                .requestMatchers("/client/login/v2").permitAll()
                                 .requestMatchers("/client/login/google").permitAll()
                                 .requestMatchers("/client/login/oauth2/code/google").permitAll()
                                 .requestMatchers("/client/registration").permitAll()
-                                .requestMatchers("/client/registration/from-editorial").permitAll()
+                                .requestMatchers("/client/registration/fe").permitAll()
                                 .requestMatchers("/client/test").hasRole("USER")
                                 .requestMatchers("/client/articles/**").permitAll()
                                 .anyRequest().authenticated()

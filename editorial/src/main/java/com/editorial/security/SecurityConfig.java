@@ -29,9 +29,9 @@ public class SecurityConfig {
         return http.authorizeHttpRequests(configurer ->
                         configurer.requestMatchers("/").permitAll()
                                 .requestMatchers("/editorial/login").permitAll()
-                                .requestMatchers("/editorial/login2").permitAll()
+                                .requestMatchers("/editorial/login/v2").permitAll()
                                 .requestMatchers("/editorial/registration").permitAll()//later only for users with the ADMIN role
-                                .requestMatchers("/editorial/registration/from-client").permitAll()
+                                .requestMatchers("/editorial/registration/fc").permitAll()
                                 .requestMatchers("/editorial/registration/**").permitAll()//later only for users with the ADMIN role
                                 .requestMatchers("/editorial/test").hasRole("JOURNALIST")
                                 .anyRequest().authenticated())

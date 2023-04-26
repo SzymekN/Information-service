@@ -29,7 +29,7 @@ public class LoginController {
         return ResponseEntity.ok("Login page.");
     }
 
-    @PostMapping("/login2")
+    @PostMapping("/login/v2")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
         try {
             loginService.setUserSession(request, response, loginDto);

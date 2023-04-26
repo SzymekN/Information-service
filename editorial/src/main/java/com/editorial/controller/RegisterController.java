@@ -38,7 +38,7 @@ public class RegisterController {
         return ResponseEntity.ok("Correct registration process.");
     }
 
-    @PostMapping("/registration/from-client")
+    @PostMapping("/registration/fc")
     public ResponseEntity<String> createUserAccountByClient(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
         if (registerService.checkIfUserExistsByEmail(userRegistrationDto.getEmail()))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided e-mail is already taken!");
