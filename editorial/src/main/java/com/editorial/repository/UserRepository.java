@@ -1,7 +1,9 @@
 package com.editorial.repository;
 
 import com.editorial.model.entity.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,4 +16,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u JOIN u.userDetails ud " +
             "WHERE ud.email = :email")
     boolean existsUsersByEmail(@Param("email") String email);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM User u where u.id =:id")
+    void deleteUserById(Long id);
 }
