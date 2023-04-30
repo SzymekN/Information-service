@@ -1,5 +1,6 @@
 package com.editorial.service;
 
+import com.editorial.model.dto.UserRegistrationDto;
 import com.editorial.model.entity.User;
 import com.editorial.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,28 +11,33 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 
 import static com.editorial.util.UrlConstants.CLIENT_DELETE_USER_URL;
+import static com.editorial.util.UrlConstants.CLIENT_EDIT_USER_URL;
 
 @Service
 public class UserActionServiceImpl implements UserActionService {
     private final UserRepository userRepository;
     private final BasicServiceImpl basicService;
+    private final PasswordEncoder passwordEncoder;
     @Autowired
-    public UserActionServiceImpl(UserRepository userRepository, BasicServiceImpl basicService) {
+    public UserActionServiceImpl(UserRepository userRepository, BasicServiceImpl basicService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.basicService = basicService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public User getLoggedUser() throws RuntimeException {
+    public Optional<User> getLoggedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userRepository.findUserByName(authentication.getName());
+        return Optional.ofNullable(userRepository.findUserByName(authentication.getName()));
     }
 
     @Override
@@ -42,5 +48,30 @@ public class UserActionServiceImpl implements UserActionService {
         URI endpointUri = UriComponentsBuilder.fromUriString(CLIENT_DELETE_USER_URL)
                 .queryParam("id", userId).build().toUri();
         return restTemplate.exchange(endpointUri, HttpMethod.DELETE, new HttpEntity<>(null, headers), String.class);
+    }
+
+    @Override
+    public ResponseEntity<String> updateUser(User user, UserRegistrationDto userRegistrationDto) {
+        editUserByDto(user, userRegistrationDto);
+        userRepository.save(user);
+        return ResponseEntity.ok("Successfully saved user");
+    }
+
+    @Override
+    public ResponseEntity<String> updateUserEditorialToClient(Long userId, UserRegistrationDto userRegistrationDto, HttpServletRequest request) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = basicService.copyHeadersFromRequest(request);
+        headers.set("X-Caller", "EDIT_FROM_EDITORIAL");
+        URI endpointUri = UriComponentsBuilder.fromUriString(CLIENT_EDIT_USER_URL)
+                .queryParam("id", userId).build().toUri();
+        return restTemplate.exchange(endpointUri, HttpMethod.PUT, new HttpEntity<>(userRegistrationDto, headers), String.class);
+    }
+
+    private void editUserByDto(User user, UserRegistrationDto userRegistrationDto) {
+        user.setUsername(userRegistrationDto.getUsername());
+        user.setPassword(passwordEncoder.encode(userRegistrationDto.getPassword()));
+        user.getUserDetails().setName(userRegistrationDto.getName());
+        user.getUserDetails().setSurname(userRegistrationDto.getSurname());
+        user.getUserDetails().setEmail(userRegistrationDto.getEmail());
     }
 }

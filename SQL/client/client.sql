@@ -71,22 +71,27 @@ CREATE TABLE IF NOT EXISTS `userdb`.`user_detail` (
     REFERENCES `userdb`.`user` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE);
 
-	
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES (1,'user','$2a$12$iD9Psi.mmFcVXrvbeiI7Juiz5lDPn07Ska21Cnv21AgIHbIUE355m',1);
+INSERT INTO `user` VALUES (2,'user2','$2a$12$5b36FpgFqvc7826RWQpBxObz0oQAxadnVCwgJ43XEGhJJrrcs/mli',1);
+INSERT INTO `user` VALUES (3,'user3','$2a$12$nbrlhOxErstHKvSJyjzJ1uCAhItuoukWXlyYXWiTqf/Z/QSNPNP8O',1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `user_detail` WRITE;
 /*!40000 ALTER TABLE `user_detail` DISABLE KEYS */;
-INSERT INTO `user_detail` VALUES (1,'UserName','UserSurname','UserEmail@email.com','Cracow');
+INSERT INTO `user_detail` VALUES (1,'UserName','UserSurname','UserEmail@email.com','APP');
+INSERT INTO `user_detail` VALUES (2,'UserName','UserSurname','UserEmail@email.com','APP');
+INSERT INTO `user_detail` VALUES (3,'UserName','UserSurname','UserEmail@email.com','APP');
 /*!40000 ALTER TABLE `user_detail` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `authority` WRITE;
 /*!40000 ALTER TABLE `authority` DISABLE KEYS */;
 INSERT INTO `authority` VALUES (1,'USER');
+INSERT INTO `authority` VALUES (2,'ADMIN');
+INSERT INTO `authority` VALUES (3,'USER');
 /*!40000 ALTER TABLE `authority` ENABLE KEYS */;
 UNLOCK TABLES;
 

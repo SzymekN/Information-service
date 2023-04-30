@@ -1,10 +1,15 @@
 package com.client.service;
 
+import com.client.model.dto.UserRegistrationDto;
 import com.client.model.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
+
 public interface UserActionService {
-    User getLoggedUser();
+    Optional<User> getLoggedUser();
     ResponseEntity<String> deleteUserClientToEditorial(Long userId, HttpServletRequest request);
+    ResponseEntity<String> updateUser(User user, UserRegistrationDto userRegistrationDto);
+    ResponseEntity<String> updateUserClientToEditorial(Long userId, UserRegistrationDto userRegistrationDto, HttpServletRequest servletRequest);
 }
