@@ -47,3 +47,62 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     If there's an error with the query parameters, <b>a 400 Bad Request</b> status code is returned.
     <br><br>
 </ol>
+
+### Users:
+<ol>
+    <li><b>DELETE /client/delete (/editorial/delete)</b></li>
+    This endpoint deletes a user from the database. Only users with ADMIN privileges or the owner of the account can delete a user.
+    <br><br>
+    <b>Query Parameters:</b>
+    <br>
+    <ul>
+    <li>id (required): an integer representing the ID of the user to be deleted.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a status code indicating the outcome of the deletion operation. If the deletion was successful, <b>a 200 OK</b> status code is returned. If the user is not authorized to perform the deletion operation, <b>a 403 Forbidden</b> status code is returned. If there's an error with the query parameters, <b>a 400 Bad Request</b> status code is returned. If the server encountered an error while performing the deletion operation, <b>a 500 Internal Server Error</b> status code is returned.
+    <br><br>
+    <li><b>DELETE /client/delete/fe (/editorial/delete/fc)</b></li>
+    This endpoint deletes a user from the database. It can only be accessed by the caller with X-Caller header set to "DELETE_FROM_EDITORIAL". So it <b>SHOULD NOT BE DIRECTLY ACCESSED!!!</b>
+    <br><br>
+    <b>Query Parameters:</b>
+    <br>
+    <ul>
+        <li>id (required): an integer representing the ID of the user to be deleted.</li>
+    </ul>
+    <br>
+    <b>Headers:</b>
+    <br>
+    <ul>
+        <li>X-Caller (required): a string representing the caller's identity. Must be set to "DELETE_FROM_EDITORIAL" ("DELETE_FROM_CLIENT").</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a status code indicating the outcome of the deletion operation. If the deletion was successful, <b>a 200 OK</b> status code is returned. If there's an error with the query parameters or the caller is not authorized to perform the deletion operation, <b>a 400 Bad Request</b> status code is returned. If the server encountered an error while performing the deletion operation, <b>a 500 Internal Server Error</b> status code is returned.
+    <br><br>
+    <li><b>PUT /client/edit (/editorial/edit)</b></li>
+    This endpoint edits an existing user in the database. Only users with ADMIN privileges or the owner of the account can edit a user.
+    <br><br>
+    <b>Query Parameters:</b>
+    <br>
+    <ul>
+        <li>id (required): an integer representing the ID of the user to be edited.</li>
+    </ul>
+    <br>
+    <b>Request Body:</b>
+    <br>
+    The request body must contain a JSON object representing the updated user information. The object should contain the following fields:
+    <ul>
+        <li>username (required): a string representing the user's username</li>
+        <li>name (required): a string representing the user's first name.</li>
+        <li>surname (required): a string representing the user's last name.</li>
+        <li>email (required): a string representing the user's email address.</li>
+        <li>password (required): a string representing the user's new password.</li>
+    </ul>
+        <br>
+        <b>Response:</b>
+        <br>
+        The response is a status code indicating the outcome of the update operation. If the update was successful, <b>a 200 OK</b> status code is returned. If the user is not authorized to perform the update operation, <b>a 403 Forbidden</b> status code is returned. If there's an error with the query parameters or the request body
+    </ol>
