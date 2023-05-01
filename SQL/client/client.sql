@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS `userdb`.`article` (
   INDEX `owner_id_fk_idx` (`journalist_id_a` ASC),
   CONSTRAINT `owner_id_fk`
     FOREIGN KEY (`journalist_id_a`)
-    REFERENCES `userdb`.`user` (`id`));
+    REFERENCES `userdb`.`user` (`id`)
+	ON DELETE CASCADE ON UPDATE CASCADE);
 -- -----------------------------------------------------
 -- Table `userdb`.`authority`
 -- -----------------------------------------------------
@@ -55,7 +56,8 @@ CREATE TABLE IF NOT EXISTS `userdb`.`endorsement` (
     REFERENCES `userdb`.`article` (`id_article`),
   CONSTRAINT `fk_user_owner_key`
     FOREIGN KEY (`fk_user`)
-    REFERENCES `userdb`.`user` (`id`));
+    REFERENCES `userdb`.`user` (`id`)
+	ON DELETE CASCADE ON UPDATE CASCADE);
 -- -----------------------------------------------------
 -- Table `userdb`.`user_detail`
 -- -----------------------------------------------------
