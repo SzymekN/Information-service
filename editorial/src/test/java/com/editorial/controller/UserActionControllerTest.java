@@ -1,12 +1,12 @@
-package com.client.controller;
+package com.editorial.controller;
 
-import com.client.model.dto.UserRegistrationDto;
-import com.client.model.entity.Authority;
-import com.client.model.entity.User;
-import com.client.repository.UserRepository;
-import com.client.security.SecurityConfig;
-import com.client.service.BasicServiceImpl;
-import com.client.service.UserActionService;
+import com.editorial.model.dto.UserRegistrationDto;
+import com.editorial.model.entity.Authority;
+import com.editorial.model.entity.User;
+import com.editorial.repository.UserRepository;
+import com.editorial.security.SecurityConfig;
+import com.editorial.service.BasicServiceImpl;
+import com.editorial.service.UserActionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -46,6 +47,7 @@ public class UserActionControllerTest {
     private UserRepository userRepository;
     @MockBean
     private BasicServiceImpl basicService;
+
     @Test
     @WithMockUser(roles = "ADMIN")
     public void delete_user_for_admin() throws Exception {
@@ -58,10 +60,10 @@ public class UserActionControllerTest {
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
         doNothing().when(userRepository).deleteUserById(userId);
-        when(userActionService.deleteUserClientToEditorial(any(Long.class), any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        when(userActionService.deleteUserEditorialToClient(any(Long.class), any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         when(basicService.forceUserLogout()).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         // then
-        mockMvc.perform(delete("/client/actions/delete").with(csrf())
+        mockMvc.perform(delete("/editorial/actions/delete").with(csrf())
                         .param("id", userId.toString())
                         .requestAttr("request", request))
                 .andExpect(status().isOk());
@@ -79,10 +81,10 @@ public class UserActionControllerTest {
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
         doNothing().when(userRepository).deleteUserById(userId);
-        when(userActionService.deleteUserClientToEditorial(any(Long.class), any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        when(userActionService.deleteUserEditorialToClient(any(Long.class), any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         when(basicService.forceUserLogout()).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         // then
-        mockMvc.perform(delete("/client/actions/delete").with(csrf())
+        mockMvc.perform(delete("/editorial/actions/delete").with(csrf())
                         .param("id", userId.toString())
                         .requestAttr("request", request))
                 .andExpect(status().isOk());
@@ -100,10 +102,10 @@ public class UserActionControllerTest {
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(usingUser));
         doNothing().when(userRepository).deleteUserById(userId);
-        when(userActionService.deleteUserClientToEditorial(any(Long.class), any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        when(userActionService.deleteUserEditorialToClient(any(Long.class), any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         when(basicService.forceUserLogout()).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         // then
-        mockMvc.perform(delete("/client/actions/delete").with(csrf())
+        mockMvc.perform(delete("/editorial/actions/delete").with(csrf())
                         .param("id", userId.toString())
                         .requestAttr("request", request))
                 .andExpect(status().isForbidden());
@@ -114,11 +116,11 @@ public class UserActionControllerTest {
     public void delete_user_for_editorial() throws Exception {
         // given
         Long userId = 1L;
-        String caller = "DELETE_FROM_EDITORIAL";
+        String caller = "DELETE_FROM_CLIENT";
         // when
         doNothing().when(userRepository).deleteUserById(userId);
         // then
-        mockMvc.perform(delete("/client/actions/delete/fe").with(csrf())
+        mockMvc.perform(delete("/editorial/actions/delete/fc").with(csrf())
                         .param("id", userId.toString())
                         .header("X-Caller", caller))
                 .andExpect(status().isOk());
@@ -144,10 +146,10 @@ public class UserActionControllerTest {
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
         when(userRepository.findUserById(userId)).thenReturn(userToEdit);
-        when(userActionService.updateUserClientToEditorial(any(Long.class), any(UserRegistrationDto.class),
+        when(userActionService.updateUserEditorialToClient(any(Long.class), any(UserRegistrationDto.class),
                 any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         // then
-        mockMvc.perform(put("/client/actions/edit").with(csrf())
+        mockMvc.perform(put("/editorial/actions/edit").with(csrf())
                         .param("id", userId.toString())
                         .content(new ObjectMapper().writeValueAsString(userRegistrationDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -168,22 +170,24 @@ public class UserActionControllerTest {
         userRegistrationDto.setSupplier("API");
         userRegistrationDto.setPassword("test2");
         userRegistrationDto.setEmail("WRONGEMAIL");
-        userRegistrationDto.setUsername("test");;
+        userRegistrationDto.setUsername("test");
+        ;
         // when & then
-        mockMvc.perform(put("/client/actions/edit").with(csrf())
+        mockMvc.perform(put("/editorial/actions/edit").with(csrf())
                         .param("id", userId.toString())
                         .content(new ObjectMapper().writeValueAsString(userRegistrationDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .requestAttr("request", request))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     @WithAnonymousUser
     public void for_anonymous_user() throws Exception {
         // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         // when & then
-        mockMvc.perform(delete("/client/actions/delete").with(csrf())
+        mockMvc.perform(delete("/editorial/actions/delete").with(csrf())
                         .param("id", "1")
                         .requestAttr("request", request))
                 .andExpect(status().is3xxRedirection());
@@ -195,7 +199,7 @@ public class UserActionControllerTest {
         // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         // when & then
-        mockMvc.perform(delete("/client/actions/delete").with(csrf())
+        mockMvc.perform(delete("/editorial/actions/delete").with(csrf())
                         .param("id", "1")
                         .requestAttr("request", request))
                 .andExpect(status().isForbidden());
