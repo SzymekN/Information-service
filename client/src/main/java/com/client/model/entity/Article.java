@@ -1,10 +1,6 @@
 package com.client.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serializable;
@@ -28,20 +24,15 @@ public class Article implements Serializable {
     private Long id;
 
     @Column(name = "title")
-    @Size(min = 3, max = 200, message = "Title must contain more than 2 and less than 201 characters!")
-    @Pattern(regexp = "^[^<>*%:&/\\\\]+[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s]+[0-9]*$", message = "Title must not contain such characters as:<>*%:&/\\")
     private String title;
 
     @Column(name = "article_content")
-    @NotBlank(message = "Content must not be blank!")
     private String content;
 
     @Column(name = "category")
-    @NotBlank(message = "Category must be picked!")
     private String category;
 
     @Column(name = "date_of_submission")
-    @Past(message = "Invalid date!")
     private Timestamp dateOfSubmission;
 
     @ManyToOne(fetch = FetchType.LAZY)

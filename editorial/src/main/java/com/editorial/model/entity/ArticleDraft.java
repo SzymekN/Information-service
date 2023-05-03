@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
 @Setter
 @Builder
 @Table(name = "article_draft")
-public class ArticleDraft {
+public class ArticleDraft implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
