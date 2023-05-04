@@ -30,6 +30,8 @@ public class RegisterController {
     public ResponseEntity<String> createUserAccount(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
         if (registerService.checkIfUserExistsByEmail(userRegistrationDto.getEmail()))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided e-mail is already taken!");
+        else if (registerService.checkIfUserExistsByUsername(userRegistrationDto.getUsername()))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided username is already taken!");
 
         RestTemplate restTemplate = new RestTemplate();
         userRegistrationDto.setSupplier(APP_SUPPLIER);
@@ -42,6 +44,8 @@ public class RegisterController {
     public ResponseEntity<String> createUserAccountByClient(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
         if (registerService.checkIfUserExistsByEmail(userRegistrationDto.getEmail()))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided e-mail is already taken!");
+        else if (registerService.checkIfUserExistsByUsername(userRegistrationDto.getUsername()))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided username is already taken!");
 
         registerService.registerUser(userRegistrationDto);
         return ResponseEntity.ok("Correct registration process.");

@@ -20,6 +20,11 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
+    public boolean checkIfUserExistsByUsername(String username) {
+        return userRepository.existsUsersByUsername(username);
+    }
+
+    @Override
     public void registerUser(UserRegistrationDto userRegistrationDto) {
         User user = dtoToUser(userRegistrationDto);
         UserDetails userDetails = dtoToUserDetails(userRegistrationDto);
@@ -31,7 +36,8 @@ public class RegisterServiceImpl implements RegisterService {
         userRepository.save(user);
     }
 
-    private UserDetails dtoToUserDetails(UserRegistrationDto userRegistrationDto) {
+    @Override
+    public UserDetails dtoToUserDetails(UserRegistrationDto userRegistrationDto) {
         return UserDetails.builder()
                 .name(userRegistrationDto.getName())
                 .surname(userRegistrationDto.getSurname())
@@ -40,7 +46,8 @@ public class RegisterServiceImpl implements RegisterService {
                 .build();
     }
 
-    private User dtoToUser(UserRegistrationDto userRegistrationDto) {
+    @Override
+    public User dtoToUser(UserRegistrationDto userRegistrationDto) {
         return User.builder()
                 .username(userRegistrationDto.getUsername())
                 .password(passwordEncoder.encode(userRegistrationDto.getPassword()))

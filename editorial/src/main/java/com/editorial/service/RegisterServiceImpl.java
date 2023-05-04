@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RegisterServiceImpl implements RegisterService{
+public class RegisterServiceImpl implements RegisterService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -17,6 +17,11 @@ public class RegisterServiceImpl implements RegisterService{
     public RegisterServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public boolean checkIfUserExistsByUsername(String username) {
+        return userRepository.existsUsersByUsername(username);
     }
 
     @Override
@@ -36,7 +41,8 @@ public class RegisterServiceImpl implements RegisterService{
         userRepository.save(user);
     }
 
-    private UserDetails dtoToUserDetails(UserRegistrationDto userRegistrationDto){
+    @Override
+    public UserDetails dtoToUserDetails(UserRegistrationDto userRegistrationDto) {
         return UserDetails.builder()
                 .name(userRegistrationDto.getName())
                 .surname(userRegistrationDto.getSurname())
@@ -45,7 +51,8 @@ public class RegisterServiceImpl implements RegisterService{
                 .build();
     }
 
-    private User dtoToUser(UserRegistrationDto userRegistrationDto){
+    @Override
+    public User dtoToUser(UserRegistrationDto userRegistrationDto) {
         return User.builder()
                 .username(userRegistrationDto.getUsername())
                 .password(passwordEncoder.encode(userRegistrationDto.getPassword()))

@@ -1,8 +1,8 @@
 package com.client.controller;
 
 import com.client.model.dto.UserRegistrationDto;
-import com.client.service.LoginServiceImpl;
-import com.client.service.RegisterServiceImpl;
+import com.client.service.LoginService;
+import com.client.service.RegisterService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,11 +21,11 @@ import static com.client.util.UrlConstants.EDITORIAL_REGISTRATION_URL;
 @RequestMapping("/client")
 public class RegisterController {
 
-    private final LoginServiceImpl loginService;
-    private final RegisterServiceImpl registerService;
+    private final LoginService loginService;
+    private final RegisterService registerService;
 
     @Autowired
-    public RegisterController(LoginServiceImpl loginService, RegisterServiceImpl registerService) {
+    public RegisterController(LoginService loginService, RegisterService registerService) {
         this.loginService = loginService;
         this.registerService = registerService;
     }
@@ -34,6 +34,8 @@ public class RegisterController {
     public ResponseEntity<String> createUserAccount(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
         if (loginService.checkIfUserExistsByEmail(userRegistrationDto.getEmail()))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided e-mail is already taken!");
+        else if (registerService.checkIfUserExistsByUsername(userRegistrationDto.getUsername()))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided username is already taken!");
 
         RestTemplate restTemplate = new RestTemplate();
         userRegistrationDto.setSupplier(APP_SUPPLIER);
@@ -47,6 +49,8 @@ public class RegisterController {
     public ResponseEntity<String> createUserAccountByEditorial(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
         if (loginService.checkIfUserExistsByEmail(userRegistrationDto.getEmail()))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided e-mail is already taken!");
+        else if (registerService.checkIfUserExistsByUsername(userRegistrationDto.getUsername()))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided username is already taken!");
 
         registerService.registerUser(userRegistrationDto);
         return ResponseEntity.ok("Correct registration process.");
