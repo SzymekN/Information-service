@@ -2,7 +2,6 @@ package com.client.controller;
 
 import com.client.model.dto.UserRegistrationDto;
 import com.client.model.entity.User;
-import com.client.repository.UserRepository;
 import com.client.service.BasicServiceImpl;
 import com.client.service.UserActionService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,12 +17,10 @@ import java.util.Optional;
 public class UserActionController {
 
     private final UserActionService userActionService;
-    private final UserRepository userRepository;
     private final BasicServiceImpl basicService;
     @Autowired
-    public UserActionController(UserActionService userActionService, UserRepository userRepository, BasicServiceImpl basicService) {
+    public UserActionController(UserActionService userActionService, BasicServiceImpl basicService) {
         this.userActionService = userActionService;
-        this.userRepository = userRepository;
         this.basicService = basicService;
     }
 
@@ -36,7 +33,7 @@ public class UserActionController {
 
         User loggedUser = userChecker.get();
         if (loggedUser.getAuthority().getAuthorityName().equals("ADMIN") || loggedUser.getId().equals(userId)) {
-            userRepository.deleteUserById(userId);
+            userActionService.deleteUserById(userId);
             ResponseEntity<String> editorialResponse = userActionService.deleteUserClientToEditorial(userId, request);
             if (!editorialResponse.getStatusCode().is2xxSuccessful())
                 return new ResponseEntity<>(editorialResponse.getStatusCode());
@@ -54,7 +51,7 @@ public class UserActionController {
             return ResponseEntity.badRequest().build();
         else {
             try {
-                userRepository.deleteUserById(userId);
+                userActionService.deleteUserById(userId);
                 return ResponseEntity.ok().build();
             } catch (Exception exception) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -71,7 +68,7 @@ public class UserActionController {
 
         User loggedUser = userChecker.get();
         if (loggedUser.getAuthority().getAuthorityName().equals("ADMIN") || loggedUser.getId().equals(userId)) {
-            User userToEdit = userRepository.findUserById(userId);
+            User userToEdit = userActionService.findUserById(userId);
             userActionService.updateUser(userToEdit, userRegistrationDto);
             ResponseEntity<String> clientResponse = userActionService.updateUserClientToEditorial(userId, userRegistrationDto, request);
             if (!clientResponse.getStatusCode().is2xxSuccessful())
@@ -88,7 +85,7 @@ public class UserActionController {
             return ResponseEntity.badRequest().build();
         else {
             try {
-                User userToEdit = userRepository.findUserById(userId);
+                User userToEdit = userActionService.findUserById(userId);
                 userActionService.updateUser(userToEdit, userRegistrationDto);
                 return ResponseEntity.ok().build();
             } catch (Exception exception) {

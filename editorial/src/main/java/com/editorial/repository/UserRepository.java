@@ -1,7 +1,6 @@
 package com.editorial.repository;
 
 import com.editorial.model.entity.User;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,7 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsUsersByEmail(@Param("email") String email);
 
     @Modifying
-    @Transactional
     @Query("DELETE FROM User u WHERE u.id =:id")
     void deleteUserById(Long id);
 

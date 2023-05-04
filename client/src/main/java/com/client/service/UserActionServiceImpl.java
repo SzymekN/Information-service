@@ -4,6 +4,7 @@ import com.client.model.dto.UserRegistrationDto;
 import com.client.model.entity.User;
 import com.client.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,7 @@ import static com.client.util.UrlConstants.EDITORIAL_DELETE_USER_URL;
 import static com.client.util.UrlConstants.EDITORIAL_EDIT_USER_URL;
 
 @Service
+@Transactional
 public class UserActionServiceImpl implements UserActionService {
 
     private final UserRepository userRepository;
@@ -52,10 +54,9 @@ public class UserActionServiceImpl implements UserActionService {
     }
 
     @Override
-    public ResponseEntity<String> updateUser(User user, UserRegistrationDto userRegistrationDto) {
+    public void updateUser(User user, UserRegistrationDto userRegistrationDto) {
         editUserByDto(user, userRegistrationDto);
         userRepository.save(user);
-        return ResponseEntity.ok("Successfully saved user");
     }
     @Override
     public ResponseEntity<String> updateUserClientToEditorial(Long userId, UserRegistrationDto userRegistrationDto, HttpServletRequest request) {
@@ -67,6 +68,16 @@ public class UserActionServiceImpl implements UserActionService {
         return restTemplate.exchange(endpointUri, HttpMethod.PUT, new HttpEntity<>(userRegistrationDto, headers), String.class);
     }
 
+    @Override
+    public void deleteUserById(Long id) {
+        userRepository.deleteUserById(id);
+    }
+
+    @Override
+    public User findUserById(Long userId) {
+        return userRepository.findUserById(userId);
+    }
+
     private void editUserByDto(User user, UserRegistrationDto userRegistrationDto) {
         user.setUsername(userRegistrationDto.getUsername());
         user.setPassword(passwordEncoder.encode(userRegistrationDto.getPassword()));
@@ -74,4 +85,6 @@ public class UserActionServiceImpl implements UserActionService {
         user.getUserDetails().setSurname(userRegistrationDto.getSurname());
         user.getUserDetails().setEmail(userRegistrationDto.getEmail());
     }
+
+
 }

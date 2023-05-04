@@ -4,6 +4,7 @@ import com.editorial.model.dto.UserRegistrationDto;
 import com.editorial.model.entity.User;
 import com.editorial.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,7 @@ import static com.editorial.util.UrlConstants.CLIENT_DELETE_USER_URL;
 import static com.editorial.util.UrlConstants.CLIENT_EDIT_USER_URL;
 
 @Service
+@Transactional
 public class UserActionServiceImpl implements UserActionService {
     private final UserRepository userRepository;
     private final BasicServiceImpl basicService;
@@ -51,10 +53,9 @@ public class UserActionServiceImpl implements UserActionService {
     }
 
     @Override
-    public ResponseEntity<String> updateUser(User user, UserRegistrationDto userRegistrationDto) {
+    public void updateUser(User user, UserRegistrationDto userRegistrationDto) {
         editUserByDto(user, userRegistrationDto);
         userRepository.save(user);
-        return ResponseEntity.ok("Successfully saved user");
     }
 
     @Override
@@ -65,6 +66,16 @@ public class UserActionServiceImpl implements UserActionService {
         URI endpointUri = UriComponentsBuilder.fromUriString(CLIENT_EDIT_USER_URL)
                 .queryParam("id", userId).build().toUri();
         return restTemplate.exchange(endpointUri, HttpMethod.PUT, new HttpEntity<>(userRegistrationDto, headers), String.class);
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        userRepository.deleteUserById(id);
+    }
+
+    @Override
+    public User findUserById(Long id) {
+        return userRepository.findUserById(id);
     }
 
     private void editUserByDto(User user, UserRegistrationDto userRegistrationDto) {

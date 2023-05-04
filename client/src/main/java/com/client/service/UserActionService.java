@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface UserActionService {
     Optional<User> getLoggedUser();
     ResponseEntity<String> deleteUserClientToEditorial(Long userId, HttpServletRequest request);
-    ResponseEntity<String> updateUser(User user, UserRegistrationDto userRegistrationDto);
+    void updateUser(User user, UserRegistrationDto userRegistrationDto);
     ResponseEntity<String> updateUserClientToEditorial(Long userId, UserRegistrationDto userRegistrationDto, HttpServletRequest servletRequest);
+    void deleteUserById(Long id);
+    User findUserById(Long userId);
 }
