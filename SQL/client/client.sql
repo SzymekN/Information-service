@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS `userdb`.`article` (
   INDEX `owner_id_fk_idx` (`journalist_id_a` ASC),
   CONSTRAINT `owner_id_fk`
     FOREIGN KEY (`journalist_id_a`)
-    REFERENCES `userdb`.`user` (`id`));
+    REFERENCES `userdb`.`user` (`id`)
+	ON DELETE CASCADE ON UPDATE CASCADE);
 -- -----------------------------------------------------
 -- Table `userdb`.`authority`
 -- -----------------------------------------------------
@@ -55,7 +56,8 @@ CREATE TABLE IF NOT EXISTS `userdb`.`endorsement` (
     REFERENCES `userdb`.`article` (`id_article`),
   CONSTRAINT `fk_user_owner_key`
     FOREIGN KEY (`fk_user`)
-    REFERENCES `userdb`.`user` (`id`));
+    REFERENCES `userdb`.`user` (`id`)
+	ON DELETE CASCADE ON UPDATE CASCADE);
 -- -----------------------------------------------------
 -- Table `userdb`.`user_detail`
 -- -----------------------------------------------------
@@ -71,6 +73,29 @@ CREATE TABLE IF NOT EXISTS `userdb`.`user_detail` (
     REFERENCES `userdb`.`user` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE);
 
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'user','$2a$12$iD9Psi.mmFcVXrvbeiI7Juiz5lDPn07Ska21Cnv21AgIHbIUE355m',1);
+INSERT INTO `user` VALUES (2,'user2','$2a$12$5b36FpgFqvc7826RWQpBxObz0oQAxadnVCwgJ43XEGhJJrrcs/mli',1);
+INSERT INTO `user` VALUES (3,'user3','$2a$12$nbrlhOxErstHKvSJyjzJ1uCAhItuoukWXlyYXWiTqf/Z/QSNPNP8O',1);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `user_detail` WRITE;
+/*!40000 ALTER TABLE `user_detail` DISABLE KEYS */;
+INSERT INTO `user_detail` VALUES (1,'UserName','UserSurname','UserEmail@email.com','APP');
+INSERT INTO `user_detail` VALUES (2,'UserName','UserSurname','UserEmail@email.com','APP');
+INSERT INTO `user_detail` VALUES (3,'UserName','UserSurname','UserEmail@email.com','APP');
+/*!40000 ALTER TABLE `user_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `authority` WRITE;
+/*!40000 ALTER TABLE `authority` DISABLE KEYS */;
+INSERT INTO `authority` VALUES (1,'USER');
+INSERT INTO `authority` VALUES (2,'ADMIN');
+INSERT INTO `authority` VALUES (3,'USER');
+/*!40000 ALTER TABLE `authority` ENABLE KEYS */;
+UNLOCK TABLES;
 
 LOCK TABLES `article` WRITE;
 /*!40000 ALTER TABLE `article` DISABLE KEYS */;
@@ -78,26 +103,8 @@ INSERT INTO `article` VALUES (1,'Sektret sukcesu KFC',1,'<h1>KFC (Kentucky Fried
 /*!40000 ALTER TABLE `article` ENABLE KEYS */;
 UNLOCK TABLES;
 
-LOCK TABLES `authority` WRITE;
-/*!40000 ALTER TABLE `authority` DISABLE KEYS */;
-INSERT INTO `authority` VALUES (1,'USER');
-/*!40000 ALTER TABLE `authority` ENABLE KEYS */;
-UNLOCK TABLES;
-
 LOCK TABLES `endorsement` WRITE;
 /*!40000 ALTER TABLE `endorsement` DISABLE KEYS */;
 INSERT INTO `endorsement` VALUES (1,1,1),(2,1,0);
 /*!40000 ALTER TABLE `endorsement` ENABLE KEYS */;
-UNLOCK TABLES;
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'user','$2a$12$iD9Psi.mmFcVXrvbeiI7Juiz5lDPn07Ska21Cnv21AgIHbIUE355m',1);
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
-
-LOCK TABLES `user_detail` WRITE;
-/*!40000 ALTER TABLE `user_detail` DISABLE KEYS */;
-INSERT INTO `user_detail` VALUES (1,'UserName','UserSurname','UserEmail@email.com','Cracow');
-/*!40000 ALTER TABLE `user_detail` ENABLE KEYS */;
 UNLOCK TABLES;
