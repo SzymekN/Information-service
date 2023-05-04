@@ -24,7 +24,6 @@ import static com.client.util.UrlConstants.EDITORIAL_DELETE_USER_URL;
 import static com.client.util.UrlConstants.EDITORIAL_EDIT_USER_URL;
 
 @Service
-@Transactional
 public class UserActionServiceImpl implements UserActionService {
 
     private final UserRepository userRepository;
@@ -69,6 +68,7 @@ public class UserActionServiceImpl implements UserActionService {
     }
 
     @Override
+    @Transactional
     public void deleteUserById(Long id) {
         userRepository.deleteUserById(id);
     }
