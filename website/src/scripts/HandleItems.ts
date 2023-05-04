@@ -1,6 +1,6 @@
 export function setWithExpiry(key, value, ttl) {
 	const now = new Date()
-
+	// console.log(ttl)
     const item = {
 		value: value,
 		expiry: now.getTime() + ttl,

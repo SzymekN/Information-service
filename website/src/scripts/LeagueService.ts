@@ -13,7 +13,6 @@ async function fetchLeagues(leagueId: string): Promise<Ref<LeagueScores[]>> {
       (date.getFullYear() - 1) +
       "-" +
       date.getFullYear();
-      console.log(apiUrl)
     const response = await fetch(apiUrl);
     const leagueScoresArray = await response.json();
 

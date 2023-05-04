@@ -1,12 +1,15 @@
 <template>
     <div>
+      <div class="button-container">
+      <button class="back-button" @click="$emit('track-top-5')">&#x2039;</button>
       <div class="button-group">
-        <button class="button" @click="fetchLeagueTable(4328)">Premier League</button>
-        <button class="button" @click="fetchLeagueTable(4335)">LaLiga</button>
-        <button class="button" @click="fetchLeagueTable(4332)">Serie A</button>
-        <button class="button" @click="fetchLeagueTable(4334)">Ligue 1</button>
-        <button class="button" @click="fetchLeagueTable(4422)">Ekstraklasa</button>
+        <button class="button" @click="fetchLeagueTable(4328,getClubs())">Premier League</button>
+        <button class="button" @click="fetchLeagueTable(4335,getClubs())">LaLiga</button>
+        <button class="button" @click="fetchLeagueTable(4332,getClubs())">Serie A</button>
+        <button class="button" @click="fetchLeagueTable(4334,getClubs())">Ligue 1</button>
+        <button class="button" @click="fetchLeagueTable(4422,getClubs())">Ekstraklasa</button>
       </div>
+    </div>
       <div v-if="clubs && clubs.length">
         <div class="scoresTableWrapper">
           <table class="scoresTable">
@@ -33,7 +36,7 @@
                 <td>{{ club.strTeam }}</td>
                 <td>
                   <div class="form">
-                    <span v-for="letter in club.strForm.split('')" :key="index" :class="{ 'win': letter === 'W', 'draw': letter === 'D', 'loss': letter === 'L' }">{{ letter }}</span>
+                    <span v-for="letter in club.strForm.split('')" :key="index" :class="{ 'win': letter === 'W', 'draw': letter === 'D', 'loss': letter === 'L' }"></span>
                   </div>
                 </td>
                 <td><div>{{ club.intPlayed }}</div></td>
@@ -55,41 +58,27 @@
   
   <script>
 import { ref } from "vue";
-import { useLeagues } from "../../scripts/LeagueService";
-import {setWithExpiry,getWithExpiry} from "@/scripts/HandleItems.ts"
+import {fetchLeagueTable,fetchAllLeagues} from "@/components/api-leagues/GetLeagues.vue";
 export default {
 
   setup() {
     var league=localStorage.getItem("league");
-    const { leagueScores, fetchLeagues } = useLeagues();
     const clubs = ref([]);
 
     if(!league)
-      league=4422;
-    
-    // clubs.value=getWithExpiry(league);
-   
+      fetchAllLeagues();
+    const selectedLeague = ref(league || "4422");
 
-
-    const fetchLeagueTable = async (leagueId) => {
-      var leagueValues=getWithExpiry(leagueId);
-      console.log(leagueValues)
-      if(leagueValues==null){
-        await fetchLeagues(leagueId);
-        clubs.value = [];
-        clubs.value=leagueScores.value;
-
-        if(getWithExpiry(leagueId)==null)
-          setWithExpiry(leagueId,leagueScores.value,180000);
-      }
-      else
-        clubs.value = leagueValues;
-      localStorage.setItem("league",leagueId);
+    // to pass RefImpl instead of Proxy(array) (inside of template section) which takes no effect when updating
+    function getClubs() {
+      return clubs;
     }
 
-      fetchLeagueTable(league);
+    fetchLeagueTable(selectedLeague.value,clubs);
     return {
       clubs,
+      selectedLeague,
+      getClubs,
       fetchLeagueTable
     };
   }
@@ -97,6 +86,11 @@ export default {
 </script>
 
 <style>
+.button-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
 .scoresTable {
     border-collapse: collapse;
     width: 100%;
@@ -141,8 +135,8 @@ export default {
   .scoresTable .form {
     display: flex;
     justify-content: space-between;
-    width: 80px;
-    
+    width: 100%;
+    align-items: center;
   }
   
   .scoresTable .form span {
@@ -153,29 +147,66 @@ export default {
     height: 20px;
     border-radius: 50%;
     border: 1px solid #ccc;
-    margin-right: 5px; 
+    margin-right: 5px;
+    font-size: 12px;
   }
   
   .scoresTable .form .win {
-    color: green;
+    border-color: green;
+    background-color: green;
+    color: white;
   }
   
-  .scoresTable .form .draw {
-    color: orange;
+  .scoresTable .form .win::before {
+    content: '\2713';
   }
   
   .scoresTable .form .loss {
-    color: red;
+    border-color: red;
+    background-color: red;
+    color: white;
   }
   
+  .scoresTable .form .loss::before {
+    content: '\2717';
+  }
+  
+  .scoresTable .form .draw {
+    border-color: gray;
+    background-color: gray;
+    color: white;
+  }
+  
+  .scoresTable .form .draw::before {
+    content: '\2212';
+    font-weight: bold;
+    position: relative;
+    top: -2px;
+  }
+
+  .back-button {
+    background-color: transparent;
+    border: none;
+    font-size: 3.5rem;
+    cursor: pointer;
+    height:3rem;
+    margin-right: 2rem;
+    margin-bottom: 1.75rem;
+  }
+  
+  .back-button:hover {
+    color: #0d47a1;
+  }
+
   .button-group {
     display: flex;
     justify-content: center;
-    margin-bottom: 1rem;
+    align-items: center;
+    margin-bottom: 0rem;
   }
   
   .button {
-    background-color: #4CAF50;
+    background-color: #0074D9;
     border: none;
     color: white;
     padding: 0.5rem 1rem;
@@ -187,10 +218,10 @@ export default {
     cursor: pointer;
     border-radius: 0.25rem;
     transition: background-color 0.3s ease;
-  }
-  
+    }
+    
   .button:hover {
-    background-color: #3e8e41;
+    background-color: #004E8E;
   }
   
   .button:focus {
@@ -199,7 +230,7 @@ export default {
   }
   
   .button:active {
-    background-color: #2e7d32;
+    background-color: #002A5E;
   }
   
   @media screen and (max-width: 600px) {
@@ -212,5 +243,12 @@ export default {
     }
   }
 
+  .scoresTable td:nth-child(2){
+    min-width: 60px;
+  }
+
+  .scoresTable td:nth-child(3) {
+    min-width: 160px;
+  }
   
 </style>
