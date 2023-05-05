@@ -26,7 +26,10 @@
               </tr>
             </tbody>
           </table>
-          <button id="show-table" class="button" @click="$emit('track-top-5')">View Full Table</button>
+          <button id="hide-table" class="button">
+            <router-link :to="{ name:'leagueTable',path: '/sport', query: { league: clubs[0].strLeague } }">Show Table</router-link>
+          </button>
+          
       </div>
     </div>
   </template>
@@ -53,7 +56,7 @@ export default {
       clubs,
       selectedLeague,
       getClubs,
-      fetchLeagueTable
+      fetchLeagueTable,
     };
   }
 };

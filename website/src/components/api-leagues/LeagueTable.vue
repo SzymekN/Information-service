@@ -1,13 +1,13 @@
 <template>
     <div>
       <div class="button-container">
-      <button class="back-button" @click="$emit('track-top-5')">&#x2039;</button>
+      <button class="back-button" > <router-link :to="{ name:'leagueTop5',path: '/sport'}">&#x2039;</router-link></button>
       <div class="button-group">
-        <button class="button" @click="fetchLeagueTable(4328,getClubs())">Premier League</button>
-        <button class="button" @click="fetchLeagueTable(4335,getClubs())">LaLiga</button>
-        <button class="button" @click="fetchLeagueTable(4332,getClubs())">Serie A</button>
-        <button class="button" @click="fetchLeagueTable(4334,getClubs())">Ligue 1</button>
-        <button class="button" @click="fetchLeagueTable(4422,getClubs())">Ekstraklasa</button>
+        <button class="button" @click="handleClick(4328)">Premier League</button>
+        <button class="button" @click="handleClick(4335)">LaLiga</button>
+        <button class="button" @click="handleClick(4332)">Serie A</button>
+        <button class="button" @click="handleClick(4334)">Ligue 1</button>
+        <button class="button" @click="handleClick(4422)">Ekstraklasa</button>
       </div>
     </div>
       <div v-if="clubs && clubs.length">
@@ -59,9 +59,17 @@
   <script>
 import { ref } from "vue";
 import {fetchLeagueTable,fetchAllLeagues} from "@/components/api-leagues/GetLeagues.vue";
-export default {
+import { useRoute } from 'vue-router'
 
+export default {
+  props: {
+    league: {
+      type: String,
+      required: true,
+    },
+  },
   setup() {
+    const route = useRoute();
     var league=localStorage.getItem("league");
     const clubs = ref([]);
 
@@ -74,11 +82,19 @@ export default {
       return clubs;
     }
 
+    function handleClick(id) {
+      // Perform some action before navigating to the route
+      fetchLeagueTable(id,clubs);
+      
+      // Navigate to the route
+      route.push({ name: 'leagueTable',  query: { league: clubs.value[0].strLeague } });
+    }
+  
     fetchLeagueTable(selectedLeague.value,clubs);
     return {
       clubs,
       selectedLeague,
-      getClubs,
+      handleClick,
       fetchLeagueTable
     };
   }
@@ -181,7 +197,7 @@ export default {
     content: '\2212';
     font-weight: bold;
     position: relative;
-    top: -2px;
+    top: -1px;
   }
 
   .back-button {

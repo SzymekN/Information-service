@@ -1,15 +1,7 @@
 <template>
-    <div>
-      <div v-if="showTop5">
-        <LeagueTop5 @track-top-5="handleTrackTop5" />
-        <p class = "section_title">O TYM SIĘ MÓWI W SPORCIE</p>
-        <hr>
-        <ArticleSection/>
-      </div>
-      <div v-else>
-        <LeagueTable @track-top-5="handleTrackTop5" />
-      </div>
-    </div>
+  <div>
+    <RouterView/>
+  </div>
 </template>
 
 <script>
@@ -21,21 +13,11 @@ import LeagueTop5 from "../api-leagues/LeagueTop5.vue";
 export default {
   components: {
     LeagueTop5,
-    LeagueTable,
     ArticleSection,
   },
   setup() {
-    
-    const showTop5 = ref(true);
-
-    const handleTrackTop5 = () => {
-      showTop5.value = !showTop5.value;
-    }
-
-    return {
-      showTop5,
-      handleTrackTop5,
-    }
+    // add any necessary setup logic here
+    return {};
   },
 };
 </script>
