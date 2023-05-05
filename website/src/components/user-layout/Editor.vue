@@ -2,7 +2,7 @@
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import '@vueup/vue-quill/dist/vue-quill.core.css';
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 
 const quillEditor = ref()
 const content = ref("")
@@ -25,6 +25,12 @@ function updateContext(){
 function quillReady(){
   console.log("quill ready")
 }
+
+onMounted(() => {
+  console.log("mounted")
+  // if ()
+  quillEditor.value.focus()
+})
 
 </script>
 

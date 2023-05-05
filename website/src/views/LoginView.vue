@@ -1,32 +1,68 @@
 <script setup>
 import TheTitle from "@/components/main-layout/TheTitle.vue";
 import Cookie from "js-cookie";
-
+import {useRouter} from 'vue-router'
+import axios from 'axios';
 // export default {
 //   name: "LoginView",
 //   methods: {list},
 //   components: {TheTitle}
 // }
 
+  const router = useRouter()
+
   //TODO: change it to request to backend instead of fake
-  const login = () =>{
-    const email = document.querySelector('input[name="email"]').value;
+  const login = async () =>{
+    const username = document.querySelector('input[name="username"]').value;
     const password = document.querySelector('input[name="pass"]').value;
+    let requestBody = JSON.stringify({
+            username: username,
+            password: password,
+          })
   
-    // Do something with the email and password values
-    if (email == "admin"){
+    console.log(requestBody);
+    // make request to backend
+    try {
+      const response = await fetch('http://localhost:8080/client/login/v2', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: requestBody,
+        });
+        console.log("hejo")
+        // If the request is not successful, throw an error
+        // if (!response.ok) {
+        //   throw new Error(await response.text());
+        // }
+
+        // // Parse the response JSON and store the token in local storage
+        // const data = await response.json();
+        console.log(response);
+        localStorage.setItem('token', data.token);
+
+        // Redirect to the dashboard page
+        // router.push('/dashboard');
+    } catch (error) {
+      console.log(error);
+    }
+
+    // Do something with the username and password values
+    if (username == "admin"){
       Cookie.set('role', 'admin')
-      window.location.href = '/home';
+      router.push('/')
+      // window.location.href = '/home';
     }
 
-    if (email == "user"){
+    if (username == "user"){
       Cookie.set('role', 'user')
-      window.location.href = '/home';
+      router.push('/')
+      // window.location.href = '/home';
     }
 
-    console.log(email, password);
+    console.log(username, password);
   }
-
+  
 </script>
 
 <template>
@@ -42,13 +78,13 @@ import Cookie from "js-cookie";
           <img src="../../public/img-01.png" alt="IMG">
         </div>
 
-        <form class="login100-form validate-form" action="localhost:8080">
+        <form class="login100-form validate-form"  @submit.prevent>
 					<span class="login100-form-title">
 						Logowanie
 					</span>
 
-          <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-            <input class="input100" type="text" name="email" placeholder="Login">
+          <div class="wrap-input100 validate-input" data-validate = "Valid username is required: ex@abc.xyz">
+            <input class="input100" type="text" name="username" placeholder="Login">
             <span class="focus-input100"></span>
             <span class="symbol-input100">
 							<i class="fa fa-envelope" aria-hidden="true"></i>
