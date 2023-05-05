@@ -11,6 +11,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Embeddable
 public class EndorsementId implements Serializable {
 
