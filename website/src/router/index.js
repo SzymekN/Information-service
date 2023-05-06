@@ -35,15 +35,18 @@ const router = createRouter({
                     component: Business
                 },
                 {
+                    path: '/sport/',
                     name: 'leagueTop5',
-                    path: '/sport',
                     component: LeagueTop5,
+                    params: false,
                 },
+                
                 {
+                    path: '/sport/:league',
                     name: 'leagueTable',
-                    path: '/sport',
                     component: LeagueTable,
                 },
+             
                 
             ],
         },

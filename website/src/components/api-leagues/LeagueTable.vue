@@ -57,38 +57,37 @@
   
   
   <script>
-import { ref } from "vue";
+import { ref,onMounted} from "vue";
 import {fetchLeagueTable,fetchAllLeagues} from "@/components/api-leagues/GetLeagues.vue";
-import { useRoute } from 'vue-router'
+import { useRouter} from 'vue-router'
 
 export default {
-  props: {
-    league: {
-      type: String,
-      required: true,
-    },
-  },
+
   setup() {
-    const route = useRoute();
+    const router = useRouter();
     var league=localStorage.getItem("league");
     const clubs = ref([]);
 
     if(!league)
       fetchAllLeagues();
     const selectedLeague = ref(league || "4422");
-
+    onMounted(() => {
+      fetchAllLeagues();
+    });
     // to pass RefImpl instead of Proxy(array) (inside of template section) which takes no effect when updating
-    function getClubs() {
-      return clubs;
-    }
+    // function getClubs() {
+    //   return clubs;
+    // }
 
     function handleClick(id) {
       // Perform some action before navigating to the route
       fetchLeagueTable(id,clubs);
       
       // Navigate to the route
-      route.push({ name: 'leagueTable',  query: { league: clubs.value[0].strLeague } });
+      router.push({name:'leagueTable',path: '/sport', params: { league: clubs.value[0].strLeague } });
     }
+  
+      
   
     fetchLeagueTable(selectedLeague.value,clubs);
     return {

@@ -27,7 +27,7 @@
             </tbody>
           </table>
           <button id="hide-table" class="button">
-            <router-link :to="{ name:'leagueTable',path: '/sport', query: { league: clubs[0].strLeague } }">Show Table</router-link>
+            <router-link :to="{ name:'leagueTable',path: '/sport', params: { league: clubs[0].strLeague } }">Show Table</router-link>
           </button>
           
       </div>
