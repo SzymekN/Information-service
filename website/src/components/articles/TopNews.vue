@@ -5,7 +5,7 @@
       <!-- <img src="/17-g-ry-dla-seniora-jak-si.jpg" height="853" width="1200"/> -->
       <div class="article_title">
             <h1>{{articleTitle}}</h1>
-            <p>{{articleDescription}}</p>
+            <div class="article_description"><p>{{articleDescription}}</p></div>
           </div>
         </div>
   </router-link>
@@ -31,14 +31,23 @@ export default {
   font-size: 1vmax;
 }
 
+.top:hover .article_title {
+  height: 100%;
+  transform: translate(-50%, -78%);
+  display: block;
+}
+.top:hover .article_description p{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  height: 100%;
+}
 .top img {
   float: left;
   max-width: 100%;
   max-height: 21.5vmax;
-}
-
-.top img:hover {
-  filter: brightness(80%);
 }
 
 .article_title {
@@ -54,9 +63,27 @@ export default {
   color: #fff;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
+  transition: height 0.5s ease, transform 0.5s ease;
   margin: 0 auto;
 }
+.article_title h1{
+  margin-bottom: 0;
+}
 
+.article_description{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.article_description p{
+  width: 80%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-top:0;
+}
 a {
   color: white;
   vertical-align: middle;

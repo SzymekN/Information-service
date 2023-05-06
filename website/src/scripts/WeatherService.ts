@@ -23,12 +23,6 @@ const options = {
 
 async function success(pos) {
   const coords = pos.coords;
-
-  console.log("Your current position is:");
-  console.log(`Latitude : ${coords.latitude}`);
-  console.log(`Longitude: ${coords.longitude}`);
-  console.log(`More or less ${coords.accuracy} meters.`);
-
   const response = await fetch(`${weatherUrl}&lat=${coords.latitude}&lon=${coords.longitude}&appid=${ weatherApiKey }&units=metric&lang=pl`);
   weather.value = await response.json();
 }
