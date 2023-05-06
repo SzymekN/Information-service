@@ -2,7 +2,7 @@
 import TheTitle from "@/components/main-layout/TheTitle.vue";
 import Cookie from "js-cookie";
 import {useRouter} from 'vue-router'
-import axios from 'axios';
+// import axios from 'axios';
 // export default {
 //   name: "LoginView",
 //   methods: {list},

@@ -29,32 +29,35 @@
   import jsCookie from "js-cookie";
   import { reactive, ref, computed, onBeforeMount } from "vue";
   import TableLite from 'vue3-table-lite'
-import router from "../../router";
+    import router from "@/router";
   
   // TODO: replace with fetched data
   // Fake Data for 'asc' sortable
   const data = reactive([]);
+  const articles = ref([]);
+  const articlesMap = ref(new Map());
   
   const fetchArticles = async () => {
     try {
         table.isLoading = true;
         const response = await fetch('http://localhost:8080/client/articles');
-        const temp = await response.json();
-        console.log(temp);
-        for (let i = 0; i < temp.length; i++) {
+        articles.value = await response.json();
+        console.log(articles.value);
+        data.value = [];
+        for (let i = 0; i < articles.value.length; i++) {
+            articlesMap.value.set(articles.value[i]["id"], articles.value[i]);
             data.push({
-                id: temp[i]["id"],
-                user: temp[i]["authorName"],
-                topic: temp[i]["title"],
-                date: temp[i]["dateOfSubmission"],
-                // state: temp[i]["state"],
+                id: articles.value[i]["id"],
+                user: articles.value[i]["authorName"],
+                topic: articles.value[i]["title"],
+                date: articles.value[i]["dateOfSubmission"],
+                // state: articles[i]["state"],
                 state: "TODO",
             });
         }
     console.log("finished fetching data");
-    console.log(data);
-    table.isLoading = false;
-    console.log(data);
+    // console.log(data);
+    console.log("map: ",articlesMap.value);
     tableLoadingFinish();
 
     } catch (error) {
@@ -132,11 +135,9 @@ import router from "../../router";
   
   function editArticleListener(){
     
-    console.log("addign listener")
-    let id = this.getAttribute('topicId');
-    console.log(id);
-    sessionStorage.setItem("articleToEdit", JSON.stringify(data[id]))
-    router.push({path: '/article-edit', params:{redirected: true} });
+    let id = Number(this.getAttribute('topicId'));
+    sessionStorage.setItem("articleToEdit", JSON.stringify(articlesMap.value.get((id))));
+    router.push({name: 'edit', query:{redirected: true} });
 
   }
   
@@ -165,7 +166,6 @@ import router from "../../router";
   
     Array.prototype.forEach.call(elements, function (element) {
     //checking if cell already has onclick assigned
-    console.log("halo")
     if(element.getAttribute('listener') !== 'true'){
         element.setAttribute('listener', 'true');
         element.addEventListener("click", listenerFunction);
@@ -177,10 +177,9 @@ import router from "../../router";
   const tableLoadingFinish = () => {
   
     table.isLoading = false;
-    console.log("loading")
     addListeners("topic", editArticleListener);
-    if (jsCookie.get('role') == 'admin' || jsCookie.get('role') == 'redactor')
-        addListeners("state", changeStateListener);
+    // if (jsCookie.get('role') == 'admin' || jsCookie.get('role') == 'redactor')
+        // addListeners("state", changeStateListener);
   
   };
   

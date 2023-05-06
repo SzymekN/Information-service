@@ -66,6 +66,7 @@ const router = createRouter({
                 },
                 {
                     path: "/userpanel/edit",
+                    name: 'edit',
                     component: Editor
                 },
                 {
