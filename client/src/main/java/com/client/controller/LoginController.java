@@ -22,7 +22,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import static com.client.util.UrlConstants.EDITORIAL_REGISTRATION_URL;
 import static com.client.util.UrlConstants.GOOGLE_AUTHORIZATION_ENDPOINT;
 
 @RestController
@@ -94,7 +93,9 @@ public class LoginController {
         UserRegistrationDto userRegistrationDto = UserRegistrationDto.jsonToDto(jsonObject);
         if (!loginService.checkIfUserExistsByEmail(email)) {
             registerService.registerUser(userRegistrationDto);
-            restTemplate.postForEntity(EDITORIAL_REGISTRATION_URL, userRegistrationDto, String.class);
+            ResponseEntity<String> editorialResponse = registerService.registerUserClientToEditorial(userRegistrationDto, httpServletRequest);
+            if (!editorialResponse.getStatusCode().is2xxSuccessful())
+                return new ResponseEntity<>(editorialResponse.getBody(), editorialResponse.getStatusCode());
         }
 
         loginService.setUserSession(httpServletRequest, httpServletResponse, userRegistrationDto, null);

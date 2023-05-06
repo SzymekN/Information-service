@@ -5,18 +5,28 @@ import com.client.model.entity.Authority;
 import com.client.model.entity.User;
 import com.client.model.entity.UserDetails;
 import com.client.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import static com.client.util.UrlConstants.EDITORIAL_REGISTRATION_URL;
 
 @Service
 public class RegisterServiceImpl implements RegisterService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final BasicServiceImpl basicService;
 
-    public RegisterServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public RegisterServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, BasicServiceImpl basicService) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.basicService = basicService;
     }
 
     @Override
@@ -53,5 +63,13 @@ public class RegisterServiceImpl implements RegisterService {
                 .password(passwordEncoder.encode(userRegistrationDto.getPassword()))
                 .enabled(true)
                 .build();
+    }
+
+    @Override
+    public ResponseEntity<String> registerUserClientToEditorial(UserRegistrationDto userRegistrationDto, HttpServletRequest request) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = basicService.copyHeadersFromRequest(request);
+        headers.set("X-Caller", "REGISTRATION_FROM_CLIENT");
+        return restTemplate.exchange(EDITORIAL_REGISTRATION_URL, HttpMethod.POST, new HttpEntity<>(userRegistrationDto, headers), String.class);
     }
 }
