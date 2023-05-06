@@ -11,6 +11,8 @@ import LoginView from "@/views/LoginView.vue"
 import BuisnessView from "@/views/kategories/BuisnessView.vue"
 import LeagueTop5 from "../components/api-leagues/LeagueTop5.vue"
 import LeagueTable from "@/components/api-leagues/LeagueTable.vue"
+import Topics from "@/components/user-layout/Topics.vue"
+
 
 // -artykuly i artykul- do usuniecia mozna przekierowac do 404 za pomoca useRouter np gdy dane zapytanie nie na wynikow 
 const router = createRouter({
@@ -49,6 +51,22 @@ const router = createRouter({
              
                 
             ],
+            component: HomeView,
+            redirect: "/home",
+            children: [
+                {
+                    path: "/home",
+                    component: TheMainContent
+                },
+                {
+                    path: '/article',
+                    component: Article
+                },
+                {
+                    path: '/business',
+                    component: Business
+                }
+            ],
         },
         // TODO: DEPRECIATED - DELETE AFTER REFACTOR
         {
@@ -79,7 +97,11 @@ const router = createRouter({
                     component: Editor
                 },
                 {
-                    path: "/userpanel/profil",
+                    path: "/userpanel/topics",
+                    component: Topics
+                },
+                {
+                    path: "/userpanel/profile",
                     redirect: '/userpanel/info'
                 },
             ],

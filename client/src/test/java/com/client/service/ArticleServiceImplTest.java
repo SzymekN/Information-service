@@ -33,7 +33,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("testdb")
 @ContextConfiguration(classes = TestDbConfig.class)
-class ArticleServiceImplTest {
+public class ArticleServiceImplTest {
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -48,7 +48,6 @@ class ArticleServiceImplTest {
 
     @BeforeAll
     public void setUpObjects() {
-
         articles = new ArrayList<>();
 
         user = User.builder()
@@ -65,7 +64,7 @@ class ArticleServiceImplTest {
                         .name("Test")
                         .surname("TestSurname")
                         .email("Test1@email.com")
-                        .city("TestCity")
+                        .supplier("APP")
                         .build())
                 .endorsements(new ArrayList<>())
                 .build();

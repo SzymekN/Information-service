@@ -10,7 +10,7 @@ CREATE SCHEMA IF NOT EXISTS `editorialdb`;
 -- Table `editorialdb`.`user`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `editorialdb`.`user` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
   `password` VARCHAR(75) NOT NULL,
   `enabled` TINYINT(1) NOT NULL,
@@ -68,7 +68,8 @@ CREATE TABLE IF NOT EXISTS `editorialdb`.`authority` (
   INDEX `authority_fk` (`user_id_a` ASC),
   CONSTRAINT `authority_fk`
     FOREIGN KEY (`user_id_a`)
-    REFERENCES `editorialdb`.`user` (`id`));
+    REFERENCES `editorialdb`.`user` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE);
 -- -----------------------------------------------------
 -- Table `editorialdb`.`user_detail`
 -- -----------------------------------------------------
@@ -77,8 +78,9 @@ CREATE TABLE IF NOT EXISTS `editorialdb`.`user_detail` (
   `name` VARCHAR(45) NOT NULL,
   `surname` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `city` VARCHAR(45) NOT NULL,
+  `supplier` VARCHAR(30) NOT NULL,
   INDEX `user_id_fk_idx` (`user_id_d` ASC),
   CONSTRAINT `user_id_fk`
     FOREIGN KEY (`user_id_d`)
-    REFERENCES `editorialdb`.`user` (`id`));
+    REFERENCES `editorialdb`.`user` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE);

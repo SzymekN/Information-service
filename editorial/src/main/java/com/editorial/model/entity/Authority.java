@@ -3,6 +3,7 @@ package com.editorial.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
@@ -12,7 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @Table(name = "authority")
-public class Authority {
+public class Authority implements Serializable {
 
     @Id
     @Column(name = "user_id_a")
@@ -25,6 +26,10 @@ public class Authority {
     @MapsId
     @JoinColumn(name = "user_id_a")
     private User user;
+
+    public Authority(String authorityName) {
+        this.authorityName = authorityName;
+    }
 
     @Override
     public int hashCode() {

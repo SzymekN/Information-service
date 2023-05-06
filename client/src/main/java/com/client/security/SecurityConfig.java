@@ -23,18 +23,28 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public SecurityFilterChain web(HttpSecurity http) throws Exception {
         return http.cors().and().authorizeHttpRequests(configurer ->
                         configurer.requestMatchers("/").permitAll()
+                                .requestMatchers("/client/login").permitAll()
+                                .requestMatchers("/client/login/v2").permitAll()
+                                .requestMatchers("/client/login/google").permitAll()
+                                .requestMatchers("/client/login/oauth2/code/google").permitAll()
+                                .requestMatchers("/client/registration").permitAll()
+                                .requestMatchers("/client/registration/fe").permitAll()
+                                .requestMatchers("/client/actions/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/client/test").hasRole("USER")
                                 .requestMatchers("/client/articles/**").permitAll()
                                 .anyRequest().authenticated())
-                .formLogin(configurer -> configurer.loginPage("/client/login")
-                        .loginProcessingUrl("/client/authenticate").permitAll()
-                        .defaultSuccessUrl("/client/test", true))
-                .logout(configurer -> configurer.permitAll()
-                        .logoutSuccessUrl("/client/login?logout"))
+                .formLogin(configurer -> configurer.loginPage("/client/login"))
+                .logout(configurer -> configurer
+                        .logoutUrl("/client/logout")
+                        .logoutSuccessUrl("/client/login?logout")
+                        //.invalidateHttpSession(true)
+                        .deleteCookies("ROLE")
+                        .permitAll())
                 //.invalidateHttpSession(true)
                 //.deleteCookies("SESSION"))
                 .exceptionHandling(configurer -> configurer.accessDeniedPage("/client/denied"))

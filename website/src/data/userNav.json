@@ -4,15 +4,15 @@
         "text":"Strona główna"
     },
     {
-        "link":"/userpanel/info",
-        "text":"Strona początkowa"
+        "link":"/userpanel/profile",
+        "text":"Profil"
+    },
+    {
+        "link":"/userpanel/topics",
+        "text":"Tematy"
     },
     {
         "link":"/userpanel/edit",
         "text":"Edytor artykułów"
-    },
-    {
-        "link":"/userpanel/profil",
-        "text":"Profil"
     }
 ]

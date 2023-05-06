@@ -1,6 +1,6 @@
 <script setup>
 import TopNews from "./TopNews.vue";
-import MiniArticle from "./MiniArticle.vue";
+import Article from "./MiniArticle.vue";
 import { ref, onMounted } from 'vue';
 
 const articles = ref([]);
@@ -47,7 +47,7 @@ const fetchArticles = async () => {
       :articleUrl="0"
       :imageUrl="getImage(articles[0].content)"/>
     
-    <MiniArticle
+    <Article
       v-if="articles.length"
       v-for="(item, index) in articles.slice(1, 9)"
       :key="index"

@@ -1,10 +1,7 @@
 package com.client.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serializable;
@@ -24,26 +21,18 @@ public class UserDetails implements Serializable {
     private Long id;
 
     @Column(name = "name")
-    @NotBlank(message = "Name must not be blank!")
-    @Size(min = 3, max = 45, message = "Name must contain more than 2 and less than 46 characters!")
-    @Pattern(regexp = "[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+", message = "The user's name can only contain letters.")
     private String name;
 
     @Column(name = "surname")
-    @NotBlank(message = "Surname must not be blank!")
-    @Size(min = 2, max = 45, message = "Surname must contain more than 1 and less than 46 characters!")
     private String surname;
 
     @Column(name = "email")
-    @Email(regexp = ".+[@].+[\\.].+", message = "Invalid address!")
-    @Size(max = 45, message = "Email must contain less than 46 characters!")
-    @NotBlank(message = "Email must not be blank!")
     private String email;
 
-    @Column(name = "city")
-    @NotBlank(message = "City must not be blank!")
-    @Size(min = 2, max = 45, message = "City must contain more than 1 and less than 46 characters!")
-    private String city;
+    @Column(name = "supplier")
+    @NotBlank
+    private String supplier;
+
 
     @OneToOne
     @MapsId
@@ -58,7 +47,7 @@ public class UserDetails implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, surname, email, city);
+        return Objects.hash(name, surname, email, supplier);
     }
 
     @Override
@@ -73,7 +62,7 @@ public class UserDetails implements Serializable {
         return Objects.equals(name, other.name)
                 && Objects.equals(surname, other.surname)
                 && Objects.equals(email, other.email)
-                && Objects.equals(city, other.city);
+                && Objects.equals(supplier, other.supplier);
     }
 
     @Override
@@ -82,7 +71,7 @@ public class UserDetails implements Serializable {
                 "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", city='" + city + '\'' +
+                ", supplier='" + supplier + '\'' +
                 '}';
     }
 }

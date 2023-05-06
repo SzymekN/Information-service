@@ -3,11 +3,19 @@ package com.client.service;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.util.Base64;
+import java.util.Enumeration;
+
+import static com.client.util.UrlConstants.CLIENT_LOGOUT_URL;
+
 @Service
 public class BasicServiceImpl {
 
@@ -34,5 +42,30 @@ public class BasicServiceImpl {
         cookie.setPath(COOKIE_PATH);
         cookie.setMaxAge(COOKIE_DURATION);
         response.addCookie(cookie);
+    }
+
+    public HttpHeaders copyHeadersFromRequest(HttpServletRequest request) {
+        HttpHeaders headers = new org.springframework.http.HttpHeaders();
+
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            headers.set(headerName, request.getHeader(headerName));
+        }
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                headers.add("Cookie", cookie.getName() + "=" + cookie.getValue());
+            }
+        }
+
+        return headers;
+    }
+
+    public ResponseEntity<Object> forceUserLogout() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(CLIENT_LOGOUT_URL));
+        return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 }

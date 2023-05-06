@@ -1,12 +1,10 @@
 package com.editorial.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +16,7 @@ import java.util.Objects;
 @Setter
 @Builder
 @Table(name = "user")
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,14 +24,9 @@ public class User {
     private Long id;
 
     @Column(name = "username")
-    @NotBlank(message = "Username must not be blank!")
-    @Size(min = 3, max = 45, message = "Username must contain more than 2 and less than 46 characters!")
     private String username;
 
     @Column(name = "password")
-    @NotBlank(message = "Password must not be blank!")
-    @Size(min = 4, max = 75, message = "Password must contain more than 3 and less than 76 characters!")
-    @Pattern(regexp = "^[A-Za-z0-9#%@!&]+$", message = "Password must not contain whitespace characters! It can contain characters such as: A-Z, a-z, 0-9, #%@!&")
     private String password;
 
     @Column(name = "enabled")
@@ -48,16 +41,16 @@ public class User {
     @PrimaryKeyJoinColumn
     private UserDetails userDetails;
 
-    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL)
     private List<ArticleProposal> articleProposals;
 
-    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL)
     private List<ArticleDraft> articleDrafts;
 
-    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL)
     private List<ArticleCorrect> articleCorrectsJournalist;
 
-    @OneToMany(mappedBy = "corrector", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "corrector", cascade = CascadeType.ALL)
     private List<ArticleCorrect> articleCorrectsCorrector;
 
     public void connectAuthority(Authority authority) {
