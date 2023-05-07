@@ -1,15 +1,16 @@
-import {createRouter, createWebHistory} from "vue-router"
-import HomeView from "../views/HomeView.vue"
+import {createRouter, createWebHistory,useRoute} from "vue-router"
+import HomeView from "@/views/HomeView.vue"
+import UserPanelView from "@/views/UserPanelView.vue"
+import LoginView from "@/views/LoginView.vue"
+import TheMainContent from "@/components/sub-pages/TheMainContent.vue"
+import Business from "@/components/sub-pages/Business.vue"
 import Article from "@/components/articles/Article.vue"
-import Editor from "@/components/user-layout/Editor.vue"
+import LeagueTop5 from "@/components/api-leagues/LeagueTop5.vue"
+import LeagueTable from "@/components/api-leagues/LeagueTable.vue"
 import UserInfo from "@/components/user-layout/UserInfo.vue"
 import Topics from "@/components/user-layout/Topics.vue"
 import ArticlesList from "@/components/user-layout/ArticlesList.vue"
-import Business from "@/components/sub-pages/Business.vue";
-import UserPanelView from "@/views/UserPanelView.vue";
-import TheMainContent from "@/components/sub-pages/TheMainContent.vue";
-import LoginView from "@/views/LoginView.vue";
-
+import Editor from "@/components/user-layout/Editor.vue"
 // -artykuly i artykul- do usuniecia mozna przekierowac do 404 za pomoca useRouter np gdy dane zapytanie nie na wynikow 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,23 +32,18 @@ const router = createRouter({
                 {
                     path: '/business',
                     component: Business
-                }
-            ],
-            component: HomeView,
-            redirect: "/home",
-            children: [
-                {
-                    path: "/home",
-                    component: TheMainContent
                 },
                 {
-                    path: '/article',
-                    component: Article
+                    path: '/sport/',
+                    name: 'leagueTop5',
+                    component: LeagueTop5,
+                    params: false,
                 },
                 {
-                    path: '/business',
-                    component: Business
-                }
+                    path: '/sport/:league',
+                    name: 'leagueTable',
+                    component: LeagueTable,
+                },
             ],
         },
         {

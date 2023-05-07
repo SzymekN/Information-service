@@ -3,7 +3,6 @@ package com.client.controller;
 import com.client.model.dto.ArticleDto;
 import com.client.security.SecurityConfig;
 import com.client.service.ArticleService;
-import com.client.service.BasicServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -39,11 +38,7 @@ public class ArticleControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private ArticleService articleService;
-    @MockBean
-    private BasicServiceImpl basicServiceImpl;
-
     private List<ArticleDto> articleDtoList;
-
     @BeforeAll
     public void setUp() {
         articleDtoList = new ArrayList<>();

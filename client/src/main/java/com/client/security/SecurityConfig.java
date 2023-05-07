@@ -34,10 +34,10 @@ public class SecurityConfig {
                                 .requestMatchers("/client/login/oauth2/code/google").permitAll()
                                 .requestMatchers("/client/registration").permitAll()
                                 .requestMatchers("/client/registration/fe").permitAll()
+                                .requestMatchers("/client/actions/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/client/test").hasRole("USER")
                                 .requestMatchers("/client/articles/**").permitAll()
-                                .anyRequest().authenticated()
-                )
+                                .anyRequest().authenticated())
                 .formLogin(configurer -> configurer.loginPage("/client/login"))
                 .logout(configurer -> configurer
                         .logoutUrl("/client/logout")

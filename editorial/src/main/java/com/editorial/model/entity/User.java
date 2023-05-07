@@ -41,16 +41,16 @@ public class User implements Serializable {
     @PrimaryKeyJoinColumn
     private UserDetails userDetails;
 
-    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL)
     private List<ArticleProposal> articleProposals;
 
-    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL)
     private List<ArticleDraft> articleDrafts;
 
-    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL)
     private List<ArticleCorrect> articleCorrectsJournalist;
 
-    @OneToMany(mappedBy = "corrector", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "corrector", cascade = CascadeType.ALL)
     private List<ArticleCorrect> articleCorrectsCorrector;
 
     public void connectAuthority(Authority authority) {

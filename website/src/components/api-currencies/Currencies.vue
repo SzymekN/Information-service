@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="cards && cards.length&&prevCards&&prevCards.length">
-      <SlidingArray :cards="cards" :prevCards="prevCards"></SlidingArray>
+      <SlidingArray :cards="cards" :prevCards="prevCards" :duration=60></SlidingArray>
     </div>
   </div>
 </template>
