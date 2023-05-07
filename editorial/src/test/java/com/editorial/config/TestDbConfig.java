@@ -1,11 +1,10 @@
 package com.editorial.config;
 
 import com.editorial.repository.UserRepository;
+import com.editorial.service.BasicServiceImpl;
 import com.editorial.service.RegisterService;
 import com.editorial.service.RegisterServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import com.editorial.service.BasicServiceImpl;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +19,7 @@ public class TestDbConfig {
 
     @MockBean
     private BasicServiceImpl basicService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -27,6 +27,6 @@ public class TestDbConfig {
 
     @Bean
     public RegisterService registerService() {
-        return new RegisterServiceImpl(passwordEncoder(), userRepository);
+        return new RegisterServiceImpl(passwordEncoder(), userRepository, basicService);
     }
 }

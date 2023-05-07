@@ -64,7 +64,7 @@ public class LoginServiceImplTest {
         // given
         when(authenticationManager.authenticate(any())).thenThrow(BadCredentialsException.class);
 
-        // when& then
+        // when & then
         assertThrows(BadCredentialsException.class, () -> loginService.setUserSession(request, response, loginDto));
     }
 }

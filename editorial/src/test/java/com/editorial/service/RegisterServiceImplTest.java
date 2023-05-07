@@ -6,17 +6,24 @@ import com.editorial.model.entity.Authority;
 import com.editorial.model.entity.User;
 import com.editorial.model.entity.UserDetails;
 import com.editorial.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.client.RestTemplate;
 
+import static com.editorial.util.UrlConstants.CLIENT_REGISTRATION_URL;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -26,13 +33,18 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RegisterServiceImplTest {
 
     private UserRegistrationDto userRegistrationDto;
-    private User user;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RegisterService registerService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private BasicServiceImpl basicService;
+    @Mock
+    RestTemplate restTemplate;
+    @Mock
+    private HttpServletRequest request;
 
 
     @BeforeEach
@@ -60,7 +72,7 @@ public class RegisterServiceImplTest {
                 .supplier("APP")
                 .build();
 
-        user = User.builder()
+        User user = User.builder()
                 .id(Long.parseLong("1"))
                 .password("user")
                 .username("user")
@@ -148,5 +160,23 @@ public class RegisterServiceImplTest {
 
         // then
         assertFalse(result);
+    }
+
+    @Test
+    public void should_register_user_client_to_editorial() {
+        // given
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>("success", HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Caller", "REGISTRATION_FROM_EDITORIAL");
+        HttpEntity<UserRegistrationDto> requestEntity = new HttpEntity<>(userRegistrationDto, headers);
+        when(basicService.copyHeadersFromRequest(any(HttpServletRequest.class))).thenReturn(headers);
+        when(restTemplate.exchange(CLIENT_REGISTRATION_URL, HttpMethod.POST, requestEntity, String.class)).thenReturn(expectedResponse);
+
+        // when
+        ResponseEntity<String> response = registerService.registerUserEditorialToClient(userRegistrationDto, request);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(basicService, times(1)).copyHeadersFromRequest(request);
     }
 }

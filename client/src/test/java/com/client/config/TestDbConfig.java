@@ -38,7 +38,7 @@ public class TestDbConfig {
 
     @Bean
     public RegisterService registerService() {
-        return new RegisterServiceImpl(passwordEncoder(), userRepository);
+        return new RegisterServiceImpl(passwordEncoder(), userRepository, basicService);
     }
 
     @Bean

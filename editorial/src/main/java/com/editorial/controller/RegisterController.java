@@ -1,6 +1,7 @@
 package com.editorial.controller;
 
 import com.editorial.model.dto.UserRegistrationDto;
+import com.editorial.service.RegisterService;
 import com.editorial.service.RegisterServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -15,10 +16,10 @@ import static com.editorial.util.AccountConstants.APP_SUPPLIER;
 @RequestMapping("/editorial")
 public class RegisterController {
 
-    private final RegisterServiceImpl registerService;
+    private final RegisterService registerService;
 
     @Autowired
-    public RegisterController(RegisterServiceImpl registerService) {
+    public RegisterController(RegisterService registerService) {
         this.registerService = registerService;
     }
 

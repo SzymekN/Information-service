@@ -70,7 +70,6 @@ public class RegisterServiceImpl implements RegisterService {
                 .build();
     }
 
-
     @Override
     public ResponseEntity<String> registerUserEditorialToClient(UserRegistrationDto userRegistrationDto, HttpServletRequest request) {
         RestTemplate restTemplate = new RestTemplate();
