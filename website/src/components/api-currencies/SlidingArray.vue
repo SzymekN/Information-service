@@ -1,6 +1,9 @@
 <template>
   <div class="react-horizontal-scrolling-menu--wrapper">
-    <div class="react-horizontal-scrolling-menu--scroll-container1" ref="scrollContainer1" style="--play:running; --direction:normal; --duration:15s; --delay:0s; --iteration-count:1;" @animationend="onAnimationEnd">
+    <div class="react-horizontal-scrolling-menu--scroll-container1"
+  ref="scrollContainer1"
+  :style="{ '--play': 'running', '--direction': 'normal', '--duration': duration/2 + 's', '--delay': '0s', '--iteration-count': '1' }"
+  @animationend="onAnimationEnd">
       <div class="react-horizontal-scrolling-menu--item" v-for="(card, index) in cards" :key="index">
         <a class="nts-item">
           <span class="nts-breakable">{{ card.code }}</span>
@@ -9,7 +12,9 @@
         </a>
       </div>
     </div>
-    <div class="react-horizontal-scrolling-menu--scroll-container2" ref="scrollContainer2" style="--play:running; --direction:normal; --duration:30s; --delay:0s; --iteration-count:infinite;">
+    <div class="react-horizontal-scrolling-menu--scroll-container2" ref="scrollContainer2"   
+    :style="{'--play': 'running','--direction': 'normal','--duration': duration +'s','--delay': '0s','--iteration-count': 'infinite'
+    }">
       <div class="react-horizontal-scrolling-menu--item" v-for="(card, index) in cards" :key="'second-' + index">
         <a  class="nts-item">
           <span class="nts-breakable">{{ card.code }}</span>
@@ -33,15 +38,21 @@ export default {
       prevCards:{
         type:Array,
         default:null
+      },
+      duration:{
+        type: Number,
+        default:1
       }
     },
   setup(props){
+    console.log('props.duration:', props.duration);
     const cards = ref(props.cards);
     const prevCards = ref(props.prevCards);
     const scrollContainer1 = ref("scrollContainer1");
     const onAnimationEnd = () => {
       if (scrollContainer1) {
-        scrollContainer1.value.style.animation="scrolling3 running normal 30s 0s infinite linear"
+        
+        scrollContainer1.value.style.animation=`scrolling3 running normal ${props.duration}s 0s infinite linear`
         scrollContainer1.value.style.opacity="1"
       }
     }
@@ -58,6 +69,10 @@ export default {
           cards.value[i].change = diff+"% ▼"; 
           cards.value[i].changeClass="notoria loss";
         }
+        else{
+          cards.value[i].change = diff+"% -"
+          cards.value[i].changeClass="notoria even";
+        }
       }
     }
     calcDiff();
@@ -73,7 +88,6 @@ export default {
   background: linear-gradient(white, aliceblue, white);
   border-radius: 25px;
 }
-
 .react-horizontal-scrolling-menu--scroll-container1 {
   box-sizing: content-box;
   display: flex;
@@ -150,6 +164,10 @@ export default {
 
 .notoria.profit {
   color: #00b300;
+}
+
+.notoria.even {
+  color: #4c4c4c;
 }
 
 </style>

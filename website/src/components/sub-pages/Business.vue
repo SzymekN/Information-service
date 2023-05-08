@@ -5,7 +5,6 @@ import ArticleSection from "@/components/articles/ArticleSection.vue";
 </script>
 
 <template>
-
     <Currencies/>
     <p class = "section_title">O TYM SIĘ MÓWI W BIZNESIE</p>
     <hr>

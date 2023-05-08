@@ -1,7 +1,10 @@
 <template>
 <div v-for="daily in weather?.daily" :key="daily.dt">
     <div class="weather">
-        <h3>{{ formatTemperature(daily.temp.day, 'C') }}</h3>
+        <div class="temperature-wrapper">
+          <h2>{{ formatTemperature(daily.temp.day, 'C') }}</h2>
+          <img id="weatherDailyImage" :src="getWeatherImageUrl(daily.weather[0].icon, '2x')" alt="Weather icon" />
+        </div>
         <p>{{ daily.weather[0].description }}</p>
         <p>{{ new Date(daily.dt * 1000).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
         <hr>
@@ -9,17 +12,21 @@
 </div>
 </template>
 <script>
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent } from 'vue'
 
-import { useWeather } from '@/scripts/WeatherService'
 export default defineComponent({
-  setup () {
-    const { weather, fetchWeather, getWeatherImageUrl, formatTemperature } = useWeather();
-    onMounted(fetchWeather);
-    return {
-      weather,
-      getWeatherImageUrl,
-      formatTemperature
+  props: {
+    weather: {
+      type: Object,
+      required: true
+    },
+    formatTemperature: {
+      type: Function,
+      required: true
+    },
+    getWeatherImageUrl: {
+      type: Function,
+      required: true
     }
   }
 })
@@ -30,7 +37,9 @@ export default defineComponent({
   color: #282828;
   font-size: 0.8rem;
 }
-
+h2 {
+  margin-bottom: 0.5rem;
+}
 h3 {
   font-weight: 500;
   margin-bottom: -5%;
@@ -38,5 +47,10 @@ h3 {
 
 p{
   margin-bottom: -2%;
+}
+
+#weatherDailyImage{
+  width: 25px;
+  height: 25px;
 }
 </style>
