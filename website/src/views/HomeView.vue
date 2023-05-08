@@ -42,8 +42,8 @@ import jsCookie from "js-cookie";
     </div>
 
     <div class="buttons" v-for="item in list">
-      <button><router-link :to="item.link" v-if="!jsCookie.get('role')"><a>{{item.text}}</a></router-link></button>
-      <button><router-link :to="'#'" v-if="jsCookie.get('role')" @click="logout()"><a>{{"Wyloguj"}}</a></router-link></button>
+      <button v-if="!jsCookie.get('role')"><router-link :to="item.link" ><a>{{item.text}}</a></router-link></button>
+      <button v-if="jsCookie.get('role')"><router-link :to="'#'"  @click="logout()"><a>{{"Wyloguj"}}</a></router-link></button>
     </div>
   </header>
 
@@ -76,7 +76,7 @@ import jsCookie from "js-cookie";
 header {
   line-height: 1.5;
   margin: 0;
-  background: linear-gradient(#ffffff, aliceblue);
+  /*background: linear-gradient(#ffffff, aliceblue);*/
   display: flex;
   place-items: center;
   width: 100%;
@@ -85,6 +85,7 @@ header {
   height: 5rem;
   opacity: 98%;
   z-index: 1;
+  background: white;
 }
 
 .logo {
@@ -93,7 +94,7 @@ header {
 }
 
 nav {
-  background: linear-gradient(aliceblue, #ffffff);
+  background: linear-gradient(#ffffff, aliceblue);
   line-height: 1.5;
   display: flex;
   place-items: center;
@@ -126,22 +127,32 @@ footer {
 .buttons {
   margin: 0.5rem 2rem;
   align-content: center;
+  color: white;
+
 }
 
 .buttons button {
-  background-color: rgba(240, 248, 255);
+  /*background-color: rgba(240, 248, 255);*/
   border: none;
   font-size: 0.9rem;
-  width: 100%;
+  /*width: 100%;*/
+  background-color: rgba(149, 206, 255, 0.2);
+  border-radius: 50px;
 }
 
 .buttons button:hover {
-  background-color: #c8d8f1;
+  background-color: #333333;
+
 }
 
 a {
+  color: #666666;
   display: block;
   padding: 0.3rem;
+}
+
+a:hover{
+  color: #fff;
 }
 
 @media (max-width: 640px){

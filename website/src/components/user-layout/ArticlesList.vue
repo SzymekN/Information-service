@@ -6,13 +6,16 @@
 -->
 
 <template>
-    <div style="text-align: left">
-        <label>Szukaj:</label><input v-model="searchTerm" />
-    </div>  
-    <div style="text-align: left">
-        <label>Nowy temat:</label><input v-model="newTopicProposal" />
-        <button @click="addTopic">dodaj</button>
+  <div class="properties">
+    <div class="input-add">
+      <label>Nowy temat:</label><input v-model="newTopicProposal" />
+      <button @click="addTopic">Dodaj</button>
     </div>
+    <div class="input-look">
+      <label>Szukaj:</label><input v-model="searchTerm" />
+    </div>
+  </div>
+  <div class="table-context">
     <table-lite
         :is-static-mode="false"
         :columns="table.columns"
@@ -23,6 +26,7 @@
         @do-search="fetchArticles"
         @row-clicked="tableLoadingFinish"
     ></table-lite>
+  </div>
   </template>
   
   <script setup>
@@ -185,4 +189,8 @@
   
   
   </script>
-  
+
+
+<style>
+@import '../../assets/userLists.css';
+</style>

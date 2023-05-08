@@ -1,0 +1,88 @@
+body {
+    background: white;
+}
+
+.input-look {
+    background: white;
+    width: 40%;
+    padding: 1%;
+    margin-bottom: 1rem;
+    /*border: 1px solid rgba(128, 128, 128, 0.5);*/
+    margin-right: 1%;
+}
+
+.input-add{
+    background: white;
+    float: right;
+    width: 59%;
+    margin-bottom: 1rem;
+    padding: 1%;
+}
+.properties label {
+    margin: 10px;
+}
+.properties input {
+    padding: 10px;
+    font-size: 0.8rem;
+    margin: 2%;
+    border: none;
+    background: rgba(238, 246, 253, 0.7);
+    border-radius: 10px;
+    width: 80%;
+}
+
+.input-add input {
+    width: 60%;
+}
+.properties button {
+    margin: 2%;
+    padding: 1.25%;
+    background: rgb(238, 246, 253);
+    border: none;
+    width: fit-content;
+    font-size: 0.8rem;
+    float: right;
+    border-radius: 10px;
+}
+
+.properties button:hover {
+    background-color: #c8d8f1;
+}
+
+.table-context {
+    clear: both;
+    width: 100%;
+    background: white;
+    padding: 1%;
+    border-radius: 10px;
+}
+
+@media (max-width: 1450px) {
+    .input-look input{
+        width: 75%;
+    }
+
+}
+
+@media (max-width: 1100px) {
+    .properties button  {
+        width: fit-content;
+        font-size: 0.7rem;
+        padding: 3%;
+    }
+
+    .input-add, .input-look {
+        width: 48%;
+    }
+    .input-look input{
+        width: 95%;
+    }
+    .input-add input{
+        width: 95%;
+    }
+
+    .table-context {
+        clear: both;
+    }
+
+}

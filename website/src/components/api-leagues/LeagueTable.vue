@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main-container">
       <div class="button-container">
       <button class="back-button" > <router-link :to="{ name:'leagueTop5',path: '/sport'}">&#x2039;</router-link></button>
       <div class="button-group">
@@ -60,8 +60,10 @@
 import { ref,onMounted} from "vue";
 import {fetchLeagueTable,fetchAllLeagues} from "@/components/api-leagues/GetLeagues.vue";
 import { useRouter} from 'vue-router'
+import Footer from "@/components/main-layout/Footer.vue";
 
 export default {
+  components: {Footer},
 
   setup() {
     const router = useRouter();
@@ -101,6 +103,12 @@ export default {
 </script>
 
 <style>
+.main-container {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 1%;
+  font-size: 0.6rem;
+}
 .button-container {
   display: flex;
   justify-content: flex-start;
@@ -210,20 +218,20 @@ export default {
   }
   
   .back-button:hover {
-    color: #0d47a1;
+    color: #333;
   }
 
   .button-group {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 0rem;
+    margin-bottom: 0;
   }
   
   .button {
-    background-color: #0074D9;
+    background-color: rgb(149, 206, 255);
     border: none;
-    color: white;
+    color: #666666;
     padding: 0.5rem 1rem;
     text-align: center;
     text-decoration: none;
@@ -236,7 +244,8 @@ export default {
     }
     
   .button:hover {
-    background-color: #004E8E;
+    background-color: #333;
+    color: white;
   }
   
   .button:focus {
@@ -245,16 +254,31 @@ export default {
   }
   
   .button:active {
-    background-color: #002A5E;
+    background-color: #333;
   }
   
+  @media screen and (max-width: 1224px) {
+    .button-group {
+      flex-wrap: wrap;
+    }
+
+    .main-container {
+      width: fit-content;
+    }
+  }
+
   @media screen and (max-width: 600px) {
     .button-group {
       flex-wrap: wrap;
     }
-  
-    .button {
-      width: 100%;
+
+    .main-container {
+      margin-top: 7.5rem;
+      width: fit-content;
+    }
+
+    footer {
+      display: none;
     }
   }
 

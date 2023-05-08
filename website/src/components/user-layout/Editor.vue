@@ -47,22 +47,25 @@ onMounted(() => {
 
   <h1>Edytor</h1>
   <!-- TODO: add topic proposal assigned to the article -->
-  <label for="title">Tytuł artykułu:</label>
-  <input type="text" v-model="title" placeholder="Tytuł artykułu" class="title_input"><br/>
-  <label for="category">Wybierz kategorię:</label>
-  <select v-model="category" class="category_input">
-    <option value="politics">Polityka</option>
-    <option value="business">Biznes</option>
-    <option value="business">Sport</option>
-  </select><br/>
-  <label for="category">Oznacz jako:</label>
-  <select  class="category_input">
-    <option value="draft">Szkic</option>
-    <option value="ready">Gotowy</option>
-    <option value="corrected">Poprawiony</option>
-    <option value="approved">Zaakceptowany</option>
-  </select><br/>
-  <button class="save_button">Zapisz</button>
+  <div class="properties">
+    <label for="title">Tytuł artykułu:</label>
+    <input type="text" v-model="title" placeholder="Tytuł artykułu" class="title_input"><br/>
+    <label for="category">Wybierz kategorię:</label>
+    <select v-model="category" class="category_input">
+      <option value="politics">Polityka</option>
+      <option value="business">Biznes</option>
+      <option value="business">Sport</option>
+    </select><br/>
+    <label for="category">Oznacz jako:</label>
+    <select  class="category_input">
+      <option value="draft">Szkic</option>
+      <option value="ready">Gotowy</option>
+      <option value="corrected">Poprawiony</option>
+      <option value="approved">Zaakceptowany</option>
+    </select><br/>
+    <button class="save_button">Zapisz</button>
+    <br/><br/>
+  </div>
   <h1 class="title">{{ title }}</h1>
   <div id="editorContainer">
     <QuillEditor v-model:content="content" :options="options" toolbar='full' @text-change="updateContext" ref="quillEditor"  @ready="quillReady" content-type="html"/>
@@ -87,6 +90,48 @@ onMounted(() => {
  #justText {
    background-color: white;
    margin-bottom: 1rem;
+ }
+
+ .properties {
+   background: white;
+   width: fit-content;
+   padding: 1%;
+   border: 1px solid rgba(128, 128, 128, 0.5);
+ }
+ label {
+   margin: 10px;
+ }
+ input {
+   padding: 10px;
+   font-size: 0.8rem;
+   margin: 2%;
+   border: none;
+   background: rgba(238, 246, 253, 0.7);
+   border-radius: 10px;
+   width: 96%;
+ }
+
+ select {
+   font-size: 0.8rem;
+   margin: 2%;
+   border: none;
+   background: rgba(240, 248, 255);
+   border-radius: 10px;
+   width: 96%;
+   height: 3vh;
+ }
+
+ button {
+   margin: 5% 2%;
+   padding: 3%;
+   background: rgb(238, 246, 253);
+   border: none;
+   width: 96%;
+   font-size: 1rem;
+ }
+
+ button:hover {
+   background-color: #c8d8f1;
  }
 
 </style>
