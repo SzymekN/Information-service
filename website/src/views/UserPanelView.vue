@@ -61,8 +61,7 @@ nav {
 main {
   width: 80%;
   justify-content: left;
-  margin-top: 0;
-  margin-left: 0;
+  margin: 0;
   min-height: 150vh;
   padding: 1% 1% 0 1%;
   position: relative;

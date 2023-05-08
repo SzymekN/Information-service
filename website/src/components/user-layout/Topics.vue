@@ -6,22 +6,26 @@
 -->
 
 <template>
-  <div style="text-align: left">
-      <label>Szukaj:</label><input v-model="searchTerm" />
-  </div>  
-  <div style="text-align: left">
+  <div class="properties">
+    <div class="input-add">
       <label>Nowy temat:</label><input v-model="newTopicProposal" />
-      <button @click="addTopic">dodaj</button>
+      <button @click="addTopic">Dodaj</button>
+    </div>
+    <div class="input-look">
+      <label>Szukaj:</label><input v-model="searchTerm" />
+    </div>
   </div>
-  <table-lite
-      :is-static-mode="true"
-      :columns="table.columns"
-      :rows="table.rows"
-      :total="table.totalRecordCount"
-      :sortable="table.sortable"
-      @is-finished="tableLoadingFinish"
-      @row-clicked="tableLoadingFinish"
-  ></table-lite>
+  <div class="table-context">
+    <table-lite
+        :is-static-mode="true"
+        :columns="table.columns"
+        :rows="table.rows"
+        :total="table.totalRecordCount"
+        :sortable="table.sortable"
+        @is-finished="tableLoadingFinish"
+        @row-clicked="tableLoadingFinish"
+    ></table-lite>
+  </div>
 </template>
 
 <script setup>
@@ -184,3 +188,7 @@ const addTopic = () =>{
 
 
 </script>
+
+<style>
+@import '../../assets/userLists.css';
+</style>

@@ -18,22 +18,29 @@ import list from "../../data/nav.json"
   float: left;
   border-top: 0.1rem solid #8f8f8f;
   align-content: center;
+  display: block;
 }
-
 .buttons button {
-  background: linear-gradient(aliceblue, #ffffff);
+  background: linear-gradient(#ffffff, aliceblue);
   border: none;
   font-size: 1rem;
+  border-radius: 0 0 10px 10px;
+  display: block;
 }
 
 .buttons button:hover {
-  background: linear-gradient(#d6e7ef, #ffffff);
-  /*border-bottom: 1px solid #8f8f8f;*/
+  background: rgba(51, 51, 51, 0.9);
+  color: white;
 }
 
 a {
-  display: inline-block;
+  display: block;
   padding: 0.3rem;
+}
+
+a:hover {
+  font-weight: 500;
+  color: #f2f2f2;
 }
 
 @media (max-width: 640px){

@@ -8,9 +8,11 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute();
 const content = ref('')
+const title = ref('')
 
 const props = defineProps({
-  content: { type: String, default: 'param' }
+  content: { type: String, default: 'param' },
+  title: { type: String, default: 'Tytył' }
 })
 
 onMounted(() => {
@@ -18,12 +20,14 @@ onMounted(() => {
     let index = route.query["id"]
     console.log(JSON.parse(sessionStorage.getItem("allArticles") || [])[index])
     content.value = JSON.parse(sessionStorage.getItem("allArticles") || [])[index].content
+    title.value = JSON.parse(sessionStorage.getItem("allArticles") || [])[index].title
 })
 
 </script>
 
 <template>
 
+    <h1>{{title}}</h1>
     <div id="justText" class="content ql-editor" v-html="content"></div>
 
 </template>
