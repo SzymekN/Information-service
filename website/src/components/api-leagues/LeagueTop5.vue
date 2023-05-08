@@ -36,7 +36,7 @@
   
   <script>
 import { ref } from "vue";
-import {fetchLeagueTable,fetchAllLeagues} from "@/components/api-leagues/GetLeagues.vue"
+import {fetchLeagueTable,fetchAllLeagues} from "@/scripts/Scripts.ts"
 export default {
 
   setup() {

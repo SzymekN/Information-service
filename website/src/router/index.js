@@ -37,7 +37,7 @@ const router = createRouter({
                     component: Business
                 },
                 {
-                    path: '/sport/',
+                    path: '/sport',
                     name: 'leagueTop5',
                     component: LeagueTop5,
                     params: false,
@@ -50,22 +50,6 @@ const router = createRouter({
                 },
              
                 
-            ],
-            component: HomeView,
-            redirect: "/home",
-            children: [
-                {
-                    path: "/home",
-                    component: TheMainContent
-                },
-                {
-                    path: '/article',
-                    component: Article
-                },
-                {
-                    path: '/business',
-                    component: Business
-                }
             ],
         },
         // TODO: DEPRECIATED - DELETE AFTER REFACTOR
