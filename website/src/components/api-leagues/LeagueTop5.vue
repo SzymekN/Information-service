@@ -1,11 +1,11 @@
 <template>
     <div class="table-container">
       <select class="select-container" v-model="selectedLeague" @change="fetchLeagueTable(selectedLeague,getClubs())">
-        <option value="4328">Premier League</option>
-        <option value="4335">LaLiga</option>
-        <option value="4332">Serie A</option>
-        <option value="4334">Ligue 1</option>
-        <option value="4422">Ekstraklasa</option>
+        <option :value=PremierLeagueId>Premier League</option>
+        <option :value=LaLigaId>LaLiga</option>
+        <option :value=SerieAId>Serie A</option>
+        <option :value=Ligue1Id>Ligue 1</option>
+        <option :value=EkstraklasaId>Ekstraklasa</option>
       </select>      
       <div v-if="clubs && clubs.length">
           <table class="scores-table">
@@ -40,11 +40,17 @@ import {fetchLeagueTable,fetchAllLeagues} from "@/scripts/Scripts.ts"
 export default {
 
   setup() {
+    const PremierLeagueId = 4328;
+    const LaLigaId = 4335;
+    const SerieAId = 4332;
+    const Ligue1Id = 4334;
+    const EkstraklasaId = 4422;
+
     var league=localStorage.getItem("league");
     const clubs = ref([]);
     if(!league)
       fetchAllLeagues();
-    const selectedLeague = ref(league || "4422");
+    const selectedLeague = ref(league || EkstraklasaId.toString());
 
     // to pass RefImpl instead of Proxy(array) (inside of template section) which takes no effect when updating
     function getClubs() {
@@ -57,6 +63,11 @@ export default {
       selectedLeague,
       getClubs,
       fetchLeagueTable,
+      PremierLeagueId,
+      LaLigaId,
+      SerieAId,
+      Ligue1Id,
+      EkstraklasaId
     };
   }
 };

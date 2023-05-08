@@ -76,7 +76,7 @@ export default {
     
     if(!league)
       fetchAllLeagues();
-    const selectedLeague = ref(league || "4422");
+    const selectedLeague = ref(league || EkstraklasaId.toString);
     onMounted(() => {
       fetchAllLeagues();
     });
