@@ -36,7 +36,7 @@ import TableLite from 'vue3-table-lite'
 // TODO: replace with fetched data
 // Fake Data for 'asc' sortable
 const data = reactive([]);
-for (let i = 0; i < 126; i++) {
+for (let i = 0; i < 127; i++) {
   data.push({
       id: i,
       user: ""+i,
@@ -125,7 +125,7 @@ function changeTopicListener(){
 
   //TODO: make request instead of local change
   if (newTopic != null && newTopic !== ''){
-      let id = this.getAttribute('topicId')-1;
+      let id = this.getAttribute('topicId');
       data[id].topic = newTopic;
       data[id].date = new Date().toDateString();
       data[id].state = "proposed";
@@ -136,7 +136,7 @@ function changeTopicListener(){
 function changeStateListener(){
 
   //TODO: make request instead of local change
-  let id = this.getAttribute('topicId')-1;
+  let id = this.getAttribute('topicId');
   let currentState = data[id].state;
 
   if (currentState == 'proposed')

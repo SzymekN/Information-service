@@ -23,7 +23,6 @@
         :total="table.totalRecordCount"
         :sortable="table.sortable"
         @is-finished="tableLoadingFinish"
-        @do-search="fetchArticles"
         @row-clicked="tableLoadingFinish"
     ></table-lite>
   </div>

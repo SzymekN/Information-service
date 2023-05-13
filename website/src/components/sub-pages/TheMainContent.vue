@@ -14,12 +14,12 @@ import ArticleSection from "@/components/articles/ArticleSection.vue";
         <ArticleSection/>
     </div>
 
-    <div class="section_content">
+    <!-- <div class="section_content">
 
       <p class = "section_title">EDUKACJA</p>
       <hr>
         <ArticleSection/>
-    </div>
+    </div> -->
   </div>
 
   <section>

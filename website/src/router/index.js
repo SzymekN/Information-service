@@ -61,6 +61,7 @@ const router = createRouter({
             children: [
                 {
                     path: '/userpanel/profile',
+                    name: 'profile',
                     component: UserInfo
                 },
                 {
@@ -70,10 +71,12 @@ const router = createRouter({
                 },
                 {
                     path: "/userpanel/topics",
+                    name: 'topics',
                     component: Topics
                 },
                 {
                     path: "/userpanel/articles",
+                    name: 'articlesList',
                     component: ArticlesList
                 },
             ],
@@ -106,11 +109,12 @@ const router = createRouter({
 })
 
 //route guard
-const protectedRoutes = ['userpanel', 'edit', 'topics', 'articles'];
+const protectedRoutes = ['userpanel', 'edit', 'topics', 'articlesList', 'profile'];
 
 const roleRoutes = {
-    'journalist': ['userpanel', 'edit', 'topics', 'articles'],
-    'corrector': ['userpanel', 'edit', 'articles'],
+    'journalist': ['userpanel', 'edit', 'topics', 'articlesList', 'profile'],
+    'corrector': ['userpanel', 'edit', 'articlesList', 'profile'],
+    'redactor': ['userpanel', 'edit', 'topics', 'articlesList', 'profile'],
     'user': ['userpanel', 'info'],
     'admin': 'all'
 }
@@ -118,18 +122,17 @@ const roleRoutes = {
 router.beforeEach((to, from, next) => {
     const role = Cookie.get('role');
 
-    if (!protectedRoutes.includes(to.name))
+    if (!protectedRoutes.includes(to.name)) {
         next();
-
-
-    if (to.name === 'userpanel' && (role == undefined || role == null || role == '') ) next({ name: '/login' })
+        return;
+    }
 
     if (role && protectedRoutes.includes(to.name)){
         if (roleRoutes[role].includes(to.name) || role === 'admin') next();
+        else next('/login')
     } else
         next('/')
 
-    next("/login");
 })
 
 export default router
