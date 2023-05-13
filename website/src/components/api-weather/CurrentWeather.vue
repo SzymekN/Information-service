@@ -6,10 +6,10 @@
       <img :src="getWeatherImageUrl(weather?.current.weather[0].icon, '2x')" alt="Weather icon" />
     </div>
     <h3>{{ weather.current.weather[0].description }}</h3>
-    <h3>
-      <span>{{ weather.current.wind_speed }}km/h </span>
+    <h4>
+      <span>Wiatr {{ weather.current.wind_speed }}km/h </span>
       <span>Wilgotność {{ weather.current.humidity }}%</span>
-    </h3>
+    </h4>
     <div>
       <h4> Wschód {{ new Date(weather.current.sunrise * 1000).toLocaleTimeString([], { timeStyle: 'short' }) }}</h4>
       <h4 id="sunset"> Zachód {{ new Date(weather.current.sunset * 1000).toLocaleTimeString([], { timeStyle: 'short' }) }}</h4>
@@ -57,6 +57,8 @@ h1 {
 h2 {
   font-size: 1.3rem;
   margin-bottom: -5%;
+  margin-right: 5%;
+  float: left;
 }
 
 h3 {
@@ -75,5 +77,7 @@ h4 {
 img {
   width: 50px;
   height: 50px;
+  margin-bottom: -5%;
+  margin-top: 5%;
 }
 </style>

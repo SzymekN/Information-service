@@ -39,6 +39,8 @@ export default defineComponent({
 }
 h2 {
   margin-bottom: 0.5rem;
+  float: left;
+  margin-right: 5%;
 }
 h3 {
   font-weight: 500;
@@ -50,7 +52,9 @@ p{
 }
 
 #weatherDailyImage{
-  width: 25px;
-  height: 25px;
+  width: 40px;
+  height: 40px;
+  margin-top: 5%;
+  margin-bottom: -5%;
 }
 </style>
