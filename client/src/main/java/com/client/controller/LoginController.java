@@ -21,8 +21,11 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.client.util.UrlConstants.GOOGLE_AUTHORIZATION_ENDPOINT;
+import static com.client.util.UrlConstants.WEBSITE_URL;
 
 @RestController
 @RequestMapping("/client")
@@ -74,7 +77,9 @@ public class LoginController {
                 + "&client_id=" + clientId
                 + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8)
                 + "&scope=openid%20email%20profile";
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(googleAuthUrl)).build();
+        Map<String, String> data = new HashMap<>();
+        data.put("url", googleAuthUrl);
+        return ResponseEntity.status(HttpStatus.OK).body(data);
     }
 
     @GetMapping("/login/oauth2/code/google")
@@ -100,7 +105,7 @@ public class LoginController {
 
         loginService.setUserSession(httpServletRequest, httpServletResponse, userRegistrationDto, null);
 
-        return ResponseEntity.ok("Successful login via google account.");
+        return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(WEBSITE_URL)).build();
     }
 
     @GetMapping("/test")
