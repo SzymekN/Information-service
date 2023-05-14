@@ -153,8 +153,8 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <b>Query Parameters:</b>
     <br>
     <ul>
-        <li>page (optional): an integer representing the page number (starting from 0).</li>
-        <li>size (optional): an integer representing the page size.</li>
+        <li>page (required): an integer representing the page number (starting from 0).</li>
+        <li>size (required): an integer representing the page size.</li>
         <li>category (optional): a string representing the category to filter by.</li>
     </ul>
     <br>
@@ -223,4 +223,69 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
         <b>Response:</b>
         <br>
         The response is a status code indicating the outcome of the update operation. If the update was successful, <b>a 200 OK</b> status code is returned. If the user is not authorized to perform the update operation, <b>a 403 Forbidden</b> status code is returned. If there's an error with the query parameters or the request body
-    </ol>
+</ol>
+
+### Editorial:
+<ol>
+    <li><b>POST /editorial/proposal </b></li>
+    This endpoint allows users to add a new article proposal to the system.
+    <br><br>
+    <b>Request:</b>
+    <br>
+    The request body should contain a JSON object with the following properties:
+    <ul>
+        <li><b>title</b> (required): A string representing the title of the article. It must be between 3 and 200 characters long.</li>
+        <li><b>keywords</b> (required): A string representing the keywords associated with the article. It must be between 4 and 200 characters long.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article proposal is added successfully, the status code will be 200 (OK), and the body will be "Successfully added an article!". If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will be "Username of requesting user does not exist in the database!".
+    <br><br>
+    <li><b>PUT /editorial/proposal </b></li>
+    This endpoint allows users to update an existing article proposal in the system.
+    <br><br>
+    <b>Request:</b>
+    <br>
+    The request body should contain a JSON object with the following properties:
+    <ul>
+        <li><b>id</b> (required): A unique identifier for the article proposal.</li>
+        <li><b>title</b> (required): A string representing the title of the article. It must be between 3 and 200 characters long.</li>
+        <li><b>keywords</b> (required): A string representing the keywords associated with the article. It must be between 4 and 200 characters long.</li>
+        <li><b>acceptance</b> (required): An enumeration representing the acceptance status of the article proposal.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article proposal is updated successfully, the status code will be 200 (OK), and the body will contain the response message returned by the articleProposalService. If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will be "Username of requesting user does not exist in the database!". If the request body is missing required parameters, the status code will be 400 (Bad Request), and the body will be "Provide a body,
+    including id and status!". If an error occurs while processing the request, the status code will be 500 (Internal Server Error). <b> Redactor is allowed to edit every proposal, journalist only the one provided by himself. No matter which acceptance level is going to be provided by journalist, it is going to end on PENDING by default. </b>
+    <br><br>
+    <li><b>GET /editorial/proposal </b></li>
+    This endpoint retrieves a list of article proposals.
+    <br><br>
+    <b>Query Parameters:</b>
+    <br>
+    <ul>
+        <li><b>page</b> (required): An integer representing the page number of the results to retrieve (starting from 0).</li>
+        <li><b>size</b> (required): An integer representing the number of results per page.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A list of ArticleProposalDto objects containing the article proposals.</li>
+    </ul>
+    If the article proposals are retrieved successfully, the status code will be 200 (OK), and the body will contain the list of ArticleProposalDto objects. If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will be an empty list. If an error occurs while processing the request, the status code will be 400 (Bad Request), and an empty response will be returned. <b>Redactor receives every proposal, journalist only related to him. Results are ordered by date in ascending order.</b>
+</ol>
