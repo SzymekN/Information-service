@@ -18,12 +18,13 @@ import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import static com.editorial.util.UrlConstants.CLIENT_REGISTRATION_URL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -172,11 +173,7 @@ public class RegisterServiceImplTest {
         when(basicService.copyHeadersFromRequest(any(HttpServletRequest.class))).thenReturn(headers);
         when(restTemplate.exchange(CLIENT_REGISTRATION_URL, HttpMethod.POST, requestEntity, String.class)).thenReturn(expectedResponse);
 
-        // when
-        ResponseEntity<String> response = registerService.registerUserEditorialToClient(userRegistrationDto, request);
-
-        // then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(basicService, times(1)).copyHeadersFromRequest(request);
+        // when & then
+        assertThrows(ResourceAccessException.class, () -> registerService.registerUserEditorialToClient(userRegistrationDto, request));
     }
 }

@@ -41,7 +41,6 @@ public class ArticleProposalServiceImpl implements ArticleProposalService {
             if (!loggedUser.getAuthority().getAuthorityName().equals("REDACTOR") && !loggedUser.equals(proposalToUpdate.getJournalist()))
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have privileges to edit this article!");
             proposalToUpdate.setTitle(articleProposalDto.getTitle());
-            proposalToUpdate.setKeywords(articleProposalDto.getKeywords());
             proposalToUpdate.setAcceptance(articleProposalDto.getAcceptance());
             proposalToUpdate.setDateOfUpdate(new Timestamp(System.currentTimeMillis()));
             if (loggedUser.getAuthority().getAuthorityName().equals("JOURNALIST"))
@@ -69,7 +68,6 @@ public class ArticleProposalServiceImpl implements ArticleProposalService {
         return ArticleProposal.builder()
                 .title(articleProposalDto.getTitle())
                 .acceptance(ArticleProposal.Acceptance.PENDING)
-                .keywords(articleProposalDto.getKeywords())
                 .dateOfUpdate(new Timestamp(System.currentTimeMillis()))
                 .journalist(loggedUser)
                 .build();
@@ -80,7 +78,6 @@ public class ArticleProposalServiceImpl implements ArticleProposalService {
                 .map(articleProposal -> ArticleProposalDto.builder()
                         .id(articleProposal.getId())
                         .title(articleProposal.getTitle())
-                        .keywords(articleProposal.getKeywords())
                         .acceptance(articleProposal.getAcceptance())
                         .authorName(articleProposal.getJournalist().getUsername())
                         .build())

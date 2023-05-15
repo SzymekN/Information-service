@@ -52,7 +52,6 @@ CREATE TABLE IF NOT EXISTS `editorialdb`.`article_draft` (
 CREATE TABLE IF NOT EXISTS `editorialdb`.`article_proposal` (
   `id_proposal` BIGINT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(200) NOT NULL,
-  `keywords` VARCHAR(200) NOT NULL,
   `acceptance` ENUM('PENDING', 'ACCEPTED', 'DECLINED') NOT NULL,
   `date_of_update` DATETIME NULL,
   `journalist_id_p` BIGINT NOT NULL,

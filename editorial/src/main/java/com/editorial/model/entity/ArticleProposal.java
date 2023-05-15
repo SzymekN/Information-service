@@ -24,9 +24,6 @@ public class ArticleProposal implements Serializable {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "keywords")
-    private String keywords;
-
     @Column(name = "acceptance")
     @Enumerated(EnumType.STRING)
     private Acceptance acceptance;
@@ -40,7 +37,7 @@ public class ArticleProposal implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, keywords);
+        return Objects.hash(title);
     }
 
     @Override
@@ -52,8 +49,7 @@ public class ArticleProposal implements Serializable {
         if (getClass() != o.getClass())
             return false;
         ArticleProposal other = (ArticleProposal) o;
-        return Objects.equals(title, other.title)
-                && Objects.equals(keywords, other.keywords);
+        return Objects.equals(title, other.title);
     }
 
     public enum Acceptance {

@@ -71,5 +71,4 @@ public class ArticleProposalController {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(List.of());
     }
-
 }

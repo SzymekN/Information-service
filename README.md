@@ -235,7 +235,6 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     The request body should contain a JSON object with the following properties:
     <ul>
         <li><b>title</b> (required): A string representing the title of the article. It must be between 3 and 200 characters long.</li>
-        <li><b>keywords</b> (required): A string representing the keywords associated with the article. It must be between 4 and 200 characters long.</li>
     </ul>
     <br>
     <b>Response:</b>
@@ -256,7 +255,6 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <ul>
         <li><b>id</b> (required): A unique identifier for the article proposal.</li>
         <li><b>title</b> (required): A string representing the title of the article. It must be between 3 and 200 characters long.</li>
-        <li><b>keywords</b> (required): A string representing the keywords associated with the article. It must be between 4 and 200 characters long.</li>
         <li><b>acceptance</b> (required): An enumeration representing the acceptance status of the article proposal.</li>
     </ul>
     <br>

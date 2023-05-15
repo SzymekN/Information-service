@@ -20,16 +20,13 @@ public class ArticleProposalDto {
     @Pattern(regexp = "^[^<>*%:&/\\\\]+[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s]+[0-9]*$", message = "Title must not contain such characters as:<>*%:&/\\")
     private String title;
 
-    @Size(min = 4, max = 200, message = "Keywords must contain more than 3 and less than 201 characters!")
-    private String keywords;
-
     private ArticleProposal.Acceptance acceptance;
 
     private String authorName;
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, keywords);
+        return Objects.hash(title);
     }
 
     @Override
@@ -37,6 +34,6 @@ public class ArticleProposalDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ArticleProposalDto that = (ArticleProposalDto) o;
-        return title.equals(that.title) && keywords.equals(that.keywords);
+        return title.equals(that.title);
     }
 }
