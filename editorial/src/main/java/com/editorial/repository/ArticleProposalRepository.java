@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArticleProposalRepository extends JpaRepository<ArticleProposal, Long> {
 
-    @Query("SELECT ap FROM ArticleProposal ap JOIN FETCH ap.journalist j ORDER BY ap.dateOfUpdate")
+    @Query("SELECT ap FROM ArticleProposal ap JOIN FETCH ap.journalist j ORDER BY ap.id desc")
     Slice<ArticleProposal> findAllPaged(Pageable pageable);
 
     @Query("SELECT ap FROM ArticleProposal ap JOIN FETCH ap.journalist j " +
-            "WHERE j.id = :id ORDER BY ap.dateOfUpdate")
+            "WHERE j.id = :id ORDER BY ap.id desc")
     Slice<ArticleProposal> findAllPagedById(Pageable pageable, @Param("id") Long journalistId);
 }
