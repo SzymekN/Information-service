@@ -61,7 +61,7 @@ public class ArticleProposalServiceImpl implements ArticleProposalService {
         else
             articleProposals = articleProposalRepository.findAllPagedById(pageRequest, loggedUser.getId());
 
-        return ResponseEntity.ok(articleProposalsToDo(articleProposals.getContent()));
+        return ResponseEntity.ok(articleProposalsToDto(articleProposals.getContent()));
     }
 
     public ArticleProposal articleDtoToProposal(User loggedUser, ArticleProposalDto articleProposalDto) {
@@ -73,7 +73,7 @@ public class ArticleProposalServiceImpl implements ArticleProposalService {
                 .build();
     }
 
-    public List<ArticleProposalDto> articleProposalsToDo(List<ArticleProposal> articleProposals) {
+    public List<ArticleProposalDto> articleProposalsToDto(List<ArticleProposal> articleProposals) {
         return articleProposals.stream()
                 .map(articleProposal -> ArticleProposalDto.builder()
                         .id(articleProposal.getId())
