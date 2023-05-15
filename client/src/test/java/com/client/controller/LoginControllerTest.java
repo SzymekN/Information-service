@@ -130,13 +130,14 @@ public class LoginControllerTest {
         mockMvc.perform(get("/client/login/google"))
 
         //then
-                .andExpect(status().isFound())
-                .andExpect(header().string("Location", googleAuthUrl));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("url").value(googleAuthUrl));
     }
 
     @Test
     void should_return_redirect_response_with_google_auth_url_when_login_attempted_successfully_via_google() throws Exception {
         //given
+        String websiteSite = "http://localhost:5173/";
         String accessToken = "google_access_token";
         String email = "test@example.com";
         String givenName = "John";
@@ -165,13 +166,14 @@ public class LoginControllerTest {
         mockMvc.perform(get("/client/login/oauth2/code/google").param("code", "google_code"))
 
         //then
-                .andExpect(status().isOk())
-                .andExpect(content().string("Successful login via google account."));
+                .andExpect(status().isPermanentRedirect())
+                .andExpect(header().string("Location", websiteSite));
     }
 
     @Test
     void should_return_successful_login_response_when_user_already_exists_in_database_and_logs_in_via_google() throws Exception {
         //given
+        String websiteSite = "http://localhost:5173/";
         String accessToken = "google_access_token";
         String email = "test@example.com";
         String givenName = "John";
@@ -198,8 +200,8 @@ public class LoginControllerTest {
         mockMvc.perform(get("/client/login/oauth2/code/google").param("code", "google_code"))
 
         //then
-                .andExpect(status().isOk())
-                .andExpect(content().string("Successful login via google account."));
+                .andExpect(status().isPermanentRedirect())
+                .andExpect(header().string("Location", websiteSite));
 
         verify(registerService, never()).registerUserClientToEditorial(any(UserRegistrationDto.class), any(HttpServletRequest.class));
     }

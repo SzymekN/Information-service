@@ -1,12 +1,10 @@
 package com.editorial.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
@@ -24,17 +22,14 @@ public class ArticleProposal implements Serializable {
     private Long id;
 
     @Column(name = "title")
-    @Size(min = 3, max = 200, message = "Title must contain more than 2 and less than 201 characters!")
-    @Pattern(regexp = "^[^<>*%:&/\\\\]+[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s]+[0-9]*$", message = "Title must not contain such characters as:<>*%:&/\\")
     private String title;
 
-    @Column(name = "keywords")
-    @Size(min = 4, max = 200, message = "Keywords must contain more than 3 and less than 201 characters!")
-    private String keywords;
+    @Column(name = "acceptance")
+    @Enumerated(EnumType.STRING)
+    private Acceptance acceptance;
 
-    @Column(name = "is_accepted")
-    @NotNull
-    private Boolean isAccepted;
+    @Column(name = "date_of_update")
+    private Timestamp dateOfUpdate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "journalist_id_p")
@@ -42,7 +37,7 @@ public class ArticleProposal implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, keywords);
+        return Objects.hash(title);
     }
 
     @Override
@@ -54,7 +49,12 @@ public class ArticleProposal implements Serializable {
         if (getClass() != o.getClass())
             return false;
         ArticleProposal other = (ArticleProposal) o;
-        return Objects.equals(title, other.title)
-                && Objects.equals(keywords, other.keywords);
+        return Objects.equals(title, other.title);
+    }
+
+    public enum Acceptance {
+        PENDING,
+        ACCEPTED,
+        DECLINED
     }
 }

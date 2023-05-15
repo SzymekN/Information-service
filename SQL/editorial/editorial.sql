@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `editorialdb`.`user` (
 -- Table `editorialdb`.`article_correct`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `editorialdb`.`article_correct` (
-  `id_correct` BIGINT NOT NULL,
+  `id_correct` BIGINT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(200) NOT NULL,
   `content` LONGTEXT NOT NULL,
   `date_of_correction` DATETIME NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `editorialdb`.`article_correct` (
 -- Table `editorialdb`.`article_draft`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `editorialdb`.`article_draft` (
-  `id_draft` BIGINT NOT NULL,
+  `id_draft` BIGINT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(200) NOT NULL,
   `content` LONGTEXT NOT NULL,
   `date_of_completion` DATETIME NULL,
@@ -44,21 +44,23 @@ CREATE TABLE IF NOT EXISTS `editorialdb`.`article_draft` (
   INDEX `draft_fk_idx` (`journalist_id_d` ASC),
   CONSTRAINT `draft_fk`
     FOREIGN KEY (`journalist_id_d`)
-    REFERENCES `editorialdb`.`user` (`id`));
+    REFERENCES `editorialdb`.`user` (`id`)
+	ON DELETE CASCADE ON UPDATE CASCADE);
 -- -----------------------------------------------------
 -- Table `editorialdb`.`article_proposal`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `editorialdb`.`article_proposal` (
-  `id_proposal` BIGINT NOT NULL,
+  `id_proposal` BIGINT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(200) NOT NULL,
-  `keywords` VARCHAR(200) NOT NULL,
-  `is_accepted` TINYINT(1) NOT NULL,
+  `acceptance` ENUM('PENDING', 'ACCEPTED', 'DECLINED') NOT NULL,
+  `date_of_update` DATETIME NULL,
   `journalist_id_p` BIGINT NOT NULL,
   PRIMARY KEY (`id_proposal`),
   INDEX `redactor_id_fk_idx` (`journalist_id_p` ASC),
   CONSTRAINT `redactor_id_fk`
     FOREIGN KEY (`journalist_id_p`)
-    REFERENCES `editorialdb`.`user` (`id`));
+    REFERENCES `editorialdb`.`user` (`id`)
+	ON DELETE CASCADE ON UPDATE CASCADE);
 -- -----------------------------------------------------
 -- Table `editorialdb`.`authority`
 -- -----------------------------------------------------
