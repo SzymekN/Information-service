@@ -1,8 +1,57 @@
 <script setup>
+import TheTitle from "@/components/main-layout/TheTitle.vue";
+import {Toaster, toast } from 'vue-sonner'
+import {useRouter} from 'vue-router'
+
+const router = useRouter()
+
+const register = async () =>{
+
+  const username = document.querySelector('input[name="username"]').value;
+  const password = document.querySelector('input[name="password"]').value;
+  const name = document.querySelector('input[name="name"]').value;
+  const surname = document.querySelector('input[name="surname"]').value;
+  const email = document.querySelector('input[name="email"]').value;
+
+  let requestBody = JSON.stringify({
+          username: username,
+          password: password,
+          name: name,
+          surname: surname,
+          email: email
+        })
+
+  try{
+    const url = 'http://localhost:8080/client/registration';
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: requestBody,
+    });
+
+    if (!response.ok) {
+      const text = await response.json();
+      for (const [key, value] of Object.entries(text)) {
+        setTimeout(() => toast.error(`${key}: ${value}`), 10)
+      }
+      setTimeout(() => toast.error("Wystąpił błąd podczas rejestracji"), 100)
+    }
+    else
+      router.push('/')
+
+  } catch (error) {
+    toast.error("Wystąpił błąd podczas rejestracji")
+  }
+
+}
 
 </script>
 
 <template>
+    <Toaster  richColors position="top-center" closeButton :visibleToasts="9"/>
+
   <body>
   <div class="limiter">
     <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50"/>
@@ -11,9 +60,6 @@
     </div>
     <div class="container-login100">
       <div class="wrap-login100">
-<!--        <div class="login100-pic js-tilt" data-tilt>-->
-<!--&lt;!&ndash;          <img src="../../public/img-01.png" alt="IMG">&ndash;&gt;-->
-<!--        </div>-->
 
         <form class="login100-form validate-form"  @submit.prevent>
 					<span class="login100-form-title">
@@ -29,7 +75,7 @@
           </div>
 
           <div class="wrap-input100 validate-input" data-validate = "Password is required">
-            <input class="input100" type="password" name="pass" placeholder="Hasło">
+            <input class="input100" type="password" name="password" placeholder="Hasło">
             <span class="focus-input100"></span>
             <span class="symbol-input100">
 							<i class="fa fa-lock" aria-hidden="true"></i>
@@ -61,7 +107,7 @@
           </div>
 
           <div class="container-login100-form-btn" >
-            <button class="login100-form-btn" @click="">
+            <button class="login100-form-btn" @click="register()">
               Zarejestruj się
             </button>
           </div>
@@ -76,14 +122,18 @@
             <span class="txt1">
               Posiadasz już konto?
 						</span>
-            <a class="txt2" href="/login">
-              Zaloguj się
-            </a>
+            <router-link :to="`/login`">
+              <a class="txt2">
+                Zaloguj się
+              </a>
+            </router-link>
           </div>
           <div class="text-center p-t-136">
-            <a class="txt2" href="/">
-              Powrót na stronę główną
-            </a>
+            <router-link :to="`/`">
+              <a class="txt2" href="/">
+                Powrót na stronę główną
+              </a>
+            </router-link>
           </div>
         </form>
       </div>

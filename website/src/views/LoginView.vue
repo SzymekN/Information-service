@@ -1,20 +1,17 @@
 <script setup>
 import TheTitle from "@/components/main-layout/TheTitle.vue";
+import {Toaster, toast } from 'vue-sonner'
 import Cookie from "js-cookie";
 import {useRouter} from 'vue-router'
-// import axios from 'axios';
-// export default {
-//   name: "LoginView",
-//   methods: {list},
-//   components: {TheTitle}
-// }
 
   const router = useRouter()
 
   //TODO: change it to request to backend instead of fake
   const login = async () =>{
+    
     const username = document.querySelector('input[name="username"]').value;
-    const password = document.querySelector('input[name="pass"]').value;
+    const password = document.querySelector('input[name="password"]').value;
+
     let requestBody = JSON.stringify({
             username: username,
             password: password,
@@ -25,42 +22,22 @@ import {useRouter} from 'vue-router'
     try {
       const url = 'http://localhost:8080/client/login/v2';
 
-      const data = `{
-          "username": "Tom",
-          "password": "Tom123"
-      }`;
-
       const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: data,
-      });
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'credentials': 'include', // Don't forget to specify this if you need cookies ?
+        },
+        body: requestBody,
+    });
 
+    if (!response.ok) {
       const text = await response.text();
+      toast.error(text)
+    }
+    // else
+      // router.push('/')
 
-      console.log(text);
-      // const response = await fetch('http://localhost:8080/client/login/v2', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: requestBody,
-      //   });
-      //   console.log("hejo")
-      //   // If the request is not successful, throw an error
-      //   // if (!response.ok) {
-      //   //   throw new Error(await response.text());
-      //   // }
-
-      //   // // Parse the response JSON and store the token in local storage
-      //   // const data = await response.json();
-      //   console.log(response);
-      //   localStorage.setItem('token', data.token);
-
-        // Redirect to the dashboard page
-        // router.push('/dashboard');
     } catch (error) {
       console.log(error);
     }
@@ -88,10 +65,32 @@ import {useRouter} from 'vue-router'
 
     console.log(username, password);
   }
+
+  const loginGoogle = async () =>{
+    try{
+    const url = 'http://localhost:8080/client/login/google';
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+    });
+    const res = await response.json();
+    console.log(res);
+    if (!response.ok) {
+      toast.error(text)
+    }
+    else
+      window.location.href = res.url;
+    } catch (error) {
+      console.log(error);
+    }
+  }
   
 </script>
 
 <template>
+  <Toaster  richColors position="top-center" closeButton />
   <body>
   <div class="limiter">
     <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50"/>
@@ -118,7 +117,7 @@ import {useRouter} from 'vue-router'
           </div>
 
           <div class="wrap-input100 validate-input" data-validate = "Password is required">
-            <input class="input100" type="password" name="pass" placeholder="Hasło">
+            <input class="input100" type="password" name="password" placeholder="Hasło">
             <span class="focus-input100"></span>
             <span class="symbol-input100">
 							<i class="fa fa-lock" aria-hidden="true"></i>
@@ -131,7 +130,7 @@ import {useRouter} from 'vue-router'
             </button>
           </div>
           <div class="container-login100-form-btn container-login200-form-btn">
-            <button class="login100-form-btn login200-form-btn">
+            <button class="login100-form-btn login200-form-btn" @click="loginGoogle()">
               <img src="../../public/google_icon.png" height="48" width="48"/>
               Zaloguj się przez Google
             </button>
@@ -141,14 +140,18 @@ import {useRouter} from 'vue-router'
             <span class="txt1">
               Nie masz jeszcze konta?
 						</span>
-            <a class="txt2" href="/register">
-              Zarejestruj się
-            </a>
+            <router-link :to="`/register`">
+              <a class="txt2">
+                Zarejestruj się
+              </a>
+            </router-link>
           </div>
           <div class="text-center p-t-136">
-            <a class="txt2" href="/">
-              Powrót na stronę główną
-            </a>
+            <router-link :to="`/`">
+              <a class="txt2">
+                Powrót na stronę główną
+              </a>
+            </router-link>
           </div>
         </form>
       </div>

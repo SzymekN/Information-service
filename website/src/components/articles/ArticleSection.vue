@@ -1,23 +1,25 @@
 <script setup>
 import TopNews from "./TopNews.vue";
-import Article from "./MiniArticle.vue";
+import MiniArticle from "./MiniArticle.vue";
 import { ref, onMounted, onUnmounted } from 'vue';
 
 const articles = ref([]);
 const page = ref(0);
 const isLoading = ref(false);
-const category = ref('')
-var size = 5;
+// const category = ref('')
+var size = 9;
 var fetchUrl = 'http://localhost:8080/client/articles/pages?';
 
 const props = defineProps({
-  category: { type: String, default: '' },
+  category: { type: String, default: 'top' },
 })
 
 const fetchArticles = async () => {
     try {
-      if (sessionStorage.getItem("allArticles") && articles.value.length < sessionStorage.getItem("allArticles").length) {
-        const data = JSON.parse(sessionStorage.getItem("allArticles"))
+
+      //read from session storage instead of making request
+      if (sessionStorage.getItem(props.category) && articles.value.length < JSON.parse(sessionStorage.getItem(props.category)).length) {
+        const data = JSON.parse(sessionStorage.getItem(props.category))
         console.log(data.length)
         if (articles.value.length + size < data.length){
           articles.value = [...articles.value, ...data.slice(page.value * size, (page.value + 1) * size)];
@@ -26,11 +28,13 @@ const fetchArticles = async () => {
           return;          
         }
       }
+
+      console.log(fetchUrl+`page=${page.value}&size=${size}`)
       const response = await fetch(fetchUrl+`page=${page.value}&size=${size}`);
       page.value++;
       const data = await response.json();
       articles.value = [...articles.value, ...data];
-      sessionStorage.setItem("allArticles", JSON.stringify(articles.value))
+      sessionStorage.setItem(props.category, JSON.stringify(articles.value))
       isLoading.value = false;
     } catch (error) {
       console.log(error);
@@ -44,7 +48,7 @@ const fetchArticles = async () => {
   }
 
   const handleScroll = () => {
-    console.log(window.innerHeight + document.documentElement.scrollTop, document.documentElement.offsetHeight, isLoading.value)
+    // console.log(window.innerHeight + document.documentElement.scrollTop, document.documentElement.offsetHeight, isLoading.value)
     if (window.innerHeight + document.documentElement.scrollTop <= document.documentElement.offsetHeight || isLoading.value) {
       return;
     }
@@ -53,11 +57,11 @@ const fetchArticles = async () => {
   }
 
   onMounted(() => {
-    if (props.category != '')
+    if (props.category !== 'top')
       fetchUrl = fetchUrl + `category=${props.category}&`;
-    sessionStorage.removeItem("allArticles");
+
+    sessionStorage.removeItem(props.category) //TODO: remove to read from session storage
     fetchArticles();
-    size = 8;
     window.addEventListener('scroll', handleScroll);
   })
 
@@ -85,18 +89,20 @@ const fetchArticles = async () => {
       :articleTitle="articles[0].title"
       :articleDescription="stripTags(articles[0].content)"
       :articleUrl="0"
-      :imageUrl="getImage(articles[0].content)"/>
+      :imageUrl="getImage(articles[0].content)"
+      :category="props.category"/>
     
-      <Article
+      <MiniArticle
       v-if="articles.length"
       v-for="(item, index) in articles.slice(1)"
       :key="index"
       :articleTitle="item.title"
       :articleDescription="stripTags(articles[index].content)"
       :articleUrl="index+1"
-      :imageUrl="getImage(item.content)"/>    
+      :imageUrl="getImage(item.content)"
+      :category="props.category"/>    
 
-    <Article
+    <MiniArticle
       v-if="isLoading == true"
       v-for="i in 8" :key="i"
       :imageUrl="getImage(articles[0].content)"
