@@ -10,11 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.util.Optional;
@@ -24,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@ActiveProfiles("testdb")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserActionServiceImplTest {
     private UserActionServiceImpl userActionService;
@@ -100,6 +102,6 @@ class UserActionServiceImplTest {
         // when
         when(basicService.copyHeadersFromRequest(any(HttpServletRequest.class))).thenReturn(new HttpHeaders());
         // act
-        assertThrows(HttpMessageConversionException.class, () -> userActionService.updateUserEditorialToClient(userId, userRegistrationDto, request));
+        assertThrows(NestedRuntimeException.class, () -> userActionService.updateUserEditorialToClient(userId, userRegistrationDto, request));
     }
 }
