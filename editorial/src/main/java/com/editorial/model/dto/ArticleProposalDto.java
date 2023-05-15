@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Getter
@@ -23,6 +24,8 @@ public class ArticleProposalDto {
     private ArticleProposal.Acceptance acceptance;
 
     private String authorName;
+
+    private Timestamp dateOfUpdate;
 
     @Override
     public int hashCode() {

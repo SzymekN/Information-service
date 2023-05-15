@@ -80,6 +80,7 @@ public class ArticleProposalServiceImpl implements ArticleProposalService {
                         .title(articleProposal.getTitle())
                         .acceptance(articleProposal.getAcceptance())
                         .authorName(articleProposal.getJournalist().getUsername())
+                        .dateOfUpdate(articleProposal.getDateOfUpdate())
                         .build())
                 .collect(Collectors.toList());
     }
