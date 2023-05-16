@@ -43,7 +43,7 @@
   const fetchArticles = async () => {
     try {
         table.isLoading = true;
-        const response = await fetch('http://localhost:8080/client/articles');
+        const response = await fetch('/client/articles');
         articles.value = await response.json();
         console.log(articles.value);
         data.value = [];

@@ -22,7 +22,7 @@ const register = async () =>{
         })
 
   try{
-    const url = 'http://localhost:8080/client/registration';
+    const url = '/client/registration';
     const response = await fetch(url, {
         method: 'POST',
         headers: {

@@ -20,13 +20,12 @@ import {useRouter} from 'vue-router'
     console.log(requestBody);
     // make request to backend
     try {
-      const url = 'http://localhost:8080/client/login/v2';
+      const url = '/client/login/v2';
 
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'credentials': 'include', // Don't forget to specify this if you need cookies ?
         },
         body: requestBody,
     });
@@ -68,7 +67,7 @@ import {useRouter} from 'vue-router'
 
   const loginGoogle = async () =>{
     try{
-    const url = 'http://localhost:8080/client/login/google';
+    const url = '/client/login/google';
     const response = await fetch(url, {
       method: 'GET',
       headers: {

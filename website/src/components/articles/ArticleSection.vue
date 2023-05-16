@@ -8,7 +8,7 @@ const page = ref(0);
 const isLoading = ref(false);
 // const category = ref('')
 var size = 9;
-var fetchUrl = 'http://localhost:8080/client/articles/pages?';
+var fetchUrl = '/client/articles/pages?';
 
 const props = defineProps({
   category: { type: String, default: 'top' },
