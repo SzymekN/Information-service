@@ -27,7 +27,7 @@
             </tbody>
           </table>
           <button id="hide-table" class="button">
-            <router-link :to="{ name:'leagueTable',path: '/sport', params: { league: clubs[0].strLeague } }">Show Table</router-link>
+            <router-link :to="{ name:'leagueTable',path: '/sport', params: { league: clubs[0].strLeague } }">Zobacz więcej</router-link>
           </button>
           
       </div>
@@ -74,19 +74,29 @@ export default {
 </script>
   
   <style scoped>
+  img {
+    max-width: 35px;
+    filter: drop-shadow(1px 1px 1px #222);
+  }
+
   .table-container {
     position: relative;
-    width: 35%;
+    width: fit-content;
+    background: white;
+    padding: 1%;
+    border-radius: 10px;
+    float: right;
+    min-width: 20%;
   }
   
   .scores-table {
     border-collapse: collapse;
-    width: 80%;
+    font-size: smaller;
+    width: 100%;
   }
   
   .scores-table th,
   .scores-table td {
-    width: 25%;
     padding: 0.5rem;
     text-align: center;
   }
@@ -103,6 +113,7 @@ export default {
     font-weight: bold;
     padding: 12px;
     text-transform: uppercase;
+    font-size: 0.7rem;
   }
   .scores-table th:first-child {
     border-top-left-radius: 4px;
@@ -118,7 +129,7 @@ export default {
   .scores-table td .points {
     display: inline-block;
     color: rgb(0, 0, 0);
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: bold;
   }
   
@@ -127,19 +138,21 @@ export default {
     border: none;
     border-radius: 0.25rem;
     color: #333;
-    font-size: 1rem;
-    font-weight: bold;
+    font-size: 0.9rem;
+    font-weight: 550;
     padding: 0.5rem 1rem;
-    width: 80%;
     margin-bottom: 0.5rem;
-    min-width: 338px;
+    width: 100%;
   }
   
   .select-container:focus {
     outline: none;
     box-shadow: 0 0 0.125rem rgba(0, 0, 0, 0.2);
   }
-  
+
+  a:hover {
+    color: white;
+  }
   #show-table{
     background-color: #f2f2f2;
     border: none;
@@ -154,5 +167,26 @@ export default {
   }
   #show-table:hover{
     background-color: #eaeaea;
+  }
+
+
+  @media screen and (max-width: 1000px) {
+    .table-container {
+      width: 100%;
+    }
+    .scores-table th,
+    .scores-table td {
+      width: 25%;
+    }
+
+    .scores-table{
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .table-container {
+      margin-top: 7.5rem;
+    }
   }
 </style>

@@ -2,9 +2,9 @@ package com.client.controller;
 
 import com.client.model.dto.LoginDto;
 import com.client.model.dto.UserRegistrationDto;
-import com.client.service.GoogleAuthServiceImpl;
-import com.client.service.LoginServiceImpl;
-import com.client.service.RegisterServiceImpl;
+import com.client.service.GoogleAuthService;
+import com.client.service.LoginService;
+import com.client.service.RegisterService;
 import com.client.util.ExternalAuthenticationException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,17 +21,19 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
-import static com.client.util.UrlConstants.EDITORIAL_REGISTRATION_URL;
 import static com.client.util.UrlConstants.GOOGLE_AUTHORIZATION_ENDPOINT;
+import static com.client.util.UrlConstants.WEBSITE_URL;
 
 @RestController
 @RequestMapping("/client")
 public class LoginController {
 
-    private final LoginServiceImpl loginService;
-    private final RegisterServiceImpl registerService;
-    private final GoogleAuthServiceImpl googleAuthService;
+    private final LoginService loginService;
+    private final RegisterService registerService;
+    private final GoogleAuthService googleAuthService;
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
@@ -40,7 +42,7 @@ public class LoginController {
     private String clientSecret;
 
     @Autowired
-    public LoginController(LoginServiceImpl loginService, RegisterServiceImpl registerService, GoogleAuthServiceImpl googleAuthService) {
+    public LoginController(LoginService loginService, RegisterService registerService, GoogleAuthService googleAuthService) {
         this.loginService = loginService;
         this.registerService = registerService;
         this.googleAuthService = googleAuthService;
@@ -75,7 +77,9 @@ public class LoginController {
                 + "&client_id=" + clientId
                 + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8)
                 + "&scope=openid%20email%20profile";
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(googleAuthUrl)).build();
+        Map<String, String> data = new HashMap<>();
+        data.put("url", googleAuthUrl);
+        return ResponseEntity.status(HttpStatus.OK).body(data);
     }
 
     @GetMapping("/login/oauth2/code/google")
@@ -94,12 +98,14 @@ public class LoginController {
         UserRegistrationDto userRegistrationDto = UserRegistrationDto.jsonToDto(jsonObject);
         if (!loginService.checkIfUserExistsByEmail(email)) {
             registerService.registerUser(userRegistrationDto);
-            restTemplate.postForEntity(EDITORIAL_REGISTRATION_URL, userRegistrationDto, String.class);
+            ResponseEntity<String> editorialResponse = registerService.registerUserClientToEditorial(userRegistrationDto, httpServletRequest);
+            if (!editorialResponse.getStatusCode().is2xxSuccessful())
+                return new ResponseEntity<>(editorialResponse.getBody(), editorialResponse.getStatusCode());
         }
 
         loginService.setUserSession(httpServletRequest, httpServletResponse, userRegistrationDto, null);
 
-        return ResponseEntity.ok("Successful login via google account.");
+        return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(WEBSITE_URL)).build();
     }
 
     @GetMapping("/test")

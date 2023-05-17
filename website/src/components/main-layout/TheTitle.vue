@@ -8,9 +8,11 @@ defineProps({
 </script>
 
 <template>
-  <div class="greetings">
-    <h1 class="header_title">{{ msg }}</h1>
-  </div>
+  <router-link to="/">
+    <div class="greetings">
+      <h1 class="header_title">{{ msg }}</h1>
+    </div>
+  </router-link>
 </template>
 
 <style scoped>

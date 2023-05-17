@@ -85,8 +85,9 @@ export default {
   overflow: hidden;
   display: flex;
   flex-wrap: nowrap;
-  background: linear-gradient(white, aliceblue, white);
-  border-radius: 25px;
+  /*background: linear-gradient(white, aliceblue, white);*/
+  border-radius: 10px;
+  background: white;
 }
 .react-horizontal-scrolling-menu--scroll-container1 {
   box-sizing: content-box;
