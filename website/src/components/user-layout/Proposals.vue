@@ -31,60 +31,99 @@
 <script setup>
 import jsCookie from "js-cookie";
 import { reactive, ref, computed } from "vue";
+import { toast } from "vue-sonner";
 import TableLite from 'vue3-table-lite'
 
 // TODO: replace with fetched data
 // Fake Data for 'asc' sortable
 const data = reactive([]);
-for (let i = 0; i < 127; i++) {
-  data.push({
-      id: i,
-      user: ""+i,
-      topic: "TEST" + i,
-      date: new Date().toDateString(),
-      state: "approved",
-  });
+var url = '/editorial/proposal?';
+var page = 0;
+var size = 10;
+
+const fetchProposals = async () =>{
+  try {
+
+    const response = await fetch(url+`page=${page}&size=${size}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      toast.error(text)
+    }
+    else{
+      console.log(response)
+      const responseJson = await response.json();
+      for (let i = 0; i < responseJson.length; i++) {
+        data.push({
+          id: responseJson[i]["id"],
+          authorName: responseJson[i]["authorName"],
+          title: responseJson[i]["title"],
+          dateOfUpdate: responseJson[i]["dateOfUpdate"],
+          state: responseJson[i]["state"],
+          acceptance: responseJson[i]["state"],
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-data.push({
-  id: 127,
-  user: ""+127,
-  topic: "TEST" + 127,
-  date: (new Date().toDateString()),
-  state: "rejected",
-});
+// for (let i = 0; i < 127; i++) {
+//   data.push({
+//       id: i,
+//       user: ""+i,
+//       topic: "TEST" + i,
+//       date: new Date().toDateString(),
+//       state: "approved",
+//   });
+// }
+
+// data.push({
+//   id: 127,
+//   user: ""+127,
+//   topic: "TEST" + 127,
+//   date: (new Date().toDateString()),
+//   state: "rejected",
+// });
 
 const searchTerm = ref(""); // Search text
 const newTopicProposal = ref(""); // user input with proposition
 const maxId = ref(128); // last id assigned
-
+fetchProposals();
 // Table config
 const table = reactive({
   columns: [
       {
           label: "Użytkownik",
-          field: "user",
+          field: "authorName",
           width: "1%",
           sortable: true,
       },
       {
           label: "Temat",
-          field: "topic",
+          field: "title",
           width: "5%",
           sortable: true,
           display: function (row) {
-              return '<span><a href="#" class="topic" topicId="'+row.id+'">'+row.topic+'</a></span>'
+              return '<span><a href="#" class="topic" topicId="'+row.id+'">'+row.title+'</a></span>'
           },
       },
       {
           label: "Data zaproponowania",
-          field: "date",
+          field: "dateOfUpdate",
           width: "1%",
           sortable: true,
       },
       {
           label: "Stan",
-          field: "state",
+          field: "acceptance",
           width: "1%",
           sortable: true,
           display: function (row) {
@@ -98,17 +137,18 @@ const table = reactive({
               
               //make state clickable if user is admin or redactor
               if (jsCookie.get('role') == 'admin' || jsCookie.get('role') == 'redactor')
-                  return '<span><a href="#" style=color:'+color+' class="state" topicId="'+row.id+'">'+row.state+'</a></span>'
-              return '<span style=color:'+color+'>'+row.state+'</span>'
+                  return '<span><a href="#" style=color:'+color+' class="state" topicId="'+row.id+'">'+row.acceptance+'</a></span>'
+              return '<span style=color:'+color+'>'+row.acceptance+'</span>'
           },
       },
   ],
   rows: computed(() => {
       return data.filter(
       (x) =>
-          x.user.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-          x.topic.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-          x.state.toLowerCase().includes(searchTerm.value.toLowerCase())
+          x.authorName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+          x.title.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+          x.acceptance.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+          x.dateOfUpdate.toLowerCase().includes(searchTerm.value.toLowerCase())
       );
   }),
   totalRecordCount: computed(() => {
@@ -172,7 +212,41 @@ const tableLoadingFinish = () => {
 
 };
 
-const addTopic = () =>{
+const addTopic = async () =>{
+
+  const newTopic = newTopicProposal.value;
+  const request = {
+      title: newTopic,
+  }
+
+  console.log(document.cookie)
+
+  try {
+      const url = '/editorial/proposal';
+
+      const response = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        toast.error(text)
+
+      }
+      else{
+        const text = await response.text();
+
+        toast.success("Dodano temat")
+      }
+  } catch (error) {
+      console.log(error);
+  }
+
   data.push({
           id: maxId.value++,
           user: 'user',

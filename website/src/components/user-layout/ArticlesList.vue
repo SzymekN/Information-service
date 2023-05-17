@@ -17,7 +17,7 @@
   </div>
   <div class="table-context">
     <table-lite
-        :is-static-mode="false"
+        :is-static-mode="true"
         :columns="table.columns"
         :rows="table.rows"
         :total="table.totalRecordCount"

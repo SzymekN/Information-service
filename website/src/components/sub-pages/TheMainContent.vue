@@ -1,11 +1,39 @@
 <script setup>
 import TheRightSection from "@/components/api-weather/TheRightSection.vue";
 import ArticleSection from "@/components/articles/ArticleSection.vue";
+import {Toaster, toast } from 'vue-sonner'
+import { onMounted } from "vue";
+import jsCookie from "js-cookie";
+
+
+onMounted (() => {
+
+  if (jsCookie.get("ROLE"))
+    console.log("ROLE: " + atob(jsCookie.get("ROLE")));
+
+  // toasting info about login and logout
+  if (!sessionStorage.getItem("loginMonitShown"))
+    sessionStorage.setItem("loginMonitShown", "false");
+
+  if (sessionStorage.getItem("loginMonitShown") == "false" && jsCookie.get("ROLE")){
+    toast.success("Zalogowano pomyślnie");
+    sessionStorage.setItem("loginMonitShown", "true");
+    sessionStorage.setItem("logoutMonitShown", "false");
+  }
+
+  if (sessionStorage.getItem("logoutMonitShown") == "false" && !jsCookie.get("ROLE")){
+    toast.success("Wylogowano pomyślnie");
+    sessionStorage.setItem("logoutMonitShown", "true");
+    sessionStorage.setItem("loginMonitShown", "false");
+  }
+
+})
+
 
 </script>
 
 <template>
-
+  <Toaster richColors position="top-center"/>
   <div id="content_container">
     <div class="section_content">
 

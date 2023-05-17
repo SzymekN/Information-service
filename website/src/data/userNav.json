@@ -8,18 +8,18 @@
         "text":"Profil"
     },
     {
-        "link":"/userpanel/topics",
+        "link":"/userpanel/proposals",
         "text":"Tematy",
-        "authorities":["journalist", "admin", "redactor"]
+        "authorities":["ROLE_JOURNALIST", "ROLE_ADMIN", "ROLE_REDACTOR"]
     },
     {
         "link":"/userpanel/articles",
         "text":"Artykuły w przygotowaniu",
-        "authorities":["journalist", "admin", "redactor", "corrector"]
+        "authorities":["ROLE_JOURNALIST", "ROLE_ADMIN", "ROLE_REDACTOR", "ROLE_CORRECTOR"]
     },
     {
         "link":"/userpanel/edit",
         "text":"Edytor artykułów",
-        "authorities":["journalist", "admin", "redactor"]
+        "authorities":["ROLE_JOURNALIST", "ROLE_ADMIN", "ROLE_REDACTOR"]
     }
 ]
