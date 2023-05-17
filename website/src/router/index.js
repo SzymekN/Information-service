@@ -8,12 +8,12 @@ import Article from "@/components/articles/Article.vue"
 import LeagueTop5 from "@/components/api-leagues/LeagueTop5.vue"
 import LeagueTable from "@/components/api-leagues/LeagueTable.vue"
 import UserInfo from "@/components/user-layout/UserInfo.vue"
-import Topics from "@/components/user-layout/Topics.vue"
+import Proposals from "@/components/user-layout/Proposals.vue"
 import ArticlesList from "@/components/user-layout/ArticlesList.vue"
 import Editor from "@/components/user-layout/Editor.vue"
 import RegisterView from "@/views/RegisterView.vue";
 
-import Cookie from 'js-cookie';
+import jsCookie from 'js-cookie';
 // -artykuly i artykul- do usuniecia mozna przekierowac do 404 za pomoca useRouter np gdy dane zapytanie nie na wynikow 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -70,9 +70,9 @@ const router = createRouter({
                     component: Editor
                 },
                 {
-                    path: "/userpanel/topics",
-                    name: 'topics',
-                    component: Topics
+                    path: "/userpanel/proposals",
+                    name: 'proposals',
+                    component: Proposals
                 },
                 {
                     path: "/userpanel/articles",
@@ -109,18 +109,20 @@ const router = createRouter({
 })
 
 //route guard
-const protectedRoutes = ['userpanel', 'edit', 'topics', 'articlesList', 'profile'];
+const protectedRoutes = ['userpanel', 'edit', 'proposals', 'articlesList', 'profile'];
 
 const roleRoutes = {
-    'journalist': ['userpanel', 'edit', 'topics', 'articlesList', 'profile'],
-    'corrector': ['userpanel', 'edit', 'articlesList', 'profile'],
-    'redactor': ['userpanel', 'edit', 'topics', 'articlesList', 'profile'],
-    'user': ['userpanel', 'info'],
-    'admin': 'all'
+    'ROLE_JOURNALIST': ['userpanel', 'edit', 'proposals', 'articlesList', 'profile'],
+    'ROLE_CORRECTOR': ['userpanel', 'edit', 'articlesList', 'profile'],
+    'ROLE_REDACTOR': ['userpanel', 'edit', 'proposals', 'articlesList', 'profile'],
+    'ROLE_USER': ['userpanel', 'info'],
+    'ROLE_ADMIN': 'all'
 }
 
 router.beforeEach((to, from, next) => {
-    const role = Cookie.get('role');
+    let role = null;
+    if (jsCookie.get('ROLE'))
+        role = atob(jsCookie.get('ROLE'));
 
     if (!protectedRoutes.includes(to.name)) {
         next();
@@ -128,7 +130,7 @@ router.beforeEach((to, from, next) => {
     }
 
     if (role && protectedRoutes.includes(to.name)){
-        if (roleRoutes[role].includes(to.name) || role === 'admin') next();
+        if (roleRoutes[role].includes(to.name) || role === 'ROLE_ADMIN') next();
         else next('/login')
     } else
         next('/')

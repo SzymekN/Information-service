@@ -34,8 +34,10 @@ import {useRouter} from 'vue-router'
       const text = await response.text();
       toast.error(text)
     }
-    // else
-      // router.push('/')
+    else{
+      sessionStorage.setItem("loginMonitShown", "false");
+      router.push('/')
+    }
 
     } catch (error) {
       console.log(error);
@@ -92,7 +94,9 @@ import {useRouter} from 'vue-router'
   <Toaster  richColors position="top-center" closeButton />
   <body>
   <div class="limiter">
-    <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50"/>
+    <router-link to="/">
+      <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />
+    </router-link>
     <div class="wrapper">
       <TheTitle msg="Serwis informacyjny" />
     </div>

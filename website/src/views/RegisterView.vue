@@ -54,7 +54,9 @@ const register = async () =>{
 
   <body>
   <div class="limiter">
-    <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50"/>
+    <router-link to="/">
+      <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />
+    </router-link>
     <div class="wrapper">
       <TheTitle msg="Serwis informacyjny" />
     </div>
