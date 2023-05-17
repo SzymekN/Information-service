@@ -58,9 +58,17 @@ const fetchProposals = async () =>{
     }
     else{
       console.log(response)
-      const text = await response.json();
-      // data.value = [...data, ...JSON.parse(text)]
-      console.log(data.value)
+      const responseJson = await response.json();
+      for (let i = 0; i < responseJson.length; i++) {
+        data.push({
+          id: responseJson[i]["id"],
+          authorName: responseJson[i]["authorName"],
+          title: responseJson[i]["title"],
+          dateOfUpdate: responseJson[i]["dateOfUpdate"],
+          state: responseJson[i]["state"],
+          acceptance: responseJson[i]["state"],
+        });
+      }
     }
   } catch (error) {
     console.log(error);
@@ -129,17 +137,18 @@ const table = reactive({
               
               //make state clickable if user is admin or redactor
               if (jsCookie.get('role') == 'admin' || jsCookie.get('role') == 'redactor')
-                  return '<span><a href="#" style=color:'+color+' class="state" topicId="'+row.id+'">'+row.state+'</a></span>'
-              return '<span style=color:'+color+'>'+row.state+'</span>'
+                  return '<span><a href="#" style=color:'+color+' class="state" topicId="'+row.id+'">'+row.acceptance+'</a></span>'
+              return '<span style=color:'+color+'>'+row.acceptance+'</span>'
           },
       },
   ],
   rows: computed(() => {
       return data.filter(
       (x) =>
-          x.user.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-          x.topic.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-          x.state.toLowerCase().includes(searchTerm.value.toLowerCase())
+          x.authorName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+          x.title.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+          x.acceptance.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+          x.dateOfUpdate.toLowerCase().includes(searchTerm.value.toLowerCase())
       );
   }),
   totalRecordCount: computed(() => {
