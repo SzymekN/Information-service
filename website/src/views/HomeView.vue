@@ -25,7 +25,7 @@ import jsCookie from "js-cookie";
     //   console.error('Logout failed', error);
     // });
     jsCookie.remove('role');
-    console.log(jsCookie.get('role'));
+    jsCookie.remove('ROLE');
     window.location.href = '/home';
 
   }
@@ -35,15 +35,16 @@ import jsCookie from "js-cookie";
 <template>
 <!--MARK: 1. HEADER-->
   <header>
+  <router-link to="/">
     <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />
-
+  </router-link>
     <div class="wrapper">
       <TheTitle msg="Serwis informacyjny" />
     </div>
 
     <div class="buttons" v-for="item in list">
-      <button v-if="!jsCookie.get('role')"><router-link :to="item.link" ><a>{{item.text}}</a></router-link></button>
-      <button v-if="jsCookie.get('role')"><router-link :to="'#'"  @click="logout()"><a>{{"Wyloguj"}}</a></router-link></button>
+      <button v-if="!jsCookie.get('ROLE')"><router-link :to="item.link" ><a>{{item.text}}</a></router-link></button>
+      <button v-if="jsCookie.get('ROLE')"><router-link :to="'#'"  @click="logout()"><a>{{"Wyloguj"}}</a></router-link></button>
     </div>
   </header>
 

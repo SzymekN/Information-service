@@ -1,12 +1,16 @@
 <script setup>
 import TheTitle from "@/components/main-layout/TheTitle.vue";
 import UserPanelNav from "@/components/user-layout/UserPanelNav.vue";
+import { Toaster } from "vue-sonner";
 </script>
 
 <template>
+  <Toaster richColors/>
   <!--MARK: 1. HEADER-->
   <header>
-    <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />
+    <router-link to="/">
+      <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />
+    </router-link>
 
     <div class="wrapper">
       <TheTitle msg="Serwis informacyjny" />
