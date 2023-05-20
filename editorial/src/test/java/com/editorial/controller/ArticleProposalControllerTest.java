@@ -59,7 +59,7 @@ class ArticleProposalControllerTest {
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
         // then
-        doNothing().when(articleProposalService).addArticle(any(User.class), any(ArticleProposalDto.class));
+        when(articleProposalService.addArticle(any(User.class), any(ArticleProposalDto.class))).thenReturn(ResponseEntity.ok("Successfully added an article!"));
         mockMvc.perform(post("/editorial/proposal").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(articleProposalDto)))
@@ -90,6 +90,7 @@ class ArticleProposalControllerTest {
         ArticleProposalDto articleProposalDto = new ArticleProposalDto();
         articleProposalDto.setId(1L);
         articleProposalDto.setAcceptance(ArticleProposal.Acceptance.PENDING);
+        articleProposalDto.setTitle("Example title");
         User loggedUser = new User();
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));

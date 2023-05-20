@@ -41,12 +41,15 @@ public class ArticleCorrect implements Serializable {
     @NotNull
     private Boolean isCorrected;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "journalist_id_c")
-    private User journalist;
+    @Column(name = "is_edited_by_journalist")
+    @NotNull
+    private Boolean isEditedByJournalist;
+
+    @Column(name = "journalist_id_c")
+    private Long journalistId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "corrector_id_c", nullable = true)
+    @JoinColumn(name = "corrector_id_c")
     private User corrector;
 
     @Override
