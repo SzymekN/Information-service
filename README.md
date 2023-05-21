@@ -127,6 +127,46 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     If the email or username already exists in the database, the endpoint returns a conflict response with an error message. 
     If the "X-Caller" header does not contain the expected value, the endpoint returns a bad request response with an error message. 
     If the registration process is successful, the endpoint returns a success response with a message indicating the success of the registration process.
+    <br><br>
+    <li><b>GET /client/validate</b></li>
+    This endpoint allows users to validate their account using a validation code. 
+    The endpoint expects a GET request with the validation code as a query parameter.
+    <br><br>
+    <b>Request Parameters:</b>
+    <ul>
+        <li>code (required): a string representing the validation code associated with the user account.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    This endpoint returns an HTTP response with a status code and an optional message. 
+    If the validation code is valid and the user account is successfully activated, it returns a response with a 200 OK status code and the message "User successfully enabled!"
+    If there is any other error during the validation process, such as an error while trying to enable the user in the editorial system, it returns a response with the appropriate HTTP status code and an error message explaining the issue (400 - Bad Request).
+    <br><br>
+    <li><b>POST /editorial/validate</b></li>
+    This endpoint allows enabling a user from the client application in the editorial microservice. 
+    The endpoint expects a POST request with the user ID in the request body and the X-Caller header set to "ACCOUNT_ENABLE" to authorize the operation.
+    <br><br>
+    <b>Request Headers:</b>
+    <ul>
+        <li>X-Caller (required): a string representing the caller of the API. It must be set to "ACCOUNT_ENABLE" to authorize the account enabling process.</li>
+    </ul>
+    <br>
+    <b>Request Body:</b>
+    <br>
+    The request body must contain a JSON object with the following fields:
+    <ul>
+        <li>userId (required): a string or number representing the ID of the user to be enabled in the editorial system.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    This endpoint returns an HTTP response with a status code and an optional message. <b>IT SHOULD NOT BE DIRECTLY ACCESSED!!!</b> <br>
+    If the account enabling process is successful, it returns a response with a 200 OK status code and the message "User successfully enabled!" 
+    If the X-Caller header is missing or set to an invalid value, it returns a response with a 400 BAD REQUEST status code and an error message indicating that the account enabling process was unsuccessful.
+    If the user ID is not found in the editorial database, it returns a response with a 400 BAD REQUEST status code and an error message indicating that the user with the given ID was not found.
+    If the user is already enabled in the editorial system, it returns a response with a 400 BAD REQUEST status code and an error message indicating that the user is already enabled.
+    If there is any other error during the account enabling process, it returns a response with the appropriate HTTP status code and an error message explaining the issue.
 </ol>
 
 ### Articles:
