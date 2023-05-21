@@ -33,6 +33,7 @@ public class SecurityConfig {
                                 .requestMatchers("/client/login/google").permitAll()
                                 .requestMatchers("/client/login/oauth2/code/google").permitAll()
                                 .requestMatchers("/client/registration").permitAll()
+                                .requestMatchers("/client/validate").permitAll()
                                 .requestMatchers("/client/registration/fe").permitAll()
                                 .requestMatchers("/client/actions/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/client/test").hasRole("USER")

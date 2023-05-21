@@ -3,12 +3,15 @@ package com.client.controller;
 import com.client.model.dto.UserRegistrationDto;
 import com.client.service.LoginService;
 import com.client.service.RegisterService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.UnsupportedEncodingException;
 
 import static com.client.util.AccountConstants.APP_SUPPLIER;
 import static com.client.util.AccountConstants.ROLE_USER;
@@ -35,7 +38,13 @@ public class RegisterController {
 
         userRegistrationDto.setSupplier(APP_SUPPLIER);
         userRegistrationDto.setAuthorityName(ROLE_USER);
-        registerService.registerUser(userRegistrationDto);
+
+        try {
+            registerService.registerUser(userRegistrationDto);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in registration");
+        }
+
         ResponseEntity<String> editorialResponse = registerService.registerUserClientToEditorial(userRegistrationDto, request);
         if (!editorialResponse.getStatusCode().is2xxSuccessful())
             return new ResponseEntity<>(editorialResponse.getBody(), editorialResponse.getStatusCode());
@@ -52,8 +61,17 @@ public class RegisterController {
             else if (registerService.checkIfUserExistsByUsername(userRegistrationDto.getUsername()))
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Provided username is already taken!");
 
-            registerService.registerUser(userRegistrationDto);
+            try {
+                registerService.registerUser(userRegistrationDto);
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in registration fe");
+            }
             return ResponseEntity.ok("Correct registration process.");
         }
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<String> validateUser(@RequestParam("code") String code, HttpServletRequest request) {
+        return registerService.validateCode(code, request);
     }
 }
