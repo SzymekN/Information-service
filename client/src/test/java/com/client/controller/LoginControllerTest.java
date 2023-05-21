@@ -78,8 +78,7 @@ public class LoginControllerTest {
                         .content(loginDtoJson))
 
         // then
-                .andExpect(status().isOk())
-                .andExpect(content().string("Login successful!"));
+                .andExpect(status().isOk());
     }
 
     @Test

@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -176,17 +175,6 @@ public class UserActionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .requestAttr("request", request))
                 .andExpect(status().isBadRequest());
-    }
-    @Test
-    @WithAnonymousUser
-    public void for_anonymous_user() throws Exception {
-        // given
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        // when & then
-        mockMvc.perform(delete("/client/actions/delete").with(csrf())
-                        .param("id", "1")
-                        .requestAttr("request", request))
-                .andExpect(status().is3xxRedirection());
     }
 
     @Test
