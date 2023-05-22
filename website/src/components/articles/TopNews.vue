@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`article?id=${articleUrl}`">
+  <router-link :to="`article?id=${articleUrl}&category=${category}`">
   <div class="top">
       <img :src="imageUrl" height="853" width="1200"/>
       <!-- <img src="/17-g-ry-dla-seniora-jak-si.jpg" height="853" width="1200"/> -->
@@ -18,6 +18,7 @@ export default {
     articleTitle: String,
     articleDescription: String,
     articleUrl: Number,
+    category: String,
   },
 };
 </script>

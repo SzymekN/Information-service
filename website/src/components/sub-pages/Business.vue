@@ -8,7 +8,7 @@ import ArticleSection from "@/components/articles/ArticleSection.vue";
     <Currencies/>
     <p class = "section_title">O TYM SIĘ MÓWI W BIZNESIE</p>
     <hr>
-    <ArticleSection/>
+    <ArticleSection :category="'politics'"/>
 </template>
 
 <style scoped>

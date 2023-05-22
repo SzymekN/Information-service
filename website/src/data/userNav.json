@@ -8,15 +8,18 @@
         "text":"Profil"
     },
     {
-        "link":"/userpanel/topics",
-        "text":"Tematy"
+        "link":"/userpanel/proposals",
+        "text":"Tematy",
+        "authorities":["ROLE_JOURNALIST", "ROLE_REDACTOR"]
     },
     {
         "link":"/userpanel/articles",
-        "text":"Artykuły w przygotowaniu"
+        "text":"Artykuły w przygotowaniu",
+        "authorities":["ROLE_JOURNALIST", "ROLE_REDACTOR", "ROLE_CORRECTOR"]
     },
     {
         "link":"/userpanel/edit",
-        "text":"Edytor artykułów"
+        "text":"Edytor artykułów",
+        "authorities":["ROLE_JOURNALIST", "ROLE_REDACTOR"]
     }
 ]

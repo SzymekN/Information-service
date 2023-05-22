@@ -1,18 +1,29 @@
 <script setup>
 import TheTitle from "@/components/main-layout/TheTitle.vue";
 import UserPanelNav from "@/components/user-layout/UserPanelNav.vue";
+import jsCookie from "js-cookie";
+import { Toaster } from "vue-sonner";
+
+const hasRole = () => {
+  if (jsCookie.get("ROLE"))
+    return  (atob(jsCookie.get("ROLE")));
+  else return false;
+};
 </script>
 
 <template>
+  <Toaster richColors/>
   <!--MARK: 1. HEADER-->
   <header>
-    <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />
+    <router-link to="/">
+      <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />
+    </router-link>
 
     <div class="wrapper">
       <TheTitle msg="Serwis informacyjny" />
     </div>
 
-    <h1>WITAJ, [USERNAME]</h1>
+    <h1>WITAJ, {{hasRole()}}</h1>
 
     <div class="buttons">
       <button><a href="#">Wyloguj się</a></button>
