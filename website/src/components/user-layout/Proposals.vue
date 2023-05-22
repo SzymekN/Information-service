@@ -128,20 +128,60 @@ const table = reactive({
           width: "1%",
           sortable: true,
           display: function (row) {
-            // var acceptanceList = "<form><select name='acceptance' id='acceptance' class='form-control form-control-sm' topicId='"+row.id+"' style='width:100%'><option value='proposed'>proposed</option><option value='approved'>approved</option><option value='rejected'>rejected</option></select></form>"
-              let color = "#e8b53f";
-              if (row.acceptance == "proposed")
-                  color = "#e8b53f";
-              if (row.acceptance == "approved")
-                  color = "#05a32f";
-              if (row.acceptance == "rejected")
-                  color = "#a31505";
+            let color = "#e8b53f";
+            if (row.acceptance == "PENDING")
+              color = "#e8b53f";
+            if (row.acceptance == "ACCEPTED")
+              color = "#05a32f";
+            if (row.acceptance == "DECLINED")
+              color = "#a31505";
+            
               
-              //make state clickable if user is admin or redactor
-              if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
-                  return '<span><a href="#" style=color:'+color+' class="acceptance" topicId="'+row.id+'">'+row.acceptance+'</a></span>'
-                  // return acceptanceList;
-              return '<span style=color:'+color+'>'+row.acceptance+'</span>'
+            if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR'){
+              var acceptanceSelect = document.createElement("select");
+              acceptanceSelect.setAttribute("name", "acceptance");
+              acceptanceSelect.setAttribute("id", "acceptance");
+              acceptanceSelect.setAttribute("class", "acceptance");
+              acceptanceSelect.setAttribute("topicTitle", row.title);
+              acceptanceSelect.setAttribute("topicId", row.id);
+              acceptanceSelect.setAttribute("style", "width:100%;color:"+color);
+
+              let pendingOption = document.createElement("option");
+              pendingOption.setAttribute("value", "PENDING");
+              pendingOption.innerHTML = "PENDING";
+              pendingOption.setAttribute("style", "color:orange");
+              if (row.acceptance === "PENDING"){
+                pendingOption.selected = true;
+                pendingOption.setAttribute("selected", "selected");
+              }
+
+              let acceptedOption = document.createElement("option");
+              acceptedOption.setAttribute("value", "ACCEPTED");
+              acceptedOption.innerHTML = "ACCEPTED";
+              acceptedOption.setAttribute("style", "color:green");
+              if (row.acceptance === "ACCEPTED"){
+                acceptedOption.selected = true;
+                acceptedOption.setAttribute("selected", "selected");
+              }
+
+              let declinedOption = document.createElement("option");
+              declinedOption.setAttribute("value", "DECLINED");
+              declinedOption.innerHTML = "DECLINED";
+              declinedOption.setAttribute("style", "color:red");
+              if (row.acceptance === "DECLINED"){
+                declinedOption.selected = true;
+                declinedOption.setAttribute("selected", "selected");
+              }
+
+              acceptanceSelect.appendChild(pendingOption);
+              acceptanceSelect.appendChild(acceptedOption);
+              acceptanceSelect.appendChild(declinedOption);
+
+              return acceptanceSelect.outerHTML;
+
+            }
+
+            return '<span style=color:'+color+'>'+row.acceptance+'</span>'
           },
       },
   ],
@@ -163,45 +203,93 @@ const table = reactive({
   },
 });
 
-function changeTopicListener(){
-  let newTopic = prompt("Podaj nowy temat")
 
-  //TODO: make request instead of local change
-  if (newTopic != null && newTopic !== ''){
-      let id = this.getAttribute('topicId');
-      data[id].topic = newTopic;
-      data[id].date = new Date().toDateString();
-      data[id].acceptance = "proposed";
+// Change topic
+function changeTopicListener(){
+
+  let newTopic = prompt("Podaj nowy temat")
+  console.log(this.value)
+  if (newTopic == null || newTopic == "")
+    return;
+  let id = this.getAttribute('topicId');
+  let title = this.getAttribute('topicTitle');
+  let acceptance = "PENDING"
+  if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
+    acceptance = "ACCEPTED"
+
+  const request = {
+      id: id,
+      title: newTopic,
+      acceptance: acceptance,
   }
+  changeProposalFetch(request);
   tableLoadingFinish()
 }
 
+// Make request
+const changeProposalFetch = async(bodyStruct) =>{
+
+  console.log(bodyStruct)
+  table.isLoading = true;
+  try {
+  const response = await fetch(url, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(bodyStruct),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    toast.error(text)
+  }
+  else{
+    toast.success("Zmieniono propozycję")
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].id == bodyStruct.id){
+        console.log(data[i])
+        data[i].title = bodyStruct.title;
+        data[i].acceptance = bodyStruct.acceptance;
+        console.log(data[i])
+        break;
+      }
+    }
+  }
+  } catch (error) {
+    toast.error(error)
+    console.log(error);
+  }
+
+  tableLoadingFinish()
+
+}
+
+// Change state
 function changeStateListener(){
 
-  //TODO: make request instead of local change
-  console.log(this)
+  console.log(this.value)
   let id = this.getAttribute('topicId');
-  let currentState = data[id].acceptance;
-  
-  if (currentState == 'proposed')
-    data[id].acceptance = 'approved';
-  else if (currentState == 'approved')
-    data[id].acceptance = 'rejected';
-  else
-      data[id].state = 'proposed';
+  let title = this.getAttribute('topicTitle');
+  const request = {
+      id: id,
+      title: title,
+      acceptance: this.value,
+  }
 
-
+  changeProposalFetch(request)
   tableLoadingFinish()
 }
 
-function addListeners(className, listenerFunction){
+function addListeners(className, listenerFunction, listenerType){
   let elements = document.getElementsByClassName(className)
 
   Array.prototype.forEach.call(elements, function (element) {
   //checking if cell already has onclick assigned
   if(element.getAttribute('listener') !== 'true'){
       element.setAttribute('listener', 'true');
-      element.addEventListener("click", listenerFunction);
+      element.addEventListener(listenerType, listenerFunction);
   }
   });
 
@@ -210,9 +298,9 @@ function addListeners(className, listenerFunction){
 const tableLoadingFinish = () => {
 
   table.isLoading = false;
-  addListeners("topic", changeTopicListener);
+  addListeners("topic", changeTopicListener, "click");
   if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
-      addListeners("acceptance", changeStateListener);
+      addListeners("acceptance", changeStateListener, "change");
 
 };
 
@@ -240,24 +328,28 @@ const addTopic = async () =>{
       if (!response.ok) {
         const text = await response.text();
         toast.error(text)
-
       }
+
       else{
         const text = await response.text();
 
         toast.success("Dodano temat")
+        let state = "PENDING"
+        if(atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
+          state = "ACCEPTED"
+
+        data.push({
+          id: 0,
+          authorName: 'user',
+          title: newTopic,
+          dateOfUpdate: new Date().toDateString(),
+          acceptance: state,})
       }
   } catch (error) {
       console.log(error);
   }
 
-  // data.push({
-  //         id: maxId.value++,
-  //         user: 'user',
-  //         topic: newTopicProposal.value,
-  //         date: new Date().toDateString(),
-  //         state: 'proposed',})
-  // newTopicProposal.value = "";
+
 }
 
 

@@ -10,16 +10,16 @@
     {
         "link":"/userpanel/proposals",
         "text":"Tematy",
-        "authorities":["ROLE_JOURNALIST", "ROLE_ADMIN", "ROLE_REDACTOR"]
+        "authorities":["ROLE_JOURNALIST", "ROLE_REDACTOR"]
     },
     {
         "link":"/userpanel/articles",
         "text":"Artykuły w przygotowaniu",
-        "authorities":["ROLE_JOURNALIST", "ROLE_ADMIN", "ROLE_REDACTOR", "ROLE_CORRECTOR"]
+        "authorities":["ROLE_JOURNALIST", "ROLE_REDACTOR", "ROLE_CORRECTOR"]
     },
     {
         "link":"/userpanel/edit",
         "text":"Edytor artykułów",
-        "authorities":["ROLE_JOURNALIST", "ROLE_ADMIN", "ROLE_REDACTOR"]
+        "authorities":["ROLE_JOURNALIST", "ROLE_REDACTOR"]
     }
 ]
