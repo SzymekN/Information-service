@@ -6,6 +6,8 @@
 -->
 
 <template>
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+
   <div class="properties">
     <div class="input-add">
       <label>Nowy temat:</label><input v-model="newTopicProposal" />
@@ -65,8 +67,7 @@ const fetchProposals = async () =>{
           authorName: responseJson[i]["authorName"],
           title: responseJson[i]["title"],
           dateOfUpdate: responseJson[i]["dateOfUpdate"],
-          state: responseJson[i]["state"],
-          acceptance: responseJson[i]["state"],
+          acceptance: responseJson[i]["acceptance"],
         });
       }
     }
@@ -95,7 +96,7 @@ const fetchProposals = async () =>{
 
 const searchTerm = ref(""); // Search text
 const newTopicProposal = ref(""); // user input with proposition
-const maxId = ref(128); // last id assigned
+// const maxId = ref(128); // last id assigned
 fetchProposals();
 // Table config
 const table = reactive({
@@ -127,17 +128,19 @@ const table = reactive({
           width: "1%",
           sortable: true,
           display: function (row) {
+            // var acceptanceList = "<form><select name='acceptance' id='acceptance' class='form-control form-control-sm' topicId='"+row.id+"' style='width:100%'><option value='proposed'>proposed</option><option value='approved'>approved</option><option value='rejected'>rejected</option></select></form>"
               let color = "#e8b53f";
-              if (row.state == "proposed")
+              if (row.acceptance == "proposed")
                   color = "#e8b53f";
-              if (row.state == "approved")
+              if (row.acceptance == "approved")
                   color = "#05a32f";
-              if (row.state == "rejected")
+              if (row.acceptance == "rejected")
                   color = "#a31505";
               
               //make state clickable if user is admin or redactor
-              if (jsCookie.get('role') == 'admin' || jsCookie.get('role') == 'redactor')
-                  return '<span><a href="#" style=color:'+color+' class="state" topicId="'+row.id+'">'+row.acceptance+'</a></span>'
+              if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
+                  return '<span><a href="#" style=color:'+color+' class="acceptance" topicId="'+row.id+'">'+row.acceptance+'</a></span>'
+                  // return acceptanceList;
               return '<span style=color:'+color+'>'+row.acceptance+'</span>'
           },
       },
@@ -168,7 +171,7 @@ function changeTopicListener(){
       let id = this.getAttribute('topicId');
       data[id].topic = newTopic;
       data[id].date = new Date().toDateString();
-      data[id].state = "proposed";
+      data[id].acceptance = "proposed";
   }
   tableLoadingFinish()
 }
@@ -176,13 +179,14 @@ function changeTopicListener(){
 function changeStateListener(){
 
   //TODO: make request instead of local change
+  console.log(this)
   let id = this.getAttribute('topicId');
-  let currentState = data[id].state;
-
+  let currentState = data[id].acceptance;
+  
   if (currentState == 'proposed')
-      data[id].state = 'approved';
+    data[id].acceptance = 'approved';
   else if (currentState == 'approved')
-      data[id].state = 'rejected';
+    data[id].acceptance = 'rejected';
   else
       data[id].state = 'proposed';
 
@@ -207,8 +211,8 @@ const tableLoadingFinish = () => {
 
   table.isLoading = false;
   addListeners("topic", changeTopicListener);
-  if (jsCookie.get('role') == 'admin' || jsCookie.get('role') == 'redactor')
-      addListeners("state", changeStateListener);
+  if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
+      addListeners("acceptance", changeStateListener);
 
 };
 
@@ -247,13 +251,13 @@ const addTopic = async () =>{
       console.log(error);
   }
 
-  data.push({
-          id: maxId.value++,
-          user: 'user',
-          topic: newTopicProposal.value,
-          date: new Date().toDateString(),
-          state: 'proposed',})
-  newTopicProposal.value = "";
+  // data.push({
+  //         id: maxId.value++,
+  //         user: 'user',
+  //         topic: newTopicProposal.value,
+  //         date: new Date().toDateString(),
+  //         state: 'proposed',})
+  // newTopicProposal.value = "";
 }
 
 
