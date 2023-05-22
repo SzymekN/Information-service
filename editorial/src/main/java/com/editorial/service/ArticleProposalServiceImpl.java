@@ -26,10 +26,11 @@ public class ArticleProposalServiceImpl implements ArticleProposalService {
     }
 
     @Override
-    public void addArticle(User loggedUser, ArticleProposalDto articleProposalDto) {
+    public ResponseEntity<String> addArticle(User loggedUser, ArticleProposalDto articleProposalDto) {
         ArticleProposal proposal = articleDtoToProposal(loggedUser, articleProposalDto);
         loggedUser.addArticleProposal(proposal);
         articleProposalRepository.save(proposal);
+        return ResponseEntity.ok("Successfully added");
     }
 
     @Override
