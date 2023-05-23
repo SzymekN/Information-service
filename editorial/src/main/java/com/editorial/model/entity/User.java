@@ -47,9 +47,6 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL)
     private List<ArticleDraft> articleDrafts;
 
-    @OneToMany(mappedBy = "journalist", cascade = CascadeType.ALL)
-    private List<ArticleCorrect> articleCorrectsJournalist;
-
     @OneToMany(mappedBy = "corrector", cascade = CascadeType.ALL)
     private List<ArticleCorrect> articleCorrectsCorrector;
 
@@ -95,22 +92,6 @@ public class User implements Serializable {
             return;
         articleDrafts.remove(articleDraft);
         articleDraft.setJournalist(null);
-    }
-
-    public void addArticleCorrectJournalist(ArticleCorrect articleCorrect) {
-        if (articleCorrect == null)
-            return;
-        if (articleCorrectsJournalist == null)
-            articleCorrectsJournalist = new ArrayList<>();
-        articleCorrectsJournalist.add(articleCorrect);
-        articleCorrect.setJournalist(this);
-    }
-
-    public void removeArticleCorrectJournalist(ArticleCorrect articleCorrect) {
-        if (articleCorrect == null || articleCorrectsJournalist == null)
-            return;
-        articleCorrectsJournalist.remove(articleCorrect);
-        articleCorrect.setJournalist(null);
     }
 
     public void addArticleCorrectCorrector(ArticleCorrect articleCorrect) {

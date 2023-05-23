@@ -1,6 +1,5 @@
 package com.editorial.model.dto;
 
-import com.editorial.model.entity.ArticleProposal;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -14,7 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ArticleProposalDto {
+public class ArticleDraftDto {
 
     private Long id;
 
@@ -23,22 +22,21 @@ public class ArticleProposalDto {
     @Pattern(regexp = "^[^<>*%:&/\\\\]+[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s]+[0-9]*$", message = "Title must not contain such characters as:<>*%:&/\\")
     private String title;
 
-    private ArticleProposal.Acceptance acceptance;
-
-    private String authorName;
+    @NotBlank(message = "Content must not be blank!")
+    private String content;
 
     private Timestamp dateOfUpdate;
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(title);
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ArticleProposalDto that = (ArticleProposalDto) o;
-        return title.equals(that.title);
+        ArticleDraftDto that = (ArticleDraftDto) o;
+        return Objects.equals(title, that.title) && Objects.equals(content, that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, content);
     }
 }
