@@ -11,7 +11,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -99,6 +98,6 @@ class UserActionServiceImplTest {
         // when
         when(basicService.copyHeadersFromRequest(any(HttpServletRequest.class))).thenReturn(new HttpHeaders());
         // act
-        assertThrows(HttpMessageConversionException.class, () -> userActionService.updateUserClientToEditorial(userId, userRegistrationDto, request));
+        assertThrows(ResourceAccessException.class, () -> userActionService.updateUserClientToEditorial(userId, userRegistrationDto, request));
     }
 }

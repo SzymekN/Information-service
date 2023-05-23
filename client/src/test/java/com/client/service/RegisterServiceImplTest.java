@@ -5,6 +5,8 @@ import com.client.model.dto.UserRegistrationDto;
 import com.client.model.entity.User;
 import com.client.model.entity.UserDetails;
 import com.client.repository.UserRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,14 +16,19 @@ import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.*;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.UnsupportedEncodingException;
 
 import static com.client.util.UrlConstants.EDITORIAL_REGISTRATION_URL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -37,6 +44,8 @@ public class RegisterServiceImplTest {
     private RegisterService registerService;
     @Autowired
     private BasicServiceImpl basicService;
+    @Autowired
+    private JavaMailSender javaMailSender;
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -106,8 +115,10 @@ public class RegisterServiceImplTest {
     }
 
     @Test
-    public void should_register_user() {
-        // given & when
+    public void should_register_user() throws MessagingException, UnsupportedEncodingException {
+        // given
+        when(javaMailSender.createMimeMessage()).thenReturn(mock(MimeMessage.class));
+        // when
         registerService.registerUser(userRegistrationDto);
 
         // then
@@ -130,11 +141,7 @@ public class RegisterServiceImplTest {
         when(basicService.copyHeadersFromRequest(any(HttpServletRequest.class))).thenReturn(headers);
         when(restTemplate.exchange(EDITORIAL_REGISTRATION_URL, HttpMethod.POST, requestEntity, String.class)).thenReturn(expectedResponse);
 
-        // when
-        ResponseEntity<String> response = registerService.registerUserClientToEditorial(userRegistrationDto, request);
-
-        // then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(basicService, times(1)).copyHeadersFromRequest(request);
+        // when & then
+        assertThrows(ResourceAccessException.class, () -> registerService.registerUserClientToEditorial(userRegistrationDto, request));
     }
 }

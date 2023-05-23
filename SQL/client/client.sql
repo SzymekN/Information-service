@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `userdb`.`user` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
   `password` VARCHAR(75) NOT NULL,
+  `validation_code` VARCHAR(50) NULL,
   `enabled` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id`));
 -- -----------------------------------------------------
@@ -75,11 +76,11 @@ CREATE TABLE IF NOT EXISTS `userdb`.`user_detail` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'user','$2a$12$iD9Psi.mmFcVXrvbeiI7Juiz5lDPn07Ska21Cnv21AgIHbIUE355m',1);
-INSERT INTO `user` VALUES (2,'user2','$2a$12$5b36FpgFqvc7826RWQpBxObz0oQAxadnVCwgJ43XEGhJJrrcs/mli',1);
-INSERT INTO `user` VALUES (3,'user3','$2a$12$nbrlhOxErstHKvSJyjzJ1uCAhItuoukWXlyYXWiTqf/Z/QSNPNP8O',1);
-INSERT INTO `user` VALUES (4,'user4','$2a$12$CV0QLaHzkp.O2PEIP7GdHOm/1ykl2ySBS3RSqKl2OBgGAJE87DpRe',1);
-INSERT INTO `user` VALUES (5,'user5','$2a$12$ZIDwaTNwptT8Sa09/ZywruvOunIBmBChY6Jd3yIvetidOHvwjIK3u',1);
+INSERT INTO `user` VALUES (1,'user','$2a$12$iD9Psi.mmFcVXrvbeiI7Juiz5lDPn07Ska21Cnv21AgIHbIUE355m',null,1);
+INSERT INTO `user` VALUES (2,'user2','$2a$12$5b36FpgFqvc7826RWQpBxObz0oQAxadnVCwgJ43XEGhJJrrcs/mli',null,1);
+INSERT INTO `user` VALUES (3,'user3','$2a$12$nbrlhOxErstHKvSJyjzJ1uCAhItuoukWXlyYXWiTqf/Z/QSNPNP8O',null,1);
+INSERT INTO `user` VALUES (4,'user4','$2a$12$CV0QLaHzkp.O2PEIP7GdHOm/1ykl2ySBS3RSqKl2OBgGAJE87DpRe',null,1);
+INSERT INTO `user` VALUES (5,'user5','$2a$12$ZIDwaTNwptT8Sa09/ZywruvOunIBmBChY6Jd3yIvetidOHvwjIK3u',null,1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 

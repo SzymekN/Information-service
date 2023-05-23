@@ -2,7 +2,6 @@ package com.editorial.controller;
 
 import com.editorial.model.dto.UserRegistrationDto;
 import com.editorial.service.RegisterService;
-import com.editorial.service.RegisterServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +50,13 @@ public class RegisterController {
             registerService.registerUser(userRegistrationDto);
             return ResponseEntity.ok("Correct registration process.");
         }
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<String> enableUserFromClient(@RequestBody Long userId, @RequestHeader("X-Caller") String caller) {
+        if (!"ACCOUNT_ENABLE".equals(caller))
+            return ResponseEntity.badRequest().body("Unsuccessful account enabling process in editorial microservice.");
+        else
+            return registerService.enableUser(userId);
     }
 }

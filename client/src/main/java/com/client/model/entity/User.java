@@ -29,6 +29,9 @@ public class User implements Serializable {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "validation_code")
+    private String validationCode;
+
     @Column(name = "enabled")
     @NotNull
     private Boolean enabled;
@@ -41,7 +44,7 @@ public class User implements Serializable {
     @PrimaryKeyJoinColumn
     private UserDetails userDetails;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Endorsement> endorsements;
 
     @OneToMany(mappedBy = "journalist", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
