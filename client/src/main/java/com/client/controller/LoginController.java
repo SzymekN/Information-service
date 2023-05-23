@@ -100,10 +100,8 @@ public class LoginController {
         if (!loginService.checkIfUserExistsByEmail(email)) {
             try {
                 registerService.registerUser(userRegistrationDto);
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in google authorization (login)");
             }
             ResponseEntity<String> editorialResponse = registerService.registerUserClientToEditorial(userRegistrationDto, httpServletRequest);
             if (!editorialResponse.getStatusCode().is2xxSuccessful())
