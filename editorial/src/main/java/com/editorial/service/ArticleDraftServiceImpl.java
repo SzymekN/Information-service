@@ -34,14 +34,14 @@ public class ArticleDraftServiceImpl implements ArticleDraftService {
 
     @Override
     public ResponseEntity<String> initArticle(User loggedUser, ArticleDraftDto articleDraftDto) {
-        ArticleDraft articleDraft = articleDtoToProposal(loggedUser, articleDraftDto);
+        ArticleDraft articleDraft = articleDtoToDraft(loggedUser, articleDraftDto);
         loggedUser.addArticleDraft(articleDraft);
         articleDraftRepository.save(articleDraft);
         return ResponseEntity.ok("Successfully saved");
     }
 
     @Override
-    public ResponseEntity<String> updateArticle(User loggedUser, ArticleDraftDto articleDraftDto) {
+    public ResponseEntity<String> updateArticle(ArticleDraftDto articleDraftDto) {
         Optional<ArticleDraft> draftFromDb = articleDraftRepository.findById(articleDraftDto.getId());
 
         if (draftFromDb.isPresent()) {
@@ -59,8 +59,7 @@ public class ArticleDraftServiceImpl implements ArticleDraftService {
     @Override
     public ResponseEntity<List<ArticleDraftDto>> getDrafts(Integer page, Integer size, User loggedUser) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Slice<ArticleDraft> articleDrafts;
-        articleDrafts = articleDraftRepository.findAllPagedById(pageRequest, loggedUser.getId());
+        Slice<ArticleDraft> articleDrafts = articleDraftRepository.findAllPagedById(pageRequest, loggedUser.getId());
         return ResponseEntity.ok(articleDraftsToDto(articleDrafts.getContent()));
     }
 
@@ -82,7 +81,7 @@ public class ArticleDraftServiceImpl implements ArticleDraftService {
         return ResponseEntity.ok("Successful moved");
     }
 
-    public ArticleDraft articleDtoToProposal(User loggedUser, ArticleDraftDto articleDraftDto) {
+    public ArticleDraft articleDtoToDraft(User loggedUser, ArticleDraftDto articleDraftDto) {
         return ArticleDraft.builder()
                 .title(articleDraftDto.getTitle())
                 .content(articleDraftDto.getContent())

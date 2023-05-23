@@ -43,10 +43,9 @@ public class ArticleDraftController {
 
         Optional<User> userChecker = userActionService.getLoggedUser();
 
-        if (userChecker.isPresent()) {
-            User loggedUser = userChecker.get();
-            return articleDraftService.updateArticle(loggedUser, articleDraftDto);
-        } else
+        if (userChecker.isPresent())
+            return articleDraftService.updateArticle(articleDraftDto);
+        else
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username of requesting user does not exist in db!");
     }
 
