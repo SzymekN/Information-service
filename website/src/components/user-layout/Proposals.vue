@@ -19,13 +19,14 @@
   </div>
   <div class="table-context">
     <table-lite
-        :is-static-mode="true"
+        :is-static-mode="false"
         :columns="table.columns"
         :rows="table.rows"
         :total="table.totalRecordCount"
         :sortable="table.sortable"
         @is-finished="tableLoadingFinish"
         @row-clicked="tableLoadingFinish"
+        @do-search="doSearch"
     ></table-lite>
   </div>
 </template>
@@ -40,12 +41,11 @@ import TableLite from 'vue3-table-lite'
 // Fake Data for 'asc' sortable
 const data = reactive([]);
 var url = '/editorial/proposal?';
-var page = 0;
+// var page = 0;
 var size = 10;
 
-const fetchProposals = async () =>{
+const fetchProposals = async (page = 1) =>{
   try {
-
     const response = await fetch(url+`page=${page}&size=${size}`, {
       method: 'GET',
       credentials: 'include',
@@ -59,8 +59,8 @@ const fetchProposals = async () =>{
       toast.error(text)
     }
     else{
-      console.log(response)
       const responseJson = await response.json();
+      data.splice(0, data.length);
       for (let i = 0; i < responseJson.length; i++) {
         data.push({
           id: responseJson[i]["id"],
@@ -69,34 +69,18 @@ const fetchProposals = async () =>{
           dateOfUpdate: responseJson[i]["dateOfUpdate"],
           acceptance: responseJson[i]["acceptance"],
         });
+        // fetchProposals = data.length;
       }
+      table.page = page;
+      console.log(table.page)
     }
   } catch (error) {
     console.log(error);
   }
 }
 
-// for (let i = 0; i < 127; i++) {
-//   data.push({
-//       id: i,
-//       user: ""+i,
-//       topic: "TEST" + i,
-//       date: new Date().toDateString(),
-//       state: "approved",
-//   });
-// }
-
-// data.push({
-//   id: 127,
-//   user: ""+127,
-//   topic: "TEST" + 127,
-//   date: (new Date().toDateString()),
-//   state: "rejected",
-// });
-
 const searchTerm = ref(""); // Search text
 const newTopicProposal = ref(""); // user input with proposition
-// const maxId = ref(128); // last id assigned
 fetchProposals();
 // Table config
 const table = reactive({
@@ -136,7 +120,6 @@ const table = reactive({
             if (row.acceptance == "DECLINED")
               color = "#a31505";
             
-              
             if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR'){
               var acceptanceSelect = document.createElement("select");
               acceptanceSelect.setAttribute("name", "acceptance");
@@ -186,29 +169,22 @@ const table = reactive({
       },
   ],
   rows: computed(() => {
-      return data.filter(
-      (x) =>
-          x.authorName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-          x.title.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-          x.acceptance.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-          x.dateOfUpdate.toLowerCase().includes(searchTerm.value.toLowerCase())
-      );
+      return data
   }),
   totalRecordCount: computed(() => {
-      return table.rows.length;
+      return 80
   }),
   sortable: {
       order: "id",
       sort: "asc",
   },
+  page: 1,
 });
 
 
 // Change topic
 function changeTopicListener(){
-
   let newTopic = prompt("Podaj nowy temat")
-  console.log(this.value)
   if (newTopic == null || newTopic == "")
     return;
   let id = this.getAttribute('topicId');
@@ -256,6 +232,7 @@ const changeProposalFetch = async(bodyStruct) =>{
         break;
       }
     }
+    table.page=1;
   }
   } catch (error) {
     toast.error(error)
@@ -295,13 +272,29 @@ function addListeners(className, listenerFunction, listenerType){
 
 }
 
-const tableLoadingFinish = () => {
+const doSearch = (offset, limit, order, sort) => {
+  console.log(offset, limit, order, sort);
+  table.page = offset / 10 + 1;
+  console.log(offset / 10 + 1);
+  console.log(table.page);
+  
+  if(offset + limit > data.length / 2)
+    fetchProposals(offset / 10 + 1);
+  table.page = offset / 10 + 1;
 
+  // tableLoadingFinish(offset / 10 + 1)
+  // jesli offset + limit 
+  // table.isLoading = true;
+  // tableLoadingFinish()
+};
+
+const tableLoadingFinish = (page = 1) => {
+  
+  // table.page = page;
   table.isLoading = false;
   addListeners("topic", changeTopicListener, "click");
   if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
       addListeners("acceptance", changeStateListener, "change");
-
 };
 
 const addTopic = async () =>{
@@ -357,4 +350,11 @@ const addTopic = async () =>{
 
 <style>
 @import '../../assets/userLists.css';
+.vtl-paging-info.col-sm-12.col-md-4,
+.vtl-paging-change-div.col-sm-12.col-md-4,
+.vtl-paging-pagination-ul.vtl-pagination li:first-child,
+.vtl-paging-pagination-ul.vtl-pagination li:last-child
+{
+    display:none;
+}
 </style>

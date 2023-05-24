@@ -115,7 +115,7 @@ const roleRoutes = {
     'ROLE_JOURNALIST': ['userpanel', 'edit', 'proposals', 'articlesList', 'profile'],
     'ROLE_CORRECTOR': ['userpanel', 'edit', 'articlesList', 'profile'],
     'ROLE_REDACTOR': ['userpanel', 'edit', 'proposals', 'articlesList', 'profile'],
-    'ROLE_USER': ['userpanel', 'info'],
+    'ROLE_USER': ['userpanel', 'profile'],
     'ROLE_ADMIN': 'all'
 }
 
