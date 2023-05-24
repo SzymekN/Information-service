@@ -13,4 +13,5 @@ public interface RegisterService {
     UserDetails dtoToUserDetails(UserRegistrationDto userRegistrationDto);
     User dtoToUser(UserRegistrationDto userRegistrationDto);
     ResponseEntity<String> registerUserEditorialToClient(UserRegistrationDto userRegistrationDto, HttpServletRequest request);
+    ResponseEntity<String> enableUser(Long userId);
 }

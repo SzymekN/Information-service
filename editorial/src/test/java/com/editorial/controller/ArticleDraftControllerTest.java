@@ -75,7 +75,7 @@ class ArticleDraftControllerTest {
         User loggedUser = new User();
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
-        when(articleDraftService.updateArticle(any(User.class), any(ArticleDraftDto.class)))
+        when(articleDraftService.updateArticle(any(ArticleDraftDto.class)))
                 .thenReturn(ResponseEntity.ok("Successful update"));
         // then
         mockMvc.perform(put("/editorial/draft").with(csrf())

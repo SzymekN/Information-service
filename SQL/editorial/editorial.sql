@@ -87,3 +87,33 @@ CREATE TABLE IF NOT EXISTS `editorialdb`.`user_detail` (
     FOREIGN KEY (`user_id_d`)
     REFERENCES `editorialdb`.`user` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE);
+	
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'user','$2a$12$iD9Psi.mmFcVXrvbeiI7Juiz5lDPn07Ska21Cnv21AgIHbIUE355m',1);
+INSERT INTO `user` VALUES (2,'user2','$2a$12$5b36FpgFqvc7826RWQpBxObz0oQAxadnVCwgJ43XEGhJJrrcs/mli',1);
+INSERT INTO `user` VALUES (3,'user3','$2a$12$nbrlhOxErstHKvSJyjzJ1uCAhItuoukWXlyYXWiTqf/Z/QSNPNP8O',1);
+INSERT INTO `user` VALUES (4,'user4','$2a$12$CV0QLaHzkp.O2PEIP7GdHOm/1ykl2ySBS3RSqKl2OBgGAJE87DpRe',1);
+INSERT INTO `user` VALUES (5,'user5','$2a$12$ZIDwaTNwptT8Sa09/ZywruvOunIBmBChY6Jd3yIvetidOHvwjIK3u',1);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `user_detail` WRITE;
+/*!40000 ALTER TABLE `user_detail` DISABLE KEYS */;
+INSERT INTO `user_detail` VALUES (1,'UserName','UserSurname','UserEmail@email.com','APP');
+INSERT INTO `user_detail` VALUES (2,'UserName','UserSurname','UserEmail@email.com','APP');
+INSERT INTO `user_detail` VALUES (3,'UserName','UserSurname','UserEmail@email.com','APP');
+INSERT INTO `user_detail` VALUES (4,'UserNameJourn','UserSurnameJourn','UserEmailJourn@email.com','APP');
+INSERT INTO `user_detail` VALUES (5,'UserNameRed','UserSurnameRed','UserEmailRed@email.com','APP');
+/*!40000 ALTER TABLE `user_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `authority` WRITE;
+/*!40000 ALTER TABLE `authority` DISABLE KEYS */;
+INSERT INTO `authority` VALUES (1,'USER');
+INSERT INTO `authority` VALUES (2,'ADMIN');
+INSERT INTO `authority` VALUES (3,'USER');
+INSERT INTO `authority` VALUES (4,'JOURNALIST');
+INSERT INTO `authority` VALUES (5,'REDACTOR');
+/*!40000 ALTER TABLE `authority` ENABLE KEYS */;
+UNLOCK TABLES;

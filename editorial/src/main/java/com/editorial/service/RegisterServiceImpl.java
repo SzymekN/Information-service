@@ -48,6 +48,9 @@ public class RegisterServiceImpl implements RegisterService {
         userDetails.connectUser(user);
         user.connectAuthority(authority);
         authority.setUser(user);
+        if (user.getUserDetails().getSupplier().equals("APP") &&
+                user.getAuthority().getAuthorityName().equals("USER"))
+            user.setEnabled(false);
         userRepository.save(user);
     }
 
@@ -76,5 +79,17 @@ public class RegisterServiceImpl implements RegisterService {
         HttpHeaders headers = basicService.copyHeadersFromRequest(request);
         headers.set("X-Caller", "REGISTRATION_FROM_EDITORIAL");
         return restTemplate.exchange(CLIENT_REGISTRATION_URL, HttpMethod.POST, new HttpEntity<>(userRegistrationDto, headers), String.class);
+    }
+
+    @Override
+    public ResponseEntity<String> enableUser(Long userId) {
+        User userToEnable = userRepository.findUserById(userId);
+        if (userToEnable == null) return ResponseEntity.badRequest().body("User with the given id has not been found in editorial database!");
+        else if (userToEnable.getEnabled()) return ResponseEntity.badRequest().body("This user is already enabled!");
+        else {
+            userToEnable.setEnabled(true);
+            userRepository.save(userToEnable);
+            return ResponseEntity.ok("User successfully enabled!");
+        }
     }
 }

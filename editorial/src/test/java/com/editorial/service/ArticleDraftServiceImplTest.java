@@ -74,7 +74,7 @@ class ArticleDraftServiceImplTest {
         Optional<ArticleDraft> optional = Optional.of(draft);
         // when
         when(articleDraftRepository.findById(1L)).thenReturn(optional);
-        ResponseEntity<String> responseEntity = articleDraftService.updateArticle(new User(), articleDraftDto);
+        ResponseEntity<String> responseEntity = articleDraftService.updateArticle(articleDraftDto);
         // then
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -88,7 +88,7 @@ class ArticleDraftServiceImplTest {
         ArticleDraftDto articleDraftDto = new ArticleDraftDto();
         // when
         when(articleDraftRepository.findById(1L)).thenReturn(Optional.empty());
-        ResponseEntity<String> responseEntity = articleDraftService.updateArticle(new User(), articleDraftDto);
+        ResponseEntity<String> responseEntity = articleDraftService.updateArticle(articleDraftDto);
         // then
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());

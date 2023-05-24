@@ -6,6 +6,7 @@ import com.client.service.GoogleAuthService;
 import com.client.service.LoginService;
 import com.client.service.RegisterService;
 import com.client.util.ExternalAuthenticationException;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONException;
@@ -18,6 +19,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -60,8 +62,7 @@ public class LoginController {
     @PostMapping("/login/v2")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
         try {
-            loginService.setUserSession(request, response, null, loginDto);
-            return ResponseEntity.ok("Login successful!");
+            return loginService.setUserSession(request, response, null, loginDto);
         } catch (AuthenticationException e) {
             if (e.getCause() instanceof ExternalAuthenticationException a)
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You cannot log in this way. You must log in via " + a.getMessage());
@@ -97,7 +98,11 @@ public class LoginController {
         String email = jsonObject.getString("email");
         UserRegistrationDto userRegistrationDto = UserRegistrationDto.jsonToDto(jsonObject);
         if (!loginService.checkIfUserExistsByEmail(email)) {
-            registerService.registerUser(userRegistrationDto);
+            try {
+                registerService.registerUser(userRegistrationDto);
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in google authorization (login)");
+            }
             ResponseEntity<String> editorialResponse = registerService.registerUserClientToEditorial(userRegistrationDto, httpServletRequest);
             if (!editorialResponse.getStatusCode().is2xxSuccessful())
                 return new ResponseEntity<>(editorialResponse.getBody(), editorialResponse.getStatusCode());

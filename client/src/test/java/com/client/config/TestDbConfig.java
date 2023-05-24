@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,8 @@ public class TestDbConfig {
     private AuthenticationManager authenticationManager;
     @MockBean
     private BasicServiceImpl basicService;
+    @MockBean
+    private JavaMailSenderImpl javaMailSender;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,7 +41,7 @@ public class TestDbConfig {
 
     @Bean
     public RegisterService registerService() {
-        return new RegisterServiceImpl(passwordEncoder(), userRepository, basicService);
+        return new RegisterServiceImpl(passwordEncoder(), userRepository, basicService, javaMailSender);
     }
 
     @Bean
