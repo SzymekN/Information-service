@@ -1,11 +1,14 @@
 package com.editorial.service;
 
+import com.editorial.model.dto.UserDto;
 import com.editorial.model.dto.UserRegistrationDto;
 import com.editorial.model.entity.User;
 import com.editorial.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,7 +21,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.editorial.util.UrlConstants.CLIENT_DELETE_USER_URL;
 import static com.editorial.util.UrlConstants.CLIENT_EDIT_USER_URL;
@@ -28,6 +33,7 @@ public class UserActionServiceImpl implements UserActionService {
     private final UserRepository userRepository;
     private final BasicServiceImpl basicService;
     private final PasswordEncoder passwordEncoder;
+
     @Autowired
     public UserActionServiceImpl(UserRepository userRepository, BasicServiceImpl basicService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -74,6 +80,85 @@ public class UserActionServiceImpl implements UserActionService {
     }
 
     @Override
+    public ResponseEntity<List<UserDto>> findAllUsersPaged(Pageable pageable) {
+        Slice<User> pagedUsers = userRepository.findAllPaged(pageable);
+
+        if (!pagedUsers.hasContent())
+            return ResponseEntity.noContent().build();
+
+        Long totalCount = userRepository.countAllUsers();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Total-Count", totalCount.toString());
+        return ResponseEntity.ok().headers(headers).body(usersToDto(pagedUsers.getContent()));
+    }
+
+    @Override
+    public ResponseEntity<List<UserDto>> findAllUsersByRolePaged(Pageable pageable, String role) {
+        Slice<User> pagedUsers = userRepository.findAllByRolePaged(pageable, role);
+
+        if (!pagedUsers.hasContent())
+            return ResponseEntity.noContent().build();
+
+        Long totalCount = userRepository.countAllByRole(role);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Total-Count", totalCount.toString());
+        return ResponseEntity.ok().headers(headers).body(usersToDto(pagedUsers.getContent()));
+    }
+
+    @Override
+    public ResponseEntity<List<UserDto>> findAllUsersByFieldPaged(Pageable pageable, String field, String value) {
+        Slice<User> pagedUsers = null;
+        Long totalCount = null;
+        if ("username".equals(field)) {
+            pagedUsers = userRepository.findAllByUsernamePaged(pageable, value);
+            totalCount = userRepository.countAllByUsername(value);
+        } else if ("name".equals(field)) {
+            pagedUsers = userRepository.findAllByNamePaged(pageable, value);
+            totalCount = userRepository.countAllByName(value);
+        } else if ("surname".equals(field)) {
+            pagedUsers = userRepository.findAllBySurnamePaged(pageable, value);
+            totalCount = userRepository.countAllBySurname(value);
+        } else if ("email".equals(field)) {
+            pagedUsers = userRepository.findUserByEmail(pageable, value);
+            totalCount = 1L;
+        }
+
+        if (pagedUsers == null || !pagedUsers.hasContent() || totalCount == null)
+            return ResponseEntity.noContent().build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Total-Count", totalCount.toString());
+        return ResponseEntity.ok().headers(headers).body(usersToDto(pagedUsers.getContent()));
+    }
+
+    @Override
+    public ResponseEntity<List<UserDto>> findAllUsersByFieldAndRolePaged(Pageable pageable, String role, String field, String value) {
+        Slice<User> pagedUsers = null;
+        Long totalCount = null;
+
+        if ("username".equals(field)) {
+            pagedUsers = userRepository.findAllByUsernameAndRolePaged(pageable, value, role);
+            totalCount = userRepository.countAllByUsernameAndRole(value, role);
+        } else if ("name".equals(field)) {
+            pagedUsers = userRepository.findAllByNameAndRolePaged(pageable, value, role);
+            totalCount = userRepository.countAllByNameAndRole(value, role);
+        } else if ("surname".equals(field)) {
+            pagedUsers = userRepository.findAllBySurnameAndRolePaged(pageable, value, role);
+            totalCount = userRepository.countAllBySurnameAndRole(value, role);
+        } else if ("email".equals(field)) {
+            pagedUsers = userRepository.findUserByEmailAndRole(pageable, value, role);
+            totalCount = 1L;
+        }
+        if (totalCount == null || pagedUsers == null || !pagedUsers.hasContent())
+            return ResponseEntity.noContent().build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Total-Count", totalCount.toString());
+        return ResponseEntity.ok().headers(headers).body(usersToDto(pagedUsers.getContent()));
+    }
+
+
+    @Override
     public User findUserById(Long id) {
         return userRepository.findUserById(id);
     }
@@ -84,5 +169,18 @@ public class UserActionServiceImpl implements UserActionService {
         user.getUserDetails().setName(userRegistrationDto.getName());
         user.getUserDetails().setSurname(userRegistrationDto.getSurname());
         user.getUserDetails().setEmail(userRegistrationDto.getEmail());
+    }
+
+    public List<UserDto> usersToDto(List<User> users) {
+        return users.stream()
+                .map(user -> UserDto.builder()
+                        .id(user.getId())
+                        .username(user.getUsername())
+                        .name(user.getUserDetails().getName())
+                        .surname(user.getUserDetails().getSurname())
+                        .email(user.getUserDetails().getEmail())
+                        .authorityName(user.getAuthority().getAuthorityName())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
