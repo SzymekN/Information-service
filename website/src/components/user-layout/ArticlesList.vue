@@ -1,10 +1,5 @@
-<!-- https://vue3-lite-table.vercel.app/usage -->
-<!-- TODO:
-    1. User has only possibility to change own topics
-    2. Change fake data to fetching from database
-    3. As admin/redactor possibility to change all topics, approve or reject
--->
 
+<!-- TODO: DELETE AFTER REFACTOR -->
 <template>
   <div class="properties">
     <div class="input-add">
@@ -32,7 +27,7 @@
   import jsCookie from "js-cookie";
   import { reactive, ref, computed, onBeforeMount } from "vue";
   import TableLite from 'vue3-table-lite'
-    import router from "@/router";
+  import router from "@/router";
   
   // TODO: replace with fetched data
   // Fake Data for 'asc' sortable
