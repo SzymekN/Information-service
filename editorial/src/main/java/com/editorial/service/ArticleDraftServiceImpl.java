@@ -8,8 +8,9 @@ import com.editorial.repository.ArticleCorrectRepository;
 import com.editorial.repository.ArticleDraftRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -57,10 +58,24 @@ public class ArticleDraftServiceImpl implements ArticleDraftService {
     }
 
     @Override
-    public ResponseEntity<List<ArticleDraftDto>> getDrafts(Integer page, Integer size, User loggedUser) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Slice<ArticleDraft> articleDrafts = articleDraftRepository.findAllPagedById(pageRequest, loggedUser.getId());
-        return ResponseEntity.ok(articleDraftsToDto(articleDrafts.getContent()));
+    public ResponseEntity<List<ArticleDraftDto>> getDrafts(Pageable pageable, User loggedUser, String title) {
+        Slice<ArticleDraft> articleDrafts;
+        Long totalCount;
+        if (title == null) {
+            articleDrafts = articleDraftRepository.findAllPagedById(pageable, loggedUser.getId());
+            totalCount = articleDraftRepository.countAllPagedById(loggedUser.getId());
+        }
+        else {
+            articleDrafts = articleDraftRepository.findAllPagedByIdAndTitle(pageable, loggedUser.getId(), title);
+            totalCount = articleDraftRepository.countAllPagedByIdAndTitle(loggedUser.getId(), title);
+        }
+
+        HttpHeaders headers = new HttpHeaders();;
+        if (totalCount != null) headers.set("X-Total-Count", totalCount.toString());
+        else headers.set("X-Total-Count", "0");
+
+        if (articleDrafts == null) return ResponseEntity.ok().headers(headers).body(List.of());
+        return ResponseEntity.ok().headers(headers).body(articleDraftsToDto(articleDrafts.getContent()));
     }
 
     @Override

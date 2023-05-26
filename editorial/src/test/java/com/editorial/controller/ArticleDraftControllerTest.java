@@ -14,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -26,7 +28,8 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ArticleDraftController.class)
 @OverrideAutoConfiguration(enabled = true)
@@ -89,17 +92,18 @@ class ArticleDraftControllerTest {
     @WithMockUser(roles = "JOURNALIST")
     void get_articles_should_return_drafts_when_logged_user_exists() throws Exception {
         // given
-        Integer page = 0;
-        Integer size = 10;
+        int page = 0;
+        int size = 10;
         User loggedUser = new User();
+        Pageable pageable = PageRequest.of(page, size);
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
-        when(articleDraftService.getDrafts(page, size, loggedUser))
+        when(articleDraftService.getDrafts(pageable, loggedUser, null))
                 .thenReturn(ResponseEntity.ok(Collections.emptyList()));
         // then
         mockMvc.perform(MockMvcRequestBuilders.get("/editorial/draft").with(csrf())
-                        .param("page", page.toString())
-                        .param("size", size.toString()))
+                        .param("page", Integer.toString(page))
+                        .param("size", Integer.toString(size)))
                 .andExpect(status().isOk());
     }
 
