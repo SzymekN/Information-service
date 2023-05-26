@@ -58,14 +58,22 @@ body {
     border-radius: 10px;
 }
 
-/* .vtl-paging-info.col-sm-12.col-md-4,
+.vtl-paging-info.col-sm-12.col-md-4,
 .vtl-paging-change-div.col-sm-12.col-md-4,
 .vtl-paging-pagination-ul.vtl-pagination li:first-child,
 .vtl-paging-pagination-ul.vtl-pagination li:last-child
 {
-    display:none;
-} */
+    display:block;
+}
 
+.disabled {
+    pointer-events: none;
+    opacity: 0.3;
+}
+  
+select:hover{ 
+    cursor: pointer;
+}
 .editButton img,
 .deleteButton img{
     width: 20px;
