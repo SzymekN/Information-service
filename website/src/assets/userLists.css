@@ -47,6 +47,7 @@ body {
 
 .properties button:hover {
     background-color: #c8d8f1;
+    cursor:pointer;
 }
 
 .table-context {
@@ -55,6 +56,34 @@ body {
     background: white;
     padding: 1%;
     border-radius: 10px;
+}
+
+/* .vtl-paging-info.col-sm-12.col-md-4,
+.vtl-paging-change-div.col-sm-12.col-md-4,
+.vtl-paging-pagination-ul.vtl-pagination li:first-child,
+.vtl-paging-pagination-ul.vtl-pagination li:last-child
+{
+    display:none;
+} */
+
+.editButton img,
+.deleteButton img{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+button.editButton,
+button.deleteButton{
+    border-radius: 10%;
+    padding:0;
+    padding-top: 3px;
+    width: 30px;
+    height: 30px;
+}
+
+button.deleteButton{
+    background-color: red;
 }
 
 @media (max-width: 1450px) {

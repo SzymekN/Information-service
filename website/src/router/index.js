@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory,useRoute} from "vue-router"
+import {createRouter, createWebHistory} from "vue-router"
 import HomeView from "@/views/HomeView.vue"
 import UserPanelView from "@/views/UserPanelView.vue"
 import LoginView from "@/views/LoginView.vue"
@@ -12,6 +12,7 @@ import Proposals from "@/components/user-layout/Proposals.vue"
 import ArticlesList from "@/components/user-layout/ArticlesList.vue"
 import Editor from "@/components/user-layout/Editor.vue"
 import RegisterView from "@/views/RegisterView.vue";
+import Manage from "@/components/user-layout/Manage.vue";
 
 import jsCookie from 'js-cookie';
 // -artykuly i artykul- do usuniecia mozna przekierowac do 404 za pomoca useRouter np gdy dane zapytanie nie na wynikow 
@@ -78,6 +79,11 @@ const router = createRouter({
                     path: "/userpanel/articles",
                     name: 'articlesList',
                     component: ArticlesList
+                },
+                {
+                    path: "/userpanel/manage",
+                    name: 'manageUsers',
+                    component: Manage
                 },
             ],
         },
