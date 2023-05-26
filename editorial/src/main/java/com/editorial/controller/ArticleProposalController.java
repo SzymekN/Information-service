@@ -30,13 +30,11 @@ public class ArticleProposalController {
     public ResponseEntity<String> addArticle(@RequestBody @Valid ArticleProposalDto articleProposalDto) {
         Optional<User> userChecker = userActionService.getLoggedUser();
 
-        if (userChecker.isEmpty())
+        if (userChecker.isPresent()) {
+            User loggedUser = userChecker.get();
+            return articleProposalService.addArticle(loggedUser, articleProposalDto);
+        } else
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username of requesting user does not exist in db!");
-
-        User loggedUser = userChecker.get();
-        articleProposalService.addArticle(loggedUser, articleProposalDto);
-
-        return ResponseEntity.status(HttpStatus.OK).body("Successfully added an article!");
     }
 
     @PutMapping
@@ -57,7 +55,6 @@ public class ArticleProposalController {
     @GetMapping
     public ResponseEntity<List<ArticleProposalDto>> getArticles(@RequestParam(name = "page", required = false) Integer page,
                                                                 @RequestParam(name = "size", required = false) Integer size) {
-
         Optional<User> userChecker = userActionService.getLoggedUser();
 
         if (userChecker.isPresent()) {

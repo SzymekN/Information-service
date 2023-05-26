@@ -127,6 +127,46 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     If the email or username already exists in the database, the endpoint returns a conflict response with an error message. 
     If the "X-Caller" header does not contain the expected value, the endpoint returns a bad request response with an error message. 
     If the registration process is successful, the endpoint returns a success response with a message indicating the success of the registration process.
+    <br><br>
+    <li><b>GET /client/validate</b></li>
+    This endpoint allows users to validate their account using a validation code. 
+    The endpoint expects a GET request with the validation code as a query parameter.
+    <br><br>
+    <b>Request Parameters:</b>
+    <ul>
+        <li>code (required): a string representing the validation code associated with the user account.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    This endpoint returns an HTTP response with a status code and an optional message. 
+    If the validation code is valid and the user account is successfully activated, it returns a response with a 200 OK status code and the message "User successfully enabled!"
+    If there is any other error during the validation process, such as an error while trying to enable the user in the editorial system, it returns a response with the appropriate HTTP status code and an error message explaining the issue (400 - Bad Request).
+    <br><br>
+    <li><b>POST /editorial/validate</b></li>
+    This endpoint allows enabling a user from the client application in the editorial microservice. 
+    The endpoint expects a POST request with the user ID in the request body and the X-Caller header set to "ACCOUNT_ENABLE" to authorize the operation.
+    <br><br>
+    <b>Request Headers:</b>
+    <ul>
+        <li>X-Caller (required): a string representing the caller of the API. It must be set to "ACCOUNT_ENABLE" to authorize the account enabling process.</li>
+    </ul>
+    <br>
+    <b>Request Body:</b>
+    <br>
+    The request body must contain a JSON object with the following fields:
+    <ul>
+        <li>userId (required): a string or number representing the ID of the user to be enabled in the editorial system.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    This endpoint returns an HTTP response with a status code and an optional message. <b>IT SHOULD NOT BE DIRECTLY ACCESSED!!!</b> <br>
+    If the account enabling process is successful, it returns a response with a 200 OK status code and the message "User successfully enabled!" 
+    If the X-Caller header is missing or set to an invalid value, it returns a response with a 400 BAD REQUEST status code and an error message indicating that the account enabling process was unsuccessful.
+    If the user ID is not found in the editorial database, it returns a response with a 400 BAD REQUEST status code and an error message indicating that the user with the given ID was not found.
+    If the user is already enabled in the editorial system, it returns a response with a 400 BAD REQUEST status code and an error message indicating that the user is already enabled.
+    If there is any other error during the account enabling process, it returns a response with the appropriate HTTP status code and an error message explaining the issue.
 </ol>
 
 ### Articles:
@@ -286,4 +326,81 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
         <li><b>body</b>: A list of ArticleProposalDto objects containing the article proposals.</li>
     </ul>
     If the article proposals are retrieved successfully, the status code will be 200 (OK), and the body will contain the list of ArticleProposalDto objects. If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will be an empty list. If an error occurs while processing the request, the status code will be 400 (Bad Request), and an empty response will be returned. <b>Redactor receives every proposal, journalist only related to him. Results are ordered by date in ascending order.</b>
+    <br><br>
+    <li><b>POST /editorial/draft</b></li>
+    This endpoint allows users to initialize a new article draft.
+    <br><br>
+    <b>Request:</b>
+    <br>
+    The request body should contain a JSON object of type ArticleDraftDto with the following properties:
+    <ul>
+        <li><b>title</b> (required): A string representing the title of the article draft.</li>
+        <li><b>content</b> (required): A string representing the content of the article draft.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article draft is initialized successfully, the status code will be 200 (OK), and the body will contain the response message returned by the articleDraftService. If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will be "Username of requesting user does not exist in db!".
+    <br><br>
+    <li><b>PUT /editorial/draft</b></li>
+    This endpoint allows users to update an existing article draft.
+    <br><br>
+    <b>Request:</b>
+    <br>
+    The request body should contain a JSON object of type ArticleDraftDto with the following properties:
+    <ul>
+        <li><b>id</b> (required): A unique identifier for the article draft.</li>
+        <li><b>title</b> (required): A string representing the updated title of the article draft.</li>
+        <li><b>content</b> (required): A string representing the content of the article draft.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article draft is updated successfully, the status code will be 200 (OK), and the body will contain the response message returned by the articleDraftService. If the request body is missing the required parameters, the status code will be 400 (Bad Request), and the body will be "Provide a body, including id!". If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will be "Username of requesting user does not exist in db!".
+    <br><br>
+    <li><b>GET /editorial/draft</b></li>
+    This endpoint retrieves a list of article drafts.
+    <br><br>
+    <b>Query Parameters:</b>
+    <br>
+    <ul>
+        <li><b>page</b> (optional): An integer representing the page number of the results to retrieve (starting from 0).</li>
+        <li><b>size</b> (optional): An integer representing the number of results per page.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A list of ArticleDraftDto objects containing the article drafts.</li>
+    </ul>
+    If the article drafts are retrieved successfully, the status code will be 200 (OK), and the body will contain the list of ArticleDraftDto objects returned by the articleDraftService. If there is an error during retrieval, the status code will be 400 (Bad Request), and the body will be empty. If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will be an empty list.
+    <br><br>
+    <li><b>DELETE /editorial/draft</b></li>
+    This endpoint deletes an article draft and performs a move operation.
+    <br><br>
+    <b>Query Parameters:</b>
+    <ul>
+        <li><b>id</b> (required): A long integer representing the ID of the article draft to delete and move.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article draft is deleted and moved successfully, the status code will be 200 (OK), and the body will contain the response message returned by the articleDraftService. If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will be "Username of requesting user does not exist in db!".
 </ol>

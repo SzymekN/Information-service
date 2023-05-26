@@ -1,8 +1,8 @@
 <!-- https://vue3-lite-table.vercel.app/usage -->
 <!-- TODO:
-    1. User has only possibility to change own topics
-    2. Change fake data to fetching from database
-    3. As admin/redactor possibility to change all topics, approve or reject
+  1. User has only possibility to change own topics
+  2. Change fake data to fetching from database
+  3. As admin/redactor possibility to change all topics, approve or reject
 -->
 
 <template>
@@ -10,8 +10,9 @@
 
   <div class="properties">
     <div class="input-add">
-      <label>Nowy temat:</label><input v-model="newTopicProposal" />
-      <button @click="addTopic">Dodaj</button>
+      <label>Nowy artykuł:</label>
+      <!-- <input v-model="newDraftTitle" /> -->
+      <router-link :to="{name: 'edit'}"><button>Stwórz</button></router-link>
     </div>
     <div class="input-look">
       <label>Szukaj:</label><input v-model="searchTerm" />
@@ -25,7 +26,7 @@
         :total="table.totalRecordCount"
         :sortable="table.sortable"
         @is-finished="tableLoadingFinish"
-        @row-clicked="tableLoadingFinish"
+        @row-clicked="rowClicked"
         @do-search="doSearch"
     ></table-lite>
   </div>
@@ -36,15 +37,20 @@ import jsCookie from "js-cookie";
 import { reactive, ref, computed } from "vue";
 import { toast } from "vue-sonner";
 import TableLite from 'vue3-table-lite'
+import router from "@/router";
+
 
 // TODO: replace with fetched data
 // Fake Data for 'asc' sortable
 const data = reactive([]);
-var url = '/editorial/proposal?';
+const newDraftTitle = ref("");
+const articlesMap = ref(new Map());
+
+var url = '/editorial/draft?';
 // var page = 0;
 var size = 10;
 
-const fetchProposals = async (page = 1) =>{
+const fetchData = async (page = 0) =>{
   try {
     const response = await fetch(url+`page=${page}&size=${size}`, {
       method: 'GET',
@@ -67,9 +73,11 @@ const fetchProposals = async (page = 1) =>{
           authorName: responseJson[i]["authorName"],
           title: responseJson[i]["title"],
           dateOfUpdate: responseJson[i]["dateOfUpdate"],
-          acceptance: responseJson[i]["acceptance"],
+          acceptance: "DRAFT",
+          content: responseJson[i]["content"],
         });
-        // fetchProposals = data.length;
+        articlesMap.value.set(data[i]["id"], data[i]);
+        // fetchData = data.length;
       }
     }
   } catch (error) {
@@ -79,7 +87,7 @@ const fetchProposals = async (page = 1) =>{
 
 const searchTerm = ref(""); // Search text
 const newTopicProposal = ref(""); // user input with proposition
-fetchProposals();
+fetchData();
 // Table config
 const table = reactive({
   columns: [
@@ -90,7 +98,7 @@ const table = reactive({
           sortable: true,
       },
       {
-          label: "Temat",
+          label: "Tytuł",
           field: "title",
           width: "5%",
           sortable: true,
@@ -175,163 +183,22 @@ const table = reactive({
   sortable: {
       order: "id",
       sort: "asc",
-  },
-  page: 1,
+  }
 });
-
-
-// Change topic
-function changeTopicListener(){
-  let newTopic = prompt("Podaj nowy temat")
-  if (newTopic == null || newTopic == "")
-    return;
-  let id = this.getAttribute('topicId');
-  let title = this.getAttribute('topicTitle');
-  let acceptance = "PENDING"
-  if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
-    acceptance = "ACCEPTED"
-
-  const request = {
-      id: id,
-      title: newTopic,
-      acceptance: acceptance,
-  }
-  changeProposalFetch(request);
-  tableLoadingFinish()
-}
-
-// Make request
-const changeProposalFetch = async(bodyStruct) =>{
-
-  console.log(bodyStruct)
-  table.isLoading = true;
-  try {
-  const response = await fetch(url, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(bodyStruct),
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    toast.error(text)
-  }
-  else{
-    toast.success("Zmieniono propozycję")
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].id == bodyStruct.id){
-        console.log(data[i])
-        data[i].title = bodyStruct.title;
-        data[i].acceptance = bodyStruct.acceptance;
-        console.log(data[i])
-        break;
-      }
-    }
-  }
-  } catch (error) {
-    toast.error(error)
-    console.log(error);
-  }
-
-  tableLoadingFinish()
-
-}
-
-// Change state
-function changeStateListener(){
-
-  console.log(this.value)
-  let id = this.getAttribute('topicId');
-  let title = this.getAttribute('topicTitle');
-  const request = {
-      id: id,
-      title: title,
-      acceptance: this.value,
-  }
-
-  changeProposalFetch(request)
-  tableLoadingFinish()
-}
-
-function addListeners(className, listenerFunction, listenerType){
-  let elements = document.getElementsByClassName(className)
-
-  Array.prototype.forEach.call(elements, function (element) {
-  //checking if cell already has onclick assigned
-  if(element.getAttribute('listener') !== 'true'){
-      element.setAttribute('listener', 'true');
-      element.addEventListener(listenerType, listenerFunction);
-  }
-  });
-
-}
 
 const doSearch = (offset, limit, order, sort) => {
   table.page = offset / 10 + 1;
   if(offset + limit > data.length / 2)
-    fetchProposals(offset / 10 + 1);
+    fetchData(offset / 10 + 1);
 
 };
 
-const tableLoadingFinish = (page = 1) => {
-  
-  // table.page = page;
-  table.isLoading = false;
-  addListeners("topic", changeTopicListener, "click");
-  if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
-      addListeners("acceptance", changeStateListener, "change");
+const rowClicked = (row) => {
+  console.log(row);
+  let id = Number(row.id);
+  sessionStorage.setItem("articleToEdit", JSON.stringify(articlesMap.value.get((id))));
+  router.push({name: 'edit', query:{redirected: true} });
 };
-
-const addTopic = async () =>{
-
-  const newTopic = newTopicProposal.value;
-  const request = {
-      title: newTopic,
-  }
-
-  console.log(document.cookie)
-
-  try {
-      const url = '/editorial/proposal';
-
-      const response = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-      });
-
-      if (!response.ok) {
-        const text = await response.text();
-        toast.error(text)
-      }
-
-      else{
-        const text = await response.text();
-
-        toast.success("Dodano temat")
-        let state = "PENDING"
-        if(atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
-          state = "ACCEPTED"
-
-        data.push({
-          id: 0,
-          authorName: 'user',
-          title: newTopic,
-          dateOfUpdate: new Date().toDateString(),
-          acceptance: state,})
-      }
-  } catch (error) {
-      console.log(error);
-  }
-
-
-}
 
 
 </script>
@@ -344,5 +211,9 @@ const addTopic = async () =>{
 .vtl-paging-pagination-ul.vtl-pagination li:last-child
 {
     display:none;
+}
+
+.vtl-tbody-tr{
+  cursor: pointer;
 }
 </style>

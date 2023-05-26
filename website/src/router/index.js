@@ -9,7 +9,7 @@ import LeagueTop5 from "@/components/api-leagues/LeagueTop5.vue"
 import LeagueTable from "@/components/api-leagues/LeagueTable.vue"
 import UserInfo from "@/components/user-layout/UserInfo.vue"
 import Proposals from "@/components/user-layout/Proposals.vue"
-import ArticlesList from "@/components/user-layout/ArticlesList.vue"
+import DraftsList from "@/components/user-layout/DraftsList.vue"
 import Editor from "@/components/user-layout/Editor.vue"
 import RegisterView from "@/views/RegisterView.vue";
 import Manage from "@/components/user-layout/Manage.vue";
@@ -77,8 +77,8 @@ const router = createRouter({
                 },
                 {
                     path: "/userpanel/articles",
-                    name: 'articlesList',
-                    component: ArticlesList
+                    name: 'draftsList',
+                    component: DraftsList
                 },
                 {
                     path: "/userpanel/manage",
@@ -115,13 +115,13 @@ const router = createRouter({
 })
 
 //route guard
-const protectedRoutes = ['userpanel', 'edit', 'proposals', 'articlesList', 'profile'];
+const protectedRoutes = ['userpanel', 'edit', 'proposals', 'draftsList', 'profile'];
 
 const roleRoutes = {
-    'ROLE_JOURNALIST': ['userpanel', 'edit', 'proposals', 'articlesList', 'profile'],
-    'ROLE_CORRECTOR': ['userpanel', 'edit', 'articlesList', 'profile'],
-    'ROLE_REDACTOR': ['userpanel', 'edit', 'proposals', 'articlesList', 'profile'],
-    'ROLE_USER': ['userpanel', 'info'],
+    'ROLE_JOURNALIST': ['userpanel', 'edit', 'proposals', 'draftsList', 'profile'],
+    'ROLE_CORRECTOR': ['userpanel', 'edit', 'draftsList', 'profile'],
+    'ROLE_REDACTOR': ['userpanel', 'edit', 'proposals', 'draftsList', 'profile'],
+    'ROLE_USER': ['userpanel', 'profile'],
     'ROLE_ADMIN': 'all'
 }
 
