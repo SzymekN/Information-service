@@ -15,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -25,11 +27,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @WebMvcTest(ArticleProposalController.class)
@@ -107,16 +111,17 @@ class ArticleProposalControllerTest {
     @WithMockUser(roles = "JOURNALIST")
     void get_articles_should_return_proposals_when_logged_user_exists() throws Exception {
         // given
-        Integer page = 0;
-        Integer size = 10;
+        int page = 0;
+        int size = 10;
         User loggedUser = new User();
+        Pageable pageable = PageRequest.of(page, size);
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
-        when(articleProposalService.getProposals(page, size, loggedUser)).thenReturn(ResponseEntity.ok(Collections.emptyList()));
+        when(articleProposalService.getProposals(pageable, loggedUser, null, null)).thenReturn(ResponseEntity.ok(Collections.emptyList()));
         // then
         mockMvc.perform(MockMvcRequestBuilders.get("/editorial/proposal").with(csrf())
-                        .param("page", page.toString())
-                        .param("size", size.toString()))
+                        .param("page", Integer.toString(page))
+                        .param("size", Integer.toString(size)))
                 .andExpect(status().isOk());
     }
 

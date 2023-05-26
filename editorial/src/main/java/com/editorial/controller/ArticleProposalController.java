@@ -1,11 +1,13 @@
 package com.editorial.controller;
 
 import com.editorial.model.dto.ArticleProposalDto;
+import com.editorial.model.entity.ArticleProposal;
 import com.editorial.model.entity.User;
 import com.editorial.service.ArticleProposalService;
 import com.editorial.service.UserActionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,14 +55,14 @@ public class ArticleProposalController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ArticleProposalDto>> getArticles(@RequestParam(name = "page", required = false) Integer page,
-                                                                @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<List<ArticleProposalDto>> getArticles(Pageable pageable, @RequestParam(value = "title", required = false) String title,
+                                                                @RequestParam(value = "acceptance", required = false) ArticleProposal.Acceptance acceptance) {
         Optional<User> userChecker = userActionService.getLoggedUser();
 
         if (userChecker.isPresent()) {
             User loggedUser = userChecker.get();
             try {
-                return articleProposalService.getProposals(page, size, loggedUser);
+                return articleProposalService.getProposals(pageable, loggedUser, title, acceptance);
             } catch (RuntimeException runtimeException) {
                 return ResponseEntity.badRequest().build();
             }
