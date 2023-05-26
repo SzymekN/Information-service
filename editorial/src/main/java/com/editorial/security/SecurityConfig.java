@@ -34,6 +34,7 @@ public class SecurityConfig {
                                 .requestMatchers("/editorial/registration/fc").permitAll()
                                 .requestMatchers("/editorial/validate").permitAll()
                                 .requestMatchers("/editorial/registration/**").permitAll()//later only for users with the ADMIN role
+                                .requestMatchers("/editorial/actions/get/users").hasRole("ADMIN")
                                 .requestMatchers("/editorial/actions/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/editorial/test").hasAnyRole("JOURNALIST", "USER", "ADMIN") // journalist only previously
                                 .requestMatchers("/editorial/proposal").hasAnyRole("JOURNALIST", "REDACTOR")

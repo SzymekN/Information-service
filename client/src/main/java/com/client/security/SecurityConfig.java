@@ -35,6 +35,7 @@ public class SecurityConfig {
                                 .requestMatchers("/client/registration").permitAll()
                                 .requestMatchers("/client/validate").permitAll()
                                 .requestMatchers("/client/registration/fe").permitAll()
+                                .requestMatchers("/client/actions/get/users").hasRole("ADMIN")
                                 .requestMatchers("/client/actions/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/client/test").hasRole("USER")
                                 .requestMatchers("/client/articles/**").permitAll()
