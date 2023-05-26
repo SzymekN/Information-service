@@ -314,8 +314,11 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <b>Query Parameters:</b>
     <br>
     <ul>
-        <li><b>page</b> (required): An integer representing the page number of the results to retrieve (starting from 0).</li>
-        <li><b>size</b> (required): An integer representing the number of results per page.</li>
+        <li><b>page</b> (optional): An integer representing the page number of the results to retrieve (starting from 0). If not provided it is equal to 0</li>
+        <li><b>size</b> (optional): An integer representing the number of results per page. If not provided it is equal to 20</li>
+        <li><b>title</b> (optional): A string representing the article's title</li>
+        <li><b>sort</b> (optional): (In format sort=name,direction), where "name" is the Java attribute name and "direction" is either asc or desc</li>
+        <li><b>acceptance</b> (optional): State of the article. Can be either PENDING or DECLINED, ACCEPTED</li>
     </ul>
     <br>
     <b>Response:</b>
@@ -374,8 +377,10 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <b>Query Parameters:</b>
     <br>
     <ul>
-        <li><b>page</b> (optional): An integer representing the page number of the results to retrieve (starting from 0).</li>
-        <li><b>size</b> (optional): An integer representing the number of results per page.</li>
+        <li><b>page</b> (optional): An integer representing the page number of the results to retrieve (starting from 0). If not provided it is equal to 0</li>
+        <li><b>size</b> (optional): An integer representing the number of results per page. If not provided it is equal to 20</li>
+        <li><b>title</b> (optional): A string representing the article's title</li>
+        <li><b>sort</b> (optional): (In format sort=name,direction), where "name" is the Java attribute name and "direction" is either asc or desc</li>
     </ul>
     <br>
     <b>Response:</b>
