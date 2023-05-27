@@ -120,8 +120,8 @@ public class UserActionServiceImpl implements UserActionService {
             pagedUsers = userRepository.findAllBySurnamePaged(pageable, value);
             totalCount = userRepository.countAllBySurname(value);
         } else if ("email".equals(field)) {
-            pagedUsers = userRepository.findUserByEmail(pageable, value);
-            totalCount = 1L;
+            pagedUsers = userRepository.findAllByEmail(pageable, value);
+            totalCount = userRepository.countAllByEmail(value);
         }
 
         if (pagedUsers == null || !pagedUsers.hasContent() || totalCount == null)
@@ -147,8 +147,8 @@ public class UserActionServiceImpl implements UserActionService {
             pagedUsers = userRepository.findAllBySurnameAndRolePaged(pageable, value, role);
             totalCount = userRepository.countAllBySurnameAndRole(value, role);
         } else if ("email".equals(field)) {
-            pagedUsers = userRepository.findUserByEmailAndRole(pageable, value, role);
-            totalCount = 1L;
+            pagedUsers = userRepository.findAllByEmailAndRole(pageable, value, role);
+            totalCount = userRepository.countAllByEmailAndRole(value, role);
         }
         if (totalCount == null || pagedUsers == null || !pagedUsers.hasContent())
             return ResponseEntity.noContent().build();

@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -101,5 +104,202 @@ public class UserRepositoryTest {
         // then
         assertNotNull(foundUser);
         assertEquals(user.getId(), foundUser.getId());
+    }
+
+
+    @Test
+    public void testFindAllPaged() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Slice<User> userSlice = userRepository.findAllPaged(pageable);
+
+        assertNotNull(userSlice);
+        assertEquals(5, userSlice.getContent().size());
+    }
+
+    @Test
+    public void testFindAllByRolePaged() {
+        Pageable pageable = PageRequest.of(0, 10);
+        String role = "ADMIN";
+        Slice<User> userSlice = userRepository.findAllByRolePaged(pageable, role);
+
+        assertNotNull(userSlice);
+        assertEquals(1, userSlice.getContent().size());
+    }
+
+    @Test
+    public void testFindAllByUsernamePaged() {
+        Pageable pageable = PageRequest.of(0, 10);
+        String username = "user";
+        Slice<User> userSlice = userRepository.findAllByUsernamePaged(pageable, username);
+
+        assertNotNull(userSlice);
+        assertEquals(5, userSlice.getContent().size());
+    }
+
+    @Test
+    public void testFindAllByNamePaged() {
+        Pageable pageable = PageRequest.of(0, 10);
+        String name = "UserName";
+        Slice<User> userSlice = userRepository.findAllByNamePaged(pageable, name);
+
+        assertNotNull(userSlice);
+        assertEquals(5, userSlice.getContent().size());
+    }
+
+    @Test
+    public void testFindAllBySurnamePaged() {
+        Pageable pageable = PageRequest.of(0, 10);
+        String surname = "UserSurname";
+        Slice<User> userSlice = userRepository.findAllBySurnamePaged(pageable, surname);
+
+        assertNotNull(userSlice);
+        assertEquals(5, userSlice.getContent().size());
+    }
+
+    @Test
+    public void testFindUserByEmail() {
+        Pageable pageable = PageRequest.of(0, 10);
+        String email = "UserEmail@email.com";
+        Slice<User> userSlice = userRepository.findAllByEmail(pageable, email);
+
+        assertNotNull(userSlice);
+        assertEquals(3, userSlice.getContent().size());
+    }
+
+    @Test
+    public void testFindAllByUsernameAndRolePaged() {
+        Pageable pageable = PageRequest.of(0, 10);
+        String username = "user";
+        String role = "USER";
+        Slice<User> userSlice = userRepository.findAllByUsernameAndRolePaged(pageable, username, role);
+
+        assertNotNull(userSlice);
+        assertEquals(2, userSlice.getContent().size());
+    }
+
+    @Test
+    public void testFindAllByNameAndRolePaged() {
+        Pageable pageable = PageRequest.of(0, 10);
+        String name = "UserName";
+        String role = "USER";
+        Slice<User> userSlice = userRepository.findAllByNameAndRolePaged(pageable, name, role);
+
+        assertNotNull(userSlice);
+        assertEquals(2, userSlice.getContent().size());
+    }
+
+    @Test
+    public void testFindAllBySurnameAndRolePaged() {
+        Pageable pageable = PageRequest.of(0, 10);
+        String surname = "UserSurname";
+        String role = "USER";
+        Slice<User> userSlice = userRepository.findAllBySurnameAndRolePaged(pageable, surname, role);
+
+        assertNotNull(userSlice);
+        assertEquals(2, userSlice.getContent().size());
+    }
+
+    @Test
+    public void testFindUserByEmailAndRole() {
+        Pageable pageable = PageRequest.of(0, 10);
+        String email = "UserEmail@email.com";
+        String role = "USER";
+        Slice<User> userSlice = userRepository.findAllByEmailAndRole(pageable, email, role);
+
+        assertNotNull(userSlice);
+        assertEquals(2, userSlice.getContent().size());
+    }
+
+    @Test
+    public void testCountAllUsers() {
+        Long count = userRepository.countAllUsers();
+
+        assertNotNull(count);
+        assertEquals(5, count);
+    }
+
+    @Test
+    public void testCountAllByRole() {
+        String role = "ADMIN";
+        Long count = userRepository.countAllByRole(role);
+
+        assertNotNull(count);
+        assertEquals(1, count);
+    }
+
+    @Test
+    public void testCountAllByUsername() {
+        String username = "user";
+        Long count = userRepository.countAllByUsername(username);
+
+        assertNotNull(count);
+        assertEquals(5, count);
+    }
+
+    @Test
+    public void testCountAllByName() {
+        String name = "UserName";
+        Long count = userRepository.countAllByName(name);
+
+        assertNotNull(count);
+        assertEquals(5, count);
+    }
+
+    @Test
+    public void testCountAllBySurname() {
+        String surname = "UserSurname";
+        Long count = userRepository.countAllBySurname(surname);
+
+        assertNotNull(count);
+        assertEquals(5, count);
+    }
+
+    @Test
+    public void testCountAllByEmail() {
+        String email = "UserEmail@email.com";
+        Long count = userRepository.countAllByEmail(email);
+
+        assertNotNull(count);
+        assertEquals(3, count);
+    }
+
+    @Test
+    public void testCountAllByUsernameAndRole() {
+        String username = "UserSurname";
+        String role = "USER";
+        Long count = userRepository.countAllByUsernameAndRole(username, role);
+
+        assertNotNull(count);
+        assertEquals(0, count);
+    }
+
+    @Test
+    public void testCountAllByNameAndRole() {
+        String name = "UserName";
+        String role = "USER";
+        Long count = userRepository.countAllByNameAndRole(name, role);
+
+        assertNotNull(count);
+        assertEquals(2, count);
+    }
+
+    @Test
+    public void testCountAllBySurnameAndRole() {
+        String surname = "UserSurname";
+        String role = "USER";
+        Long count = userRepository.countAllBySurnameAndRole(surname, role);
+
+        assertNotNull(count);
+        assertEquals(2, count);
+    }
+
+    @Test
+    public void testCountAllByEmailAndRole() {
+        String email = "UserEmail@email.com";
+        String role = "USER";
+        Long count = userRepository.countAllByEmailAndRole(email, role);
+
+        assertNotNull(count);
+        assertEquals(2, count);
     }
 }

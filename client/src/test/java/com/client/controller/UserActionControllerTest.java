@@ -1,5 +1,6 @@
 package com.client.controller;
 
+import com.client.model.dto.UserDto;
 import com.client.model.dto.UserRegistrationDto;
 import com.client.model.entity.Authority;
 import com.client.model.entity.User;
@@ -15,20 +16,24 @@ import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserActionController.class)
@@ -45,6 +50,7 @@ public class UserActionControllerTest {
     private UserRepository userRepository;
     @MockBean
     private BasicServiceImpl basicService;
+
     @Test
     @WithMockUser(roles = "ADMIN")
     public void delete_user_for_admin() throws Exception {
@@ -167,7 +173,7 @@ public class UserActionControllerTest {
         userRegistrationDto.setSupplier("API");
         userRegistrationDto.setPassword("test2");
         userRegistrationDto.setEmail("WRONGEMAIL");
-        userRegistrationDto.setUsername("test");;
+        userRegistrationDto.setUsername("test");
         // when & then
         mockMvc.perform(put("/client/actions/edit").with(csrf())
                         .param("id", userId.toString())
@@ -187,5 +193,95 @@ public class UserActionControllerTest {
                         .param("id", "1")
                         .requestAttr("request", request))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void get_users_info_paged_should_return_users_when_role_and_field_provided() throws Exception {
+        // given
+        String role = "ADMIN";
+        String field = "username";
+        String value = "test";
+        List<UserDto> userDtos = new ArrayList<>();
+        when(userActionService.getLoggedUser()).thenReturn(Optional.of(new User()));
+        when(userActionService.findAllUsersByFieldAndRolePaged(any(Pageable.class), eq(role), eq(field), eq(value))).thenReturn(
+                ResponseEntity.ok().headers(createHeaders()).body(userDtos));
+
+        // when
+        mockMvc.perform(get("/client/actions/get/users").with(csrf())
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("role", role)
+                        .param("field", field)
+                        .param("value", value))
+        // then
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.header().string("X-Total-Count", "2"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void get_users_info_paged_should_return_users_when_role_provided() throws Exception {
+        // given
+        String role = "ADMIN";
+        List<UserDto> userDtos = new ArrayList<>();
+        when(userActionService.getLoggedUser()).thenReturn(Optional.of(new User()));
+        when(userActionService.findAllUsersByRolePaged(any(Pageable.class), eq(role))).thenReturn(
+                ResponseEntity.ok().headers(createHeaders()).body(userDtos));
+
+        // when
+        mockMvc.perform(get("/client/actions/get/users").with(csrf())
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("role", role))
+        // then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.header().string("X-Total-Count", "2"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void get_users_info_paged_should_return_users_when_field_provided() throws Exception {
+        // given
+        String field = "username";
+        String value = "test";
+        List<UserDto> userDtos = new ArrayList<>();
+        when(userActionService.getLoggedUser()).thenReturn(Optional.of(new User()));
+        when(userActionService.findAllUsersByFieldPaged(any(Pageable.class), eq(field), eq(value))).thenReturn(
+                ResponseEntity.ok().headers(createHeaders()).body(userDtos));
+
+        // when
+        mockMvc.perform(get("/client/actions/get/users").with(csrf())
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("field", field)
+                        .param("value", value))
+        // then
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.header().string("X-Total-Count", "2"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void get_users_info_paged_should_return_users_when_no_role_or_field_provided() throws Exception {
+        // given
+        List<UserDto> userDtos = new ArrayList<>();
+        when(userActionService.getLoggedUser()).thenReturn(Optional.of(new User()));
+        when(userActionService.findAllUsersPaged(any(Pageable.class))).thenReturn(
+                ResponseEntity.ok().headers(createHeaders()).body(userDtos));
+
+        // when
+        mockMvc.perform(get("/client/actions/get/users").with(csrf())
+                        .param("page", "0")
+                        .param("size", "10"))
+        // then
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.header().string("X-Total-Count", "2"));
+    }
+
+    private HttpHeaders createHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Total-Count", "2");
+        return headers;
     }
 }
