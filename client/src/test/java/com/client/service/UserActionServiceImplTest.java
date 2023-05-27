@@ -1,6 +1,7 @@
 package com.client.service;
 
-import com.client.model.dto.UserRegistrationDto;
+import com.client.model.dto.UserEditDto;
+import com.client.model.entity.Authority;
 import com.client.model.entity.User;
 import com.client.model.entity.UserDetails;
 import com.client.repository.UserRepository;
@@ -31,12 +32,12 @@ class UserActionServiceImplTest {
     private BasicServiceImpl basicService;
     @MockBean
     private PasswordEncoder passwordEncoder;
-    private UserRegistrationDto userRegistrationDto;
+    private UserEditDto userEditDto;
     private HttpServletRequest request;
     private User user;
     @BeforeAll
     void setUp() {
-        userRegistrationDto = mock(UserRegistrationDto.class);
+        userEditDto = mock(UserEditDto.class);
         userActionService = new UserActionServiceImpl(userRepository, basicService, passwordEncoder);
         request = mock(HttpServletRequest.class);
         user = mock(User.class);
@@ -75,19 +76,16 @@ class UserActionServiceImplTest {
     @Test
     void update_user_should_update_user_and_save() {
         // given & when
-        when(userRegistrationDto.getUsername()).thenReturn("newuser");
-        when(userRegistrationDto.getPassword()).thenReturn("newpassword");
-        when(userRegistrationDto.getName()).thenReturn("newname");
-        when(userRegistrationDto.getSurname()).thenReturn("newsurname");
-        when(userRegistrationDto.getEmail()).thenReturn("newemail");
-        when(passwordEncoder.encode(userRegistrationDto.getPassword())).thenReturn("hashedpassword");
-        when(userRegistrationDto.getPassword()).thenReturn("newpassword");
-        when(user.getUserDetails()).thenReturn(new UserDetails());
+        when(userEditDto.getUsername()).thenReturn("newuser");
+        when(userEditDto.getName()).thenReturn("newname");
+        when(userEditDto.getSurname()).thenReturn("newsurname");
+        when(passwordEncoder.encode(any(String.class))).thenReturn("hashedpassword");
+        UserDetails userDetails = new UserDetails();
+        userDetails.setSupplier("APP");
+        when(user.getUserDetails()).thenReturn(userDetails);
+        when(user.getAuthority()).thenReturn(new Authority());
         // then
-        userActionService.updateUser(user, userRegistrationDto);
-        verify(user).setUsername("newuser");
-        verify(user).setPassword("hashedpassword");
-        verify(user, times(3)).getUserDetails();
+        userActionService.updateUser(user, userEditDto, 1L);
         verify(userRepository).save(user);
     }
 
@@ -98,6 +96,7 @@ class UserActionServiceImplTest {
         // when
         when(basicService.copyHeadersFromRequest(any(HttpServletRequest.class))).thenReturn(new HttpHeaders());
         // act
-        assertThrows(ResourceAccessException.class, () -> userActionService.updateUserClientToEditorial(userId, userRegistrationDto, request));
+        assertThrows(ResourceAccessException.class, () ->
+                userActionService.updateUserClientToEditorial(userId, userId + 1 , userEditDto, request));
     }
 }
