@@ -26,14 +26,14 @@
                 </option>
               </select>
           </div>
-          <button type="submit" >Submit</button>
+          <button type="submit" >Zapisz</button>
         </form>
       </div>
     </div>
   </template>
   
   <script setup>
-  import { reactive, defineProps  } from 'vue';
+  import { reactive  } from 'vue';
   const props = defineProps(['user']);
   const userInfo = reactive({
     username: props.user.username || '',
@@ -50,8 +50,6 @@
     USER: 'Użytkownik',
     REDACTOR: 'Redaktor',
   };
-  
- 
   </script>
   
   <style scoped>
@@ -129,5 +127,4 @@
   h2{
     margin:0;
   }
-  /* Add your own styles as needed */
   </style>

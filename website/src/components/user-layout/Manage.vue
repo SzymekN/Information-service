@@ -2,31 +2,29 @@
   <div class="properties">   
     <div class="input-look">
       <div class="select-wrapper">
-        <select ref="selectedOption" @change="handleOptionChange">
-          <option value="default" selected>--Wybierz opcję--</option>
-          <option value="username">Username</option>
-          <option value="name">Imie</option>
-          <option value="surname">Nazwisko</option>
-          <option value="email">Email</option>
+        <select  v-model="selectedOption"  @change="handleOptionChange">
+          <option v-for="(optionName, optionKey) in optionNameMap" :value="optionKey" :key="optionKey">
+            {{ optionName }}
+          </option>
         </select>
       </div>
       <div class="input-wrapper">
         <input id="search-input" type="text" v-model="textInput" placeholder="Szukaj" class="disabled"> 
       </div>
-      <div class="search-button-wrapper">
-        <button id="search-button" @click="submit" class="disabled">
+      <div class="searchButton-wrapper">
+        <button id="searchButton" @click="handleSearch" class="disabled">
           <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
         </button>
       </div>
       <div class="select-wrapper role-wrapper">
-        <select v-model="selectedRole">
+        <select v-model="selectedRole" @change="handleRoleChange">
           <option id="role-sefetchUserslect" v-for="(roleName, roleKey) in authorityNameMap" :value="roleKey" :key="roleKey">
             {{ roleName }}
           </option>
         </select>
       </div>
       <div class="user-add">
-        <button id="add-button" @click="addTopic"><img :src="AddImage" alt="Dodaj użytkownika" class="add-icon" /></button>
+        <button id="addButton" @click="activateAddModal"><img :src="AddImage" alt="Dodaj użytkownika" class="add-icon" /></button>
       </div>
     </div>
   </div>
@@ -41,12 +39,13 @@
         @row-clicked="tableLoadingFinish"
     ></table-lite>
   </div>
-  <UserEdit v-if="isUserModalOpen" :user="selectedUser" @submit="updateUser" @close="closeModal"></UserEdit>
+  <UserEdit v-if="editModalOpen" :user="selectedUser" @submit="updateUser" @close="closeModal('editModalOpen')"></UserEdit>
+  <UserAdd v-if="addModalOpen" @submit="addUser" @close="closeModal('addModalOpen')"></UserAdd>
+  <UserDelete v-if="deleteModalOpen" :user="selectedUser.username" @submit="fetchDeleteUser" @close="closeModal('deleteModalOpen')"></UserDelete>
 </template>
 
 
 <script setup>
-// to do after changing role value in search box appears back in place?
 import jsCookie from "js-cookie";
 import { reactive, ref, computed } from "vue";
 import { toast } from "vue-sonner";
@@ -56,44 +55,57 @@ import DeleteImage from "@/assets/icons8-trash.svg";
 import SearchImage from "@/assets/icons8-search.svg";
 import AddImage from "@/assets/icons8-add-user.svg";
 import UserEdit from '@/components/modals/UserEdit.vue';
+import UserAdd from "@/components/modals/UserAdd.vue";
+import UserDelete from "@/components/modals/UserDelete.vue";
 
-const isUserModalOpen = ref(false);
-const selectedOption = ref("");
-const textInput = ref("");
+const editModalOpen = ref(false);
+const addModalOpen = ref(false);
+const deleteModalOpen = ref(false);
+const selectedOption = ref("default");
+var textInput = ref("");
 const data = reactive([]);
 var selectedUser = ref("null");
-var url = '/editorial/actions/get/users?';
+var url = 'null';
 var page = 0;
 var size = 10;
 const selectedRole = ref("DEFAULT");
-
 const authorityNameMap = {
-  DEFAULT: '-- Wybierz rolę --',
+  DEFAULT: 'Wszystkie role',
   ADMIN: 'Administrator',
   JOURNALIST: 'Dziennikarz',
   USER: 'Użytkownik',
   REDACTOR: 'Redaktor',
 };
 
-const searchTerm = ref(""); // Search text
-const newTopicProposal = ref(""); // user input with proposition
-const maxId = ref(128); // last id assigned
+const optionNameMap = {
+  default: '--Wybierz opcję--',
+  username: 'Username',
+  name: 'Imię',
+  surname: 'Nazwisko',
+  email: 'Email',
+};
 
-const fetchUsers = async (role, field, value) =>{
+const fetchUsers = async () =>{
+  url='/editorial/actions/get/users?';
+  const role=selectedRole.value;
+  const field=selectedOption.value;
+  const value= textInput;
+  // var tempUrl=url;
   url+=`page=${page}&size=${size}`;
   const queryParams = [];
 
-  if (role) {
+  if (role&&role!=='DEFAULT') {
     queryParams.push(`role=${encodeURIComponent(role)}`);
   }
 
-  if (field && value) {
+  if (field&&field!=='default' && value) {
     queryParams.push(`field=${encodeURIComponent(field)}`);
     queryParams.push(`value=${encodeURIComponent(value)}`);
   }
 
-  url += queryParams.join('&');
+  url +='&' + queryParams.join('&');
 
+  console.log(url)
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -102,12 +114,15 @@ const fetchUsers = async (role, field, value) =>{
       },
     });
 
-    if (!response.ok) {
+    if(response.status===204){
+      // cleaning data when search result is empty
+      data.splice(0, data.length);
+    }
+    else if (!response.ok) {
       const text = await response.text();
       toast.error(text)
     }
     else {
-      console.log(response)
        const responseJson = await response.json();
        console.log(responseJson)
       for (let i = 0; i < responseJson.length; i++) {
@@ -215,42 +230,85 @@ const tableLoadingFinish = () => {
   if (jsCookie.get('role') == 'admin' || jsCookie.get('role') == 'redactor')
       addListeners("state", changeStateListener);
   
-    addListeners("deleteButton", deleteUser);
-    addListeners("editButton", editUser);
+    addListeners("deleteButton", activateDeleteModal);
+    addListeners("editButton", activateEditModal);
+    // addListeners("addButton", activateAddModal);
 };
 
+const handleRoleChange = (e) => {
+  selectedRole.value = e.target.options[e.target.options.selectedIndex].value;
+  fetchUsers();
+};
 const handleOptionChange = (e) => {
   const inputElement = document.getElementById("search-input");
-  const searchElement=document.getElementById("search-button");
+  const searchElement=document.getElementById("searchButton");
 
   if (e.target.options.selectedIndex == 0) {
     searchElement.classList.add("disabled");
     inputElement.classList.add("disabled");
+
+    // Clearing search input
     inputElement.value="";
-    // fetch for all data make if to make it not fetch data if it already present
+    // Clearing connected variable 
+    textInput="";
+
   } else {
     searchElement.classList.remove("disabled");
     inputElement.classList.remove("disabled");
+    selectedOption.value = e.target.options[e.target.options.selectedIndex].value;
   }
 };
 
+const handleSearch = () => {
+  const inputElement = document.getElementById("search-input");
+  // const searchElement=document.getElementById("searchButton");
 
+  if (inputElement.classList.contains("disabled")) {
+    return;
+  }
 
-function deleteUser() {
-  let id=this.getAttribute("rowId");
-  console.log("Delete data with id:", id);
-}
-
-const editUser = (pointerEvent) => {
+  textInput = inputElement.value;
+   fetchUsers();
+  };
+const activateDeleteModal = (pointerEvent) => {
   const rowId = parseInt(pointerEvent.currentTarget.getAttribute("rowId"));
   const row = data.find((item) => item.id === rowId);
   selectedUser = JSON.parse(JSON.stringify(row));
-  console.log(selectedUser);
-  isUserModalOpen.value = true;
+  deleteModalOpen.value = true;
+};
+
+function fetchDeleteUser() {
+  url = `/editorial/actions/delete?id=${encodeURIComponent(selectedUser.id)}`;
+  fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        const text = response.text();
+        toast.error(text);
+      } else {
+        toast.success("Użytkownik został usunięty");
+        deleteModalOpen.value = false;
+        fetchUsers();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+const activateEditModal = (pointerEvent) => {
+  const rowId = parseInt(pointerEvent.currentTarget.getAttribute("rowId"));
+  const row = data.find((item) => item.id === rowId);
+  selectedUser = JSON.parse(JSON.stringify(row));
+  editModalOpen.value = true;
 };
 
 function updateUser(userData) {
-  isUserModalOpen.value = false;
+  editModalOpen.value = false;
 
   const form = userData.currentTarget; // Select the form element
 
@@ -264,8 +322,6 @@ function updateUser(userData) {
     fieldValues[fieldName] = fieldValue;
   });
 
-  console.log(fieldValues);
-
   const userToUpdate = data.find((user) => user.id === selectedUser.id);
 
   if (userToUpdate) {
@@ -273,13 +329,11 @@ function updateUser(userData) {
 
     // Update the user object with the new values
     for (const [key, value] of Object.entries(fieldValues)) {
-      console.log(value+" "+userToUpdate[key]);
       if (userToUpdate[key] !== value&&value!="") {
         updatedValues[key] = value; // Store the updated key-value pair
       }
     }
 
-    
     console.log("Updated values:", updatedValues);
   } else {
     console.log("User not found");
@@ -287,10 +341,112 @@ function updateUser(userData) {
   // TODO: Send a request to update the user on the server
 }
 
-const closeModal = () => {
-  isUserModalOpen.value = false;
+const cleanAddModal = () => {
+  const usernameInput = document.getElementById('username');
+  const nameInput = document.getElementById('name');
+  const surnameInput = document.getElementById('surname');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const authorityNameSelect = document.getElementById('authorityName');
+
+  // Clear input field values
+  usernameInput.value = '';
+  nameInput.value = '';
+  surnameInput.value = '';
+  emailInput.value = '';
+  passwordInput.value = '';
+
+  // Reset select field to the default option
+  authorityNameSelect.value = 'DEFAULT';
 };
 
+const closeModal = (modal) => {
+  if(modal==="editModalOpen")
+    editModalOpen.value = false;
+  else if(modal==="addModalOpen"){
+    cleanAddModal();
+    addModalOpen.value = false;
+  }
+  else if(modal==="deleteModalOpen")
+    deleteModalOpen.value = false;
+};
+
+const activateAddModal = () => {
+  addModalOpen.value = true;
+};
+
+const fetchAddUser = async (newUser) =>{
+  url='/editorial/registration';
+  // console.log(newUser);
+ 
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newUser),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      toast.error(text)
+    }
+    else {
+        // Clean and close the modal
+        cleanAddModal();
+        addModalOpen.value = false;
+
+        // Fetch the updated list of users
+        fetchUsers();
+        // TO DO: success alert
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function addUser(userData) {
+  
+  const form = userData.currentTarget; // Select the form element
+
+  const formFields = form.querySelectorAll('input, select');
+  const fieldValues = {};
+
+  // Get the values from the form fields
+  formFields.forEach((field) => {
+    const fieldName = field.id;
+    const fieldValue = field.value;
+    fieldValues[fieldName] = fieldValue;
+  });
+  
+
+  // Check if all values are present
+  for (const key in fieldValues) {
+    if (!fieldValues[key]) {
+      console.log(`Missing value for ${key}.`);
+      return;
+    }
+  }
+
+  // Check if authorityName is present
+  if (!fieldValues.authorityName||fieldValues.authorityName=="DEFAULT") {
+    console.log("Missing value for authorityName.");
+    return;
+  }
+
+  
+  const newUser = {
+    username: fieldValues.username,
+    name: fieldValues.name,
+    surname: fieldValues.surname,
+    email: fieldValues.email,
+    password: fieldValues.password,
+    authorityName: fieldValues.authorityName
+  };
+
+  fetchAddUser(newUser);
+};
 </script>
 
 <style>
@@ -313,7 +469,7 @@ const closeModal = () => {
 
 .select-wrapper,
 .input-wrapper,
-.search-button-wrapper {
+.searchButton-wrapper {
   flex: 1;
 }
 .role-wrapper{
@@ -329,7 +485,7 @@ const closeModal = () => {
 .input-wrapper{
   max-width:20%;
 }
-.search-button-wrapper {
+.searchButton-wrapper {
   max-width: 4%;
 }
 .select-wrapper{
@@ -343,8 +499,8 @@ const closeModal = () => {
   border-radius: 4px;
 }
 
-#search-button,
-#add-button{
+#searchButton,
+#addButton{
   height:40px;
   width:40px;
 }
