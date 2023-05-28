@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpStatus;
@@ -98,13 +99,14 @@ class ArticleDraftServiceImplTest {
     @Test
     void get_drafts_should_return_drafts() {
         // given
-        Integer page = 0;
-        Integer size = 10;
+        int page = 0;
+        int size = 10;
         User loggedUser = new User();
+        Pageable pageable = PageRequest.of(page, size);
         Slice<ArticleDraft> articleDrafts = createSampleArticleDrafts();
         // when
         when(articleDraftRepository.findAllPagedById(any(PageRequest.class), eq(loggedUser.getId()))).thenReturn(articleDrafts);
-        ResponseEntity<List<ArticleDraftDto>> responseEntity = articleDraftService.getDrafts(page, size, loggedUser);
+        ResponseEntity<List<ArticleDraftDto>> responseEntity = articleDraftService.getDrafts(pageable, loggedUser, null);
         // then
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

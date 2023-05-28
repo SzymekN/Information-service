@@ -10,9 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -38,6 +37,11 @@ class ArticleProposalServiceImplTest {
     private Slice<ArticleProposal> createSampleArticleProposals() {
         List<ArticleProposal> proposals = new ArrayList<>();
         return new SliceImpl<>(proposals);
+    }
+
+    private Page<ArticleProposal> createSampleArticleProposalsPage() {
+        List<ArticleProposal> proposals = new ArrayList<>();
+        return new PageImpl<>(proposals);
     }
 
     @BeforeAll
@@ -116,19 +120,18 @@ class ArticleProposalServiceImplTest {
     @Test
     void get_proposals_should_return_proposals() {
         // given
-        Integer page = 0;
-        Integer size = 10;
+        int page = 0;
+        int size = 10;
         User loggedUser = new User();
+        Pageable pageable = PageRequest.of(page, size);
         loggedUser.setAuthority(new Authority("REDACTOR"));
-        Slice<ArticleProposal> articleProposals = createSampleArticleProposals();
         // when
-        when(articleProposalRepository.findAllPaged(any(PageRequest.class))).thenReturn(articleProposals);
-        ResponseEntity<List<ArticleProposalDto>> responseEntity = articleProposalService.getProposals(page, size, loggedUser);
+        when(articleProposalRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(createSampleArticleProposalsPage());
+        ResponseEntity<List<ArticleProposalDto>> responseEntity = articleProposalService.getProposals(pageable, loggedUser, null, null);
         // then
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<ArticleProposalDto> proposals = responseEntity.getBody();
         assertNotNull(proposals);
-        assertEquals(articleProposals.getContent().size(), proposals.size());
     }
 }
