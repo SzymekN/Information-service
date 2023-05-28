@@ -216,8 +216,8 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <ul>
     <li>pageable (optional): a pageable object specifying the page size (10 by default), page number (0 by default), sorting field, and sorting direction for pagination.</li>
     <li>role (optional): a string representing the role of the users to filter by.</li>
-    <li>field (optional): a string representing the column in the database to filter the users by.</li>
-    <li>value (optional): a string representing the value to match in the specified field.</li>
+    <li>attributeName (optional): a string representing the column in the database to filter the users by.</li>
+    <li>attributeValue (optional): a string representing the value to match in the specified field.</li>
     </ul>
     <br>
     <b>Response:</b>
