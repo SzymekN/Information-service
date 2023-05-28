@@ -208,6 +208,22 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
 
 ### Users:
 <ol>
+    <li><b>GET /client/actions/get/users (/editorial/actions/get/users)</b></li>
+    This endpoint retrieves a list of users from the database based on optional query parameters. Only users with ADMIN privileges can get a list of users.
+    <br><br>
+    <b>Query Parameters:</b>
+    <br>
+    <ul>
+    <li>pageable (optional): a pageable object specifying the page size (10 by default), page number (0 by default), sorting field, and sorting direction for pagination.</li>
+    <li>role (optional): a string representing the role of the users to filter by.</li>
+    <li>field (optional): a string representing the column in the database to filter the users by.</li>
+    <li>value (optional): a string representing the value to match in the specified field.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response includes a list of UserDto objects and appropriate status codes. Additionally, the response headers include the X-Total-Count field, representing the total number of records in the database that match the specified criteria. If the user is not authenticated, <b>a 401 Unauthorized</b> status code is returned. If the request is successful and there are users matching the criteria, <b>a 200 OK</b> status code is returned along with the list of UserDto objects. If there are no users matching the criteria, <b>a 204 No Content</b> status code is returned.
+    <br><br>
     <li><b>DELETE /client/actions/delete (/editorial/actions/delete)</b></li>
     This endpoint deletes a user from the database. Only users with ADMIN privileges or the owner of the account can delete a user.
     <br><br>
