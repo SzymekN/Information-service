@@ -197,47 +197,47 @@ class UserActionServiceImplTest {
     }
 
     @Test
-    void find_all_users_by_field_paged_should_return_users_and_headers_when_users_exist() {
+    void find_all_users_by_attribute_name_paged_should_return_users_and_headers_when_users_exist() {
         // given
-        String field = "name";
-        String value = "Test";
+        String attributeName = "name";
+        String attributeValue = "Test";
         List<User> users = new ArrayList<>();
         users.add(user2);
         when(pagedUsers.hasContent()).thenReturn(true);
         when(pagedUsers.getContent()).thenReturn(users);
-        when(userRepository.findAllByNamePaged(pageable, value)).thenReturn(pagedUsers);
-        when(userRepository.countAllByName(value)).thenReturn(1L);
+        when(userRepository.findAllByNamePaged(pageable, attributeValue)).thenReturn(pagedUsers);
+        when(userRepository.countAllByName(attributeValue)).thenReturn(1L);
 
         // when
-        ResponseEntity<List<UserDto>> response = userActionService.findAllUsersByFieldPaged(pageable, field, value);
+        ResponseEntity<List<UserDto>> response = userActionService.findAllUsersByAttributeNamePaged(pageable, attributeName, attributeValue);
 
         // then
-        verify(userRepository).findAllByNamePaged(pageable, value);
-        verify(userRepository).countAllByName(value);
+        verify(userRepository).findAllByNamePaged(pageable, attributeValue);
+        verify(userRepository).countAllByName(attributeValue);
         HttpHeaders expectedHeaders = new HttpHeaders();
         expectedHeaders.set("X-Total-Count", "1");
         assertEquals(ResponseEntity.ok().headers(expectedHeaders).body(userActionService.usersToDto(users)), response);
     }
 
     @Test
-    void find_all_users_by_field_and_role_paged_should_return_users_and_headers_when_users_exist() {
+    void find_all_users_by_attribute_name_and_role_paged_should_return_users_and_headers_when_users_exist() {
         // given
         String role = "USER";
-        String field = "name";
-        String value = "Test";
+        String attributeName = "name";
+        String attributeValue = "Test";
         List<User> users = new ArrayList<>();
         users.add(user2);
         when(pagedUsers.hasContent()).thenReturn(true);
         when(pagedUsers.getContent()).thenReturn(users);
-        when(userRepository.findAllByNameAndRolePaged(pageable, value, role)).thenReturn(pagedUsers);
-        when(userRepository.countAllByNameAndRole(value, role)).thenReturn(1L);
+        when(userRepository.findAllByNameAndRolePaged(pageable, attributeValue, role)).thenReturn(pagedUsers);
+        when(userRepository.countAllByNameAndRole(attributeValue, role)).thenReturn(1L);
 
         // when
-        ResponseEntity<List<UserDto>> response = userActionService.findAllUsersByFieldAndRolePaged(pageable, role, field, value);
+        ResponseEntity<List<UserDto>> response = userActionService.findAllUsersByAttributeNameAndRolePaged(pageable, role, attributeName, attributeValue);
 
         // then
-        verify(userRepository).findAllByNameAndRolePaged(pageable, value, role);
-        verify(userRepository).countAllByNameAndRole(value, role);
+        verify(userRepository).findAllByNameAndRolePaged(pageable, attributeValue, role);
+        verify(userRepository).countAllByNameAndRole(attributeValue, role);
         HttpHeaders expectedHeaders = new HttpHeaders();
         expectedHeaders.set("X-Total-Count", "1");
         assertEquals(ResponseEntity.ok().headers(expectedHeaders).body(userActionService.usersToDto(users)), response);

@@ -32,19 +32,19 @@ public class UserActionController {
     @GetMapping("/get/users")
     public ResponseEntity<List<UserDto>> getUsersInfoPaged(Pageable pageable,
                                                            @RequestParam(name = "role", required = false) String role,
-                                                           @RequestParam(name = "field", required = false) String field,
-                                                           @RequestParam(name = "value", required = false) String value) {
+                                                           @RequestParam(name = "attributeName", required = false) String attributeName,
+                                                           @RequestParam(name = "attributeValue", required = false) String attributeValue) {
         Optional<User> userChecker = userActionService.getLoggedUser();
 
         if (userChecker.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(List.of());
 
-        if (role != null && field != null)
-            return userActionService.findAllUsersByFieldAndRolePaged(pageable, role, field, value);
+        if (role != null && attributeName != null)
+            return userActionService.findAllUsersByAttributeNameAndRolePaged(pageable, role, attributeName, attributeValue);
         else if (role != null)
             return userActionService.findAllUsersByRolePaged(pageable, role);
-        else if (field != null) {
-            return userActionService.findAllUsersByFieldPaged(pageable, field, value);
+        else if (attributeName != null) {
+            return userActionService.findAllUsersByAttributeNamePaged(pageable, attributeName, attributeValue);
         } else
             return userActionService.findAllUsersPaged(pageable);
     }

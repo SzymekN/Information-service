@@ -197,14 +197,14 @@ public class UserActionControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void get_users_info_paged_should_return_users_when_role_and_field_provided() throws Exception {
+    void get_users_info_paged_should_return_users_when_role_and_attribute_name_provided() throws Exception {
         // given
         String role = "ADMIN";
-        String field = "username";
-        String value = "test";
+        String attributeName = "username";
+        String attributeValue = "test";
         List<UserDto> userDtos = new ArrayList<>();
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(new User()));
-        when(userActionService.findAllUsersByFieldAndRolePaged(any(Pageable.class), eq(role), eq(field), eq(value))).thenReturn(
+        when(userActionService.findAllUsersByAttributeNameAndRolePaged(any(Pageable.class), eq(role), eq(attributeName), eq(attributeValue))).thenReturn(
                 ResponseEntity.ok().headers(createHeaders()).body(userDtos));
 
         // when
@@ -212,8 +212,8 @@ public class UserActionControllerTest {
                         .param("page", "0")
                         .param("size", "10")
                         .param("role", role)
-                        .param("field", field)
-                        .param("value", value))
+                        .param("attributeName", attributeName)
+                        .param("attributeValue", attributeValue))
         // then
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.header().string("X-Total-Count", "2"));
@@ -241,21 +241,21 @@ public class UserActionControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void get_users_info_paged_should_return_users_when_field_provided() throws Exception {
+    void get_users_info_paged_should_return_users_when_attribute_name_provided() throws Exception {
         // given
-        String field = "username";
-        String value = "test";
+        String attributeName = "username";
+        String attributeValue = "test";
         List<UserDto> userDtos = new ArrayList<>();
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(new User()));
-        when(userActionService.findAllUsersByFieldPaged(any(Pageable.class), eq(field), eq(value))).thenReturn(
+        when(userActionService.findAllUsersByAttributeNamePaged(any(Pageable.class), eq(attributeName), eq(attributeValue))).thenReturn(
                 ResponseEntity.ok().headers(createHeaders()).body(userDtos));
 
         // when
         mockMvc.perform(get("/client/actions/get/users").with(csrf())
                         .param("page", "0")
                         .param("size", "10")
-                        .param("field", field)
-                        .param("value", value))
+                        .param("attributeName", attributeName)
+                        .param("attributeValue", attributeValue))
         // then
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.header().string("X-Total-Count", "2"));
@@ -263,7 +263,7 @@ public class UserActionControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void get_users_info_paged_should_return_users_when_no_role_or_field_provided() throws Exception {
+    void get_users_info_paged_should_return_users_when_no_role_or_attribute_name_provided() throws Exception {
         // given
         List<UserDto> userDtos = new ArrayList<>();
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(new User()));

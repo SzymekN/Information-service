@@ -107,53 +107,55 @@ public class UserActionServiceImpl implements UserActionService {
     }
 
     @Override
-    public ResponseEntity<List<UserDto>> findAllUsersByFieldPaged(Pageable pageable, String field, String value) {
+    public ResponseEntity<List<UserDto>> findAllUsersByAttributeNamePaged(Pageable pageable, String attributeName, String attributeValue) {
         Slice<User> pagedUsers = null;
         Long totalCount = null;
-        if ("username".equals(field)) {
-            pagedUsers = userRepository.findAllByUsernamePaged(pageable, value);
-            totalCount = userRepository.countAllByUsername(value);
-        } else if ("name".equals(field)) {
-            pagedUsers = userRepository.findAllByNamePaged(pageable, value);
-            totalCount = userRepository.countAllByName(value);
-        } else if ("surname".equals(field)) {
-            pagedUsers = userRepository.findAllBySurnamePaged(pageable, value);
-            totalCount = userRepository.countAllBySurname(value);
-        } else if ("email".equals(field)) {
-            pagedUsers = userRepository.findAllByEmail(pageable, value);
-            totalCount = userRepository.countAllByEmail(value);
+        if ("username".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByUsernamePaged(pageable, attributeValue);
+            totalCount = userRepository.countAllByUsername(attributeValue);
+        } else if ("name".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByNamePaged(pageable, attributeValue);
+            totalCount = userRepository.countAllByName(attributeValue);
+        } else if ("surname".equals(attributeName)) {
+            pagedUsers = userRepository.findAllBySurnamePaged(pageable, attributeValue);
+            totalCount = userRepository.countAllBySurname(attributeValue);
+        } else if ("email".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByEmail(pageable, attributeValue);
+            totalCount = userRepository.countAllByEmail(attributeValue);
         }
 
-        if (pagedUsers == null || !pagedUsers.hasContent() || totalCount == null)
-            return ResponseEntity.noContent().build();
-
         HttpHeaders headers = new HttpHeaders();
+        if (totalCount == null || totalCount == 0) {
+            headers.set("X-Total-Count", "0");
+            return ResponseEntity.noContent().headers(headers).build();
+        }
         headers.set("X-Total-Count", totalCount.toString());
         return ResponseEntity.ok().headers(headers).body(usersToDto(pagedUsers.getContent()));
     }
 
     @Override
-    public ResponseEntity<List<UserDto>> findAllUsersByFieldAndRolePaged(Pageable pageable, String role, String field, String value) {
+    public ResponseEntity<List<UserDto>> findAllUsersByAttributeNameAndRolePaged(Pageable pageable, String role, String attributeName, String attributeValue) {
         Slice<User> pagedUsers = null;
         Long totalCount = null;
-
-        if ("username".equals(field)) {
-            pagedUsers = userRepository.findAllByUsernameAndRolePaged(pageable, value, role);
-            totalCount = userRepository.countAllByUsernameAndRole(value, role);
-        } else if ("name".equals(field)) {
-            pagedUsers = userRepository.findAllByNameAndRolePaged(pageable, value, role);
-            totalCount = userRepository.countAllByNameAndRole(value, role);
-        } else if ("surname".equals(field)) {
-            pagedUsers = userRepository.findAllBySurnameAndRolePaged(pageable, value, role);
-            totalCount = userRepository.countAllBySurnameAndRole(value, role);
-        } else if ("email".equals(field)) {
-            pagedUsers = userRepository.findAllByEmailAndRole(pageable, value, role);
-            totalCount = userRepository.countAllByEmailAndRole(value, role);
+        if ("username".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByUsernameAndRolePaged(pageable, attributeValue, role);
+            totalCount = userRepository.countAllByUsernameAndRole(attributeValue, role);
+        } else if ("name".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByNameAndRolePaged(pageable, attributeValue, role);
+            totalCount = userRepository.countAllByNameAndRole(attributeValue, role);
+        } else if ("surname".equals(attributeName)) {
+            pagedUsers = userRepository.findAllBySurnameAndRolePaged(pageable, attributeValue, role);
+            totalCount = userRepository.countAllBySurnameAndRole(attributeValue, role);
+        } else if ("email".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByEmailAndRole(pageable, attributeValue, role);
+            totalCount = userRepository.countAllByEmailAndRole(attributeValue, role);
         }
-        if (totalCount == null || pagedUsers == null || !pagedUsers.hasContent())
-            return ResponseEntity.noContent().build();
 
         HttpHeaders headers = new HttpHeaders();
+        if (totalCount == null || totalCount == 0) {
+            headers.set("X-Total-Count", "0");
+            return ResponseEntity.noContent().headers(headers).build();
+        }
         headers.set("X-Total-Count", totalCount.toString());
         return ResponseEntity.ok().headers(headers).body(usersToDto(pagedUsers.getContent()));
     }
@@ -179,6 +181,7 @@ public class UserActionServiceImpl implements UserActionService {
                         .name(user.getUserDetails().getName())
                         .surname(user.getUserDetails().getSurname())
                         .email(user.getUserDetails().getEmail())
+                        .supplier(user.getUserDetails().getSupplier())
                         .authorityName(user.getAuthority().getAuthorityName())
                         .build())
                 .collect(Collectors.toList());

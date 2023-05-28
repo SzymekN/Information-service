@@ -19,6 +19,6 @@ public interface UserActionService {
     User findUserById(Long userId);
     ResponseEntity<List<UserDto>> findAllUsersPaged(Pageable pageable);
     ResponseEntity<List<UserDto>> findAllUsersByRolePaged(Pageable pageable, String role);
-    ResponseEntity<List<UserDto>> findAllUsersByFieldPaged(Pageable pageable, String field, String value);
-    ResponseEntity<List<UserDto>> findAllUsersByFieldAndRolePaged(Pageable pageable, String role, String field, String value);
+    ResponseEntity<List<UserDto>> findAllUsersByAttributeNamePaged(Pageable pageable, String attributeName, String attributeValue);
+    ResponseEntity<List<UserDto>> findAllUsersByAttributeNameAndRolePaged(Pageable pageable, String role, String attributeName, String attributeValue);
 }
