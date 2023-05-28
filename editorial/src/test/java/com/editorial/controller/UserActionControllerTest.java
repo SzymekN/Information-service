@@ -1,5 +1,6 @@
 package com.editorial.controller;
 
+import com.editorial.model.dto.UserEditDto;
 import com.editorial.model.dto.UserDto;
 import com.editorial.model.dto.UserRegistrationDto;
 import com.editorial.model.entity.Authority;
@@ -137,27 +138,25 @@ public class UserActionControllerTest {
     public void edit_user() throws Exception {
         // given
         Long userId = 1L;
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
+        UserEditDto userEditDto = new UserEditDto();
         HttpServletRequest request = mock(HttpServletRequest.class);
         User loggedUser = new User();
         loggedUser.setId(1L);
         loggedUser.setAuthority(new Authority("ADMIN"));
         User userToEdit = new User();
-        userRegistrationDto.setName("name");
-        userRegistrationDto.setSurname("name");
-        userRegistrationDto.setSupplier("API");
-        userRegistrationDto.setPassword("test2");
-        userRegistrationDto.setEmail("email@gmail.com");
-        userRegistrationDto.setUsername("test");
+        userEditDto.setName("name");
+        userEditDto.setSurname("name");
+        userEditDto.setUsername("test");
+        userEditDto.setAuthorityName("USER");
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
         when(userRepository.findUserById(userId)).thenReturn(userToEdit);
-        when(userActionService.updateUserEditorialToClient(any(Long.class), any(UserRegistrationDto.class),
+        when(userActionService.updateUserEditorialToClient(any(Long.class), any(Long.class), any(UserEditDto.class),
                 any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         // then
         mockMvc.perform(put("/editorial/actions/edit").with(csrf())
                         .param("id", userId.toString())
-                        .content(new ObjectMapper().writeValueAsString(userRegistrationDto))
+                        .content(new ObjectMapper().writeValueAsString(userEditDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .requestAttr("request", request))
                 .andExpect(status().isOk())
@@ -169,19 +168,16 @@ public class UserActionControllerTest {
     public void edit_user_invalid_input() throws Exception {
         // given
         Long userId = 1L;
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
+        UserEditDto userEditDto = new UserEditDto();
         HttpServletRequest request = mock(HttpServletRequest.class);
-        userRegistrationDto.setName("name");
-        userRegistrationDto.setSurname("name");
-        userRegistrationDto.setSupplier("API");
-        userRegistrationDto.setPassword("test2");
-        userRegistrationDto.setEmail("WRONGEMAIL");
-        userRegistrationDto.setUsername("test");
+        userEditDto.setName("name");
+        userEditDto.setSurname("name23");
+        userEditDto.setUsername("test");
         ;
         // when & then
         mockMvc.perform(put("/editorial/actions/edit").with(csrf())
                         .param("id", userId.toString())
-                        .content(new ObjectMapper().writeValueAsString(userRegistrationDto))
+                        .content(new ObjectMapper().writeValueAsString(userEditDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .requestAttr("request", request))
                 .andExpect(status().isBadRequest());

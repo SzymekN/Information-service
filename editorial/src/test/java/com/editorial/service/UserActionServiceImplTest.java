@@ -1,5 +1,7 @@
 package com.editorial.service;
 
+import com.editorial.model.dto.UserEditDto;
+import com.editorial.model.entity.Authority;
 import com.editorial.model.dto.UserDto;
 import com.editorial.model.dto.UserRegistrationDto;
 import com.editorial.model.entity.Authority;
@@ -43,7 +45,7 @@ class UserActionServiceImplTest {
     private BasicServiceImpl basicService;
     @MockBean
     private PasswordEncoder passwordEncoder;
-    private UserRegistrationDto userRegistrationDto;
+    private UserEditDto userEditDto;
     private HttpServletRequest request;
     private User user;
     private User user2;
@@ -52,7 +54,7 @@ class UserActionServiceImplTest {
 
     @BeforeAll
     void setUp() {
-        userRegistrationDto = mock(UserRegistrationDto.class);
+        userEditDto = mock(UserEditDto.class);
         userActionService = new UserActionServiceImpl(userRepository, basicService, passwordEncoder);
         request = mock(HttpServletRequest.class);
         user = mock(User.class);
@@ -117,19 +119,16 @@ class UserActionServiceImplTest {
     @Test
     void update_user_should_update_user_and_save() {
         // given & when
-        when(userRegistrationDto.getUsername()).thenReturn("newuser");
-        when(userRegistrationDto.getPassword()).thenReturn("newpassword");
-        when(userRegistrationDto.getName()).thenReturn("newname");
-        when(userRegistrationDto.getSurname()).thenReturn("newsurname");
-        when(userRegistrationDto.getEmail()).thenReturn("newemail");
-        when(passwordEncoder.encode(userRegistrationDto.getPassword())).thenReturn("hashedpassword");
-        when(userRegistrationDto.getPassword()).thenReturn("newpassword");
-        when(user.getUserDetails()).thenReturn(new UserDetails());
+        when(userEditDto.getUsername()).thenReturn("newuser");
+        when(userEditDto.getName()).thenReturn("newname");
+        when(userEditDto.getSurname()).thenReturn("newsurname");
+        when(passwordEncoder.encode(any(String.class))).thenReturn("hashedpassword");
+        UserDetails userDetails = new UserDetails();
+        userDetails.setSupplier("APP");
+        when(user.getUserDetails()).thenReturn(userDetails);
+        when(user.getAuthority()).thenReturn(new Authority());
         // then
-        userActionService.updateUser(user, userRegistrationDto);
-        verify(user).setUsername("newuser");
-        verify(user).setPassword("hashedpassword");
-        verify(user, times(3)).getUserDetails();
+        userActionService.updateUser(user, userEditDto, 1L);
         verify(userRepository).save(user);
     }
 
@@ -140,7 +139,8 @@ class UserActionServiceImplTest {
         // when
         when(basicService.copyHeadersFromRequest(any(HttpServletRequest.class))).thenReturn(new HttpHeaders());
         // act
-        assertThrows(NestedRuntimeException.class, () -> userActionService.updateUserEditorialToClient(userId, userRegistrationDto, request));
+        assertThrows(NestedRuntimeException.class, () ->
+                userActionService.updateUserEditorialToClient(userId, userId + 1, userEditDto, request));
     }
 
 

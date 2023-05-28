@@ -4,9 +4,12 @@ import com.editorial.model.dto.ArticleProposalDto;
 import com.editorial.model.entity.ArticleProposal;
 import com.editorial.model.entity.User;
 import com.editorial.repository.ArticleProposalRepository;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -54,15 +57,31 @@ public class ArticleProposalServiceImpl implements ArticleProposalService {
     }
 
     @Override
-    public ResponseEntity<List<ArticleProposalDto>> getProposals(Integer page, Integer size, User loggedUser) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+    public ResponseEntity<List<ArticleProposalDto>> getProposals(Pageable pageable, User loggedUser, String title, ArticleProposal.Acceptance acceptance) {
         Slice<ArticleProposal> articleProposals;
-        if (loggedUser.getAuthority().getAuthorityName().equals("REDACTOR"))
-            articleProposals = articleProposalRepository.findAllPaged(pageRequest);
-        else
-            articleProposals = articleProposalRepository.findAllPagedById(pageRequest, loggedUser.getId());
+        Specification<ArticleProposal> spec = Specification.where(null);
+        long totalCount;
 
-        return ResponseEntity.ok(articleProposalsToDto(articleProposals.getContent()));
+        if (title != null)
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("title"), "%" + title + "%"));
+        if (acceptance != null)
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("acceptance"), acceptance));
+        if (!loggedUser.getAuthority().getAuthorityName().equals("REDACTOR"))
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("journalist").get("id"), loggedUser.getId()));
+
+        totalCount = articleProposalRepository.count(spec);
+
+        spec = spec.and((root, query, criteriaBuilder) -> {
+            root.fetch("journalist", JoinType.INNER);
+            return null;
+        });
+
+        articleProposals = articleProposalRepository.findAll(spec, pageable);
+
+        HttpHeaders headers = new HttpHeaders();;
+        headers.set("X-Total-Count", Long.toString(totalCount));
+
+        return ResponseEntity.ok().headers(headers).body(articleProposalsToDto(articleProposals.getContent()));
     }
 
     public ArticleProposal articleDtoToProposal(User loggedUser, ArticleProposalDto articleProposalDto) {
