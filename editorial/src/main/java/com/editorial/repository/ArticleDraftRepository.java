@@ -13,8 +13,20 @@ import org.springframework.stereotype.Repository;
 public interface ArticleDraftRepository extends JpaRepository<ArticleDraft, Long> {
 
     @Query("SELECT ad FROM ArticleDraft ad JOIN FETCH ad.journalist j " +
-            "WHERE j.id = :id ORDER BY ad.dateOfUpdate DESC")
+            "WHERE j.id = :id")
     Slice<ArticleDraft> findAllPagedById(Pageable pageable, @Param("id") Long journalistId);
+
+    @Query("SELECT COUNT(ad) FROM ArticleDraft ad JOIN ad.journalist j " +
+            "WHERE j.id = :id")
+    Long countAllPagedById(@Param("id") Long journalistId);
+
+    @Query("SELECT COUNT(ad) FROM ArticleDraft ad JOIN ad.journalist j " +
+            "WHERE j.id = :id AND ad.title LIKE %:title%")
+    Long countAllPagedByIdAndTitle(@Param("id") Long journalistId, @Param("title") String title);
+
+    @Query("SELECT ad FROM ArticleDraft ad JOIN FETCH ad.journalist j " +
+            "WHERE j.id = :id AND ad.title LIKE %:title%")
+    Slice<ArticleDraft> findAllPagedByIdAndTitle(Pageable pageable, @Param("id") Long journalistId, @Param("title") String title);
 
     @Modifying
     @Query("DELETE FROM ArticleDraft ad WHERE ad.id =:id")
