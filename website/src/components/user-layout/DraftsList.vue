@@ -6,7 +6,6 @@
 -->
 
 <template>
-  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
 
   <div class="properties">
     <div class="input-add">
@@ -15,7 +14,12 @@
       <router-link :to="{name: 'edit'}"><button>Stwórz</button></router-link>
     </div>
     <div class="input-look">
-      <label>Szukaj:</label><input v-model="searchTerm" />
+      <label>Szukaj:</label><input type="search" v-model="searchTerm" />
+      <div class="searchButton-wrapper">
+        <button id="searchButton" @click="handleSearch" class="disabled">
+          <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
+        </button>
+    </div>
     </div>
   </div>
   <div class="table-context">
@@ -34,10 +38,11 @@
 
 <script setup>
 import jsCookie from "js-cookie";
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, watch } from "vue";
 import { toast } from "vue-sonner";
 import TableLite from 'vue3-table-lite'
 import router from "@/router";
+import SearchImage from "@/assets/icons8-search.svg";
 
 
 // TODO: replace with fetched data
@@ -45,14 +50,26 @@ import router from "@/router";
 const data = reactive([]);
 const newDraftTitle = ref("");
 const articlesMap = ref(new Map());
+const rowCount = ref(0);
+
+var lastSearchTerm = "";
+var lastPage = 0;
+var lastOrder = "id";
+var lastSort = "desc";
 
 var url = '/editorial/draft?';
-// var page = 0;
 var size = 10;
 
-const fetchData = async (page = 0) =>{
+const fetchData = async (page = 0, order = "id", sort = "desc", search = "") =>{
+  const queryParams = [];
+  if (search != ""){
+    queryParams.push(`title=${search}`);
+  }
+  queryParams.push(`sort=${order},${sort}`);
+  url = `/editorial/draft?page=${page}&size=${size}&`;
+  url += queryParams.join("&");
   try {
-    const response = await fetch(url+`page=${page}&size=${size}`, {
+    const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -79,6 +96,7 @@ const fetchData = async (page = 0) =>{
         articlesMap.value.set(data[i]["id"], data[i]);
         // fetchData = data.length;
       }
+      rowCount.value = Number(response.headers.get('X-Total-Count'));
     }
   } catch (error) {
     console.log(error);
@@ -91,12 +109,6 @@ fetchData();
 // Table config
 const table = reactive({
   columns: [
-      {
-          label: "Użytkownik",
-          field: "authorName",
-          width: "1%",
-          sortable: true,
-      },
       {
           label: "Tytuł",
           field: "title",
@@ -116,60 +128,8 @@ const table = reactive({
           label: "Stan",
           field: "acceptance",
           width: "1%",
-          sortable: true,
           display: function (row) {
-            let color = "#e8b53f";
-            if (row.acceptance == "PENDING")
-              color = "#e8b53f";
-            if (row.acceptance == "ACCEPTED")
-              color = "#05a32f";
-            if (row.acceptance == "DECLINED")
-              color = "#a31505";
-            
-            if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR'){
-              var acceptanceSelect = document.createElement("select");
-              acceptanceSelect.setAttribute("name", "acceptance");
-              acceptanceSelect.setAttribute("id", "acceptance");
-              acceptanceSelect.setAttribute("class", "acceptance");
-              acceptanceSelect.setAttribute("topicTitle", row.title);
-              acceptanceSelect.setAttribute("topicId", row.id);
-              acceptanceSelect.setAttribute("style", "width:100%;color:"+color);
-
-              let pendingOption = document.createElement("option");
-              pendingOption.setAttribute("value", "PENDING");
-              pendingOption.innerHTML = "PENDING";
-              pendingOption.setAttribute("style", "color:orange");
-              if (row.acceptance === "PENDING"){
-                pendingOption.selected = true;
-                pendingOption.setAttribute("selected", "selected");
-              }
-
-              let acceptedOption = document.createElement("option");
-              acceptedOption.setAttribute("value", "ACCEPTED");
-              acceptedOption.innerHTML = "ACCEPTED";
-              acceptedOption.setAttribute("style", "color:green");
-              if (row.acceptance === "ACCEPTED"){
-                acceptedOption.selected = true;
-                acceptedOption.setAttribute("selected", "selected");
-              }
-
-              let declinedOption = document.createElement("option");
-              declinedOption.setAttribute("value", "DECLINED");
-              declinedOption.innerHTML = "DECLINED";
-              declinedOption.setAttribute("style", "color:red");
-              if (row.acceptance === "DECLINED"){
-                declinedOption.selected = true;
-                declinedOption.setAttribute("selected", "selected");
-              }
-
-              acceptanceSelect.appendChild(pendingOption);
-              acceptanceSelect.appendChild(acceptedOption);
-              acceptanceSelect.appendChild(declinedOption);
-
-              return acceptanceSelect.outerHTML;
-
-            }
-
+            let color = "#e8b53f";     
             return '<span style=color:'+color+'>'+row.acceptance+'</span>'
           },
       },
@@ -178,7 +138,7 @@ const table = reactive({
       return data
   }),
   totalRecordCount: computed(() => {
-      return 80
+      return rowCount.value;
   }),
   sortable: {
       order: "id",
@@ -186,10 +146,27 @@ const table = reactive({
   }
 });
 
+const tableLoadingFinish = () =>{
+  table.isLoading = false;
+}
+
+const handleSearch = () => {
+  lastSearchTerm = searchTerm.value;
+  fetchData(lastPage, lastOrder, lastSort, lastSearchTerm);
+};
+
 const doSearch = (offset, limit, order, sort) => {
-  table.page = offset / 10 + 1;
-  if(offset + limit > data.length / 2)
-    fetchData(offset / 10 + 1);
+  table.page = offset / limit;
+  console.log("doSearch", offset, limit, order, sort);
+
+  lastPage = offset / limit;
+  lastOrder = order;
+  lastSort = sort;
+  lastSearchTerm = searchTerm.value;
+  data.splice(0, size);
+  size = limit;
+
+  fetchData(offset / limit, order, sort, lastSearchTerm);
 
 };
 
@@ -200,20 +177,20 @@ const rowClicked = (row) => {
   router.push({name: 'edit', query:{redirected: true} });
 };
 
+watch(searchTerm, (newValue, oldValue) => {
+  if (newValue != oldValue && newValue == "") {
+    handleSearch();
+  }
+});
 
 </script>
 
-<style>
-@import '../../assets/userLists.css';
-.vtl-paging-info.col-sm-12.col-md-4,
-.vtl-paging-change-div.col-sm-12.col-md-4,
-.vtl-paging-pagination-ul.vtl-pagination li:first-child,
-.vtl-paging-pagination-ul.vtl-pagination li:last-child
-{
-    display:none;
-}
+<style scoped>
 
-.vtl-tbody-tr{
+@import '../../assets/userLists.css';
+
+::v-deep(.vtl-tbody-tr){
   cursor: pointer;
 }
+
 </style>

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60)
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 3600)
 @Controller
 public class ClientApplication {
 
