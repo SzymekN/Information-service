@@ -2,8 +2,22 @@
 import TheTitle from "@/components/main-layout/TheTitle.vue";
 import {Toaster, toast } from 'vue-sonner'
 import {useRouter} from 'vue-router'
+import { ref } from 'vue'
+import {useLoading} from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/css/index.css';
 
 const router = useRouter()
+
+const loading = useLoading({
+  color: '#0D6EFD',
+  loader: 'dots',
+  width: 100,
+  height: 100,
+  backgroundColor: '#ffffff',
+  opacity: 0.5,
+  isFullPage: true,
+  canCancel: true,
+})
 
 const register = async () =>{
 
@@ -23,6 +37,7 @@ const register = async () =>{
 
   try{
     const url = '/client/registration';
+    const loader = loading.show()
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -30,28 +45,29 @@ const register = async () =>{
         },
         body: requestBody,
     });
-
     if (!response.ok) {
       const text = await response.json();
       for (const [key, value] of Object.entries(text)) {
         setTimeout(() => toast.error(`${key}: ${value}`), 10)
       }
+      loader.hide()
       setTimeout(() => toast.error("Wystąpił błąd podczas rejestracji"), 100)
     }
-    else
+    else{
+      loader.hide()
       router.push('/')
+    }
 
   } catch (error) {
     toast.error("Wystąpił błąd podczas rejestracji")
-  }
+  } 
 
 }
 
 </script>
 
 <template>
-    <Toaster  richColors position="top-center" closeButton :visibleToasts="9"/>
-
+  <Toaster  richColors position="top-center" closeButton :visibleToasts="9"/>
   <body>
   <div class="limiter">
     <router-link to="/">

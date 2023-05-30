@@ -71,11 +71,6 @@ public class ArticleProposalServiceImpl implements ArticleProposalService {
 
         totalCount = articleProposalRepository.count(spec);
 
-        spec = spec.and((root, query, criteriaBuilder) -> {
-            root.fetch("journalist", JoinType.INNER);
-            return null;
-        });
-
         articleProposals = articleProposalRepository.findAll(spec, pageable);
 
         HttpHeaders headers = new HttpHeaders();;
