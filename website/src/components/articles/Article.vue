@@ -12,11 +12,11 @@ const title = ref('')
 
 const props = defineProps({
   content: { type: String, default: 'param' },
-  title: { type: String, default: 'Tytył' },
+  title: { type: String, default: 'Tytuł' },
 })
 
 onMounted(() => {
-    var category = route.query["category"]
+    let category = route.query["category"]
     let index = route.query["id"]
     console.log(JSON.parse(sessionStorage.getItem(category) || [])[index])
     content.value = JSON.parse(sessionStorage.getItem(category) || [])[index].content
