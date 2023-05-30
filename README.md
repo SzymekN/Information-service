@@ -224,7 +224,7 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <br>
     The response includes a list of UserDto objects and appropriate status codes. Additionally, the response headers include the X-Total-Count field, representing the total number of records in the database that match the specified criteria. If the user is not authenticated, <b>a 401 Unauthorized</b> status code is returned. If the request is successful and there are users matching the criteria, <b>a 200 OK</b> status code is returned along with the list of UserDto objects. If there are no users matching the criteria, <b>a 204 No Content</b> status code is returned.
     <br><br>
-    <li><b>DELETE /client/delete (/editorial/delete)</b></li>
+    <li><b>DELETE /client/actions/delete (/editorial/actions/delete)</b></li>
     This endpoint deletes a user from the database. Only users with ADMIN privileges or the owner of the account can delete a user.
     <br><br>
     <b>Query Parameters:</b>
@@ -237,7 +237,7 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <br>
     The response is a status code indicating the outcome of the deletion operation. If the deletion was successful, <b>a 200 OK</b> status code is returned. If the user is not authorized to perform the deletion operation, <b>a 403 Forbidden</b> status code is returned. If there's an error with the query parameters, <b>a 400 Bad Request</b> status code is returned. If the server encountered an error while performing the deletion operation, <b>a 500 Internal Server Error</b> status code is returned.
     <br><br>
-    <li><b>DELETE /client/delete/fe (/editorial/delete/fc)</b></li>
+    <li><b>DELETE /client/actions/delete/fe (/editorial/actions/delete/fc)</b></li>
     This endpoint deletes a user from the database. It can only be accessed by the caller with X-Caller header set to "DELETE_FROM_EDITORIAL". So it <b>SHOULD NOT BE DIRECTLY ACCESSED!!!</b>
     <br><br>
     <b>Query Parameters:</b>
@@ -256,7 +256,7 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <br>
     The response is a status code indicating the outcome of the deletion operation. If the deletion was successful, <b>a 200 OK</b> status code is returned. If there's an error with the query parameters or the caller is not authorized to perform the deletion operation, <b>a 400 Bad Request</b> status code is returned. If the server encountered an error while performing the deletion operation, <b>a 500 Internal Server Error</b> status code is returned.
     <br><br>
-    <li><b>PUT /client/edit (/editorial/edit)</b></li>
+    <li><b>PUT /client/actions/edit (/editorial/actions/edit)</b></li>
     This endpoint edits an existing user in the database. Only users with ADMIN privileges or the owner of the account can edit a user.
     <br><br>
     <b>Query Parameters:</b>
@@ -272,13 +272,34 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
         <li>username (required): a string representing the user's username</li>
         <li>name (required): a string representing the user's first name.</li>
         <li>surname (required): a string representing the user's last name.</li>
-        <li>email (required): a string representing the user's email address.</li>
-        <li>password (required): a string representing the user's new password.</li>
+        <li>authorityName (required): a string representing the user's role. Can be either: ADMIN, USER, JOURNALIST, CORRECTOR, REDACTOR.</li>
+        <li>passwordToConfirm (optional): a string representing user's password. It is not required ONLY if user has an admin role.</li>
+        <li>passwordToChange (optional): a string representing password to change into (new password).</li>
     </ul>
         <br>
         <b>Response:</b>
         <br>
-        The response is a status code indicating the outcome of the update operation. If the update was successful, <b>a 200 OK</b> status code is returned. If the user is not authorized to perform the update operation, <b>a 403 Forbidden</b> status code is returned. If there's an error with the query parameters or the request body
+        The response is a status code indicating the outcome of the update operation. If the update was successful, <b>a 200 OK</b> status code is returned. If the user is not authorized to perform the update operation, <b>a 403 Forbidden</b> status code is returned. If there's an error with the query parameters or the request body. <b>User cannot change his own role!</b>. Users with account created outside of application can only edit their username, name and surname.
+    <br><br>
+    <li><b>DELETE /client/actions/edit/fe (/editorial/actions/edit/fc)</b></li>
+    This endpoint edits a user from the database. It can only be accessed by the caller with X-Caller header set to "EDIT_FROM_EDITORIAL". So it <b>SHOULD NOT BE DIRECTLY ACCESSED!!!</b>
+    <br><br>
+    <b>Query Parameters:</b>
+    <br>
+    <ul>
+        <li>id (required): an integer representing the ID of the user to be edited.</li>
+        <li>loggedId (required): an integer representing the ID of the logged user.</li>
+    </ul>
+    <br>
+    <b>Headers:</b>
+    <br>
+    <ul>
+        <li>X-Caller (required): a string representing the caller's identity. Must be set to "EDIT_FROM_EDITORIAL" ("EDIT_FROM_CLIENT").</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a status code indicating the outcome of the edit operation. If the edit was successful, <b>a 200 OK</b> status code is returned. If there's an error with the query parameters or the caller is not authorized to perform the edit operation, <b>a 400 Bad Request</b> status code is returned. If the server encountered an error while performing the edit operation, <b>a 500 Internal Server Error</b> status code is returned.
 </ol>
 
 ### Editorial:
@@ -330,8 +351,11 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <b>Query Parameters:</b>
     <br>
     <ul>
-        <li><b>page</b> (required): An integer representing the page number of the results to retrieve (starting from 0).</li>
-        <li><b>size</b> (required): An integer representing the number of results per page.</li>
+        <li><b>page</b> (optional): An integer representing the page number of the results to retrieve (starting from 0). If not provided it is equal to 0</li>
+        <li><b>size</b> (optional): An integer representing the number of results per page. If not provided it is equal to 20</li>
+        <li><b>title</b> (optional): A string representing the article's title</li>
+        <li><b>sort</b> (optional): (In format sort=name,direction), where "name" is the Java attribute name and "direction" is either asc or desc</li>
+        <li><b>acceptance</b> (optional): State of the article. Can be either PENDING or DECLINED, ACCEPTED</li>
     </ul>
     <br>
     <b>Response:</b>
@@ -390,8 +414,10 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <b>Query Parameters:</b>
     <br>
     <ul>
-        <li><b>page</b> (optional): An integer representing the page number of the results to retrieve (starting from 0).</li>
-        <li><b>size</b> (optional): An integer representing the number of results per page.</li>
+        <li><b>page</b> (optional): An integer representing the page number of the results to retrieve (starting from 0). If not provided it is equal to 0</li>
+        <li><b>size</b> (optional): An integer representing the number of results per page. If not provided it is equal to 20</li>
+        <li><b>title</b> (optional): A string representing the article's title</li>
+        <li><b>sort</b> (optional): (In format sort=name,direction), where "name" is the Java attribute name and "direction" is either asc or desc</li>
     </ul>
     <br>
     <b>Response:</b>

@@ -59,7 +59,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u JOIN FETCH u.userDetails ud " +
             "JOIN FETCH u.authority ua WHERE ud.email LIKE %:email%")
-    Slice<User> findUserByEmail(Pageable pageable, @Param("email") String email);
+    Slice<User> findAllByEmail(Pageable pageable, @Param("email") String email);
 
     @Query("SELECT u FROM User u JOIN FETCH u.userDetails ud " +
             "JOIN FETCH u.authority ua WHERE ua.authorityName = :role AND u.username LIKE %:username%")
@@ -75,7 +75,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u JOIN FETCH u.userDetails ud " +
             "JOIN FETCH u.authority ua WHERE ua.authorityName = :role AND ud.email LIKE %:email%")
-    Slice<User> findUserByEmailAndRole(Pageable pageable, @Param("email") String email, @Param("role") String role);
+    Slice<User> findAllByEmailAndRole(Pageable pageable, @Param("email") String email, @Param("role") String role);
 
     @Query("SELECT COUNT(u) FROM User u")
     Long countAllUsers();
@@ -92,6 +92,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT COUNT(u) FROM User u JOIN u.userDetails ud WHERE ud.surname LIKE %:surname%")
     Long countAllBySurname(@Param("surname") String surname);
 
+    @Query("SELECT COUNT(u) FROM User u JOIN u.userDetails ud WHERE ud.email LIKE %:email%")
+    Long countAllByEmail(@Param("email") String email);
+
     @Query("SELECT COUNT(u) FROM User u JOIN u.userDetails ud " +
             "JOIN u.authority ua WHERE ua.authorityName = :role AND u.username LIKE %:username%")
     Long countAllByUsernameAndRole(@Param("username") String username, @Param("role") String role);
@@ -103,4 +106,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT COUNT(u) FROM User u JOIN u.userDetails ud " +
             "JOIN u.authority ua WHERE ua.authorityName = :role AND ud.surname LIKE %:surname%")
     Long countAllBySurnameAndRole(@Param("surname") String surname, @Param("role") String role);
+
+    @Query("SELECT COUNT(u) FROM User u JOIN u.userDetails ud " +
+            "JOIN u.authority ua WHERE ua.authorityName = :role AND ud.email LIKE %:email%")
+    Long countAllByEmailAndRole(@Param("email") String email, @Param("role") String role);
 }

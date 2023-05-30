@@ -17,10 +17,11 @@ public class UserDto {
     private String surname;
     private String email;
     private String authorityName;
+    private String supplier;
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, name, surname, email, authorityName);
+        return Objects.hash(username, name, surname, email, authorityName, supplier);
     }
 
     @Override
@@ -36,7 +37,8 @@ public class UserDto {
                 && Objects.equals(name, other.name)
                 && Objects.equals(surname, other.surname)
                 && Objects.equals(email, other.email)
-                && Objects.equals(authorityName, other.authorityName);
+                && Objects.equals(authorityName, other.authorityName)
+                && Objects.equals(supplier, other.supplier);
     }
 
     @Override
@@ -47,6 +49,7 @@ public class UserDto {
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", authorityName='" + authorityName + '\'' +
+                ", supplier='" + supplier + '\'' +
                 '}';
     }
 }

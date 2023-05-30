@@ -13,6 +13,7 @@ import DraftsList from "@/components/user-layout/DraftsList.vue"
 import Editor from "@/components/user-layout/Editor.vue"
 import RegisterView from "@/views/RegisterView.vue";
 import Manage from "@/components/user-layout/Manage.vue";
+import ValidateView from "@/views/ValidateView.vue";
 
 import jsCookie from 'js-cookie';
 // -artykuly i artykul- do usuniecia mozna przekierowac do 404 za pomoca useRouter np gdy dane zapytanie nie na wynikow 
@@ -95,10 +96,10 @@ const router = createRouter({
             path: "/register",
             component: RegisterView,
         },
-        // {
-        //     path: "/article/:subloc?",
-        //     component: Article, 
-        // },
+        {
+            path: "/validate",
+            component: ValidateView, 
+        },
         {
             path: '/404', 
             name: 'NotFound',

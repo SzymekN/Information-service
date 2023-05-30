@@ -10,11 +10,23 @@
 
   <div class="properties">
     <div class="input-add">
-      <label>Nowy temat:</label><input v-model="newTopicProposal" />
+      <label>Nowy temat:</label><input v-model="newTopicProposal" type="search"/>
       <button @click="addTopic">Dodaj</button>
     </div>
     <div class="input-look">
       <label>Szukaj:</label><input v-model="searchTerm" />
+    </div>
+    <label for="state_input">Stan:</label>
+    <select v-model="state" class="state_input">
+      <option value="All" selected>All</option>
+      <option value="PENDING">PENDING</option>
+      <option value="ACCEPTED">ACCEPTED</option>
+      <option value="DECLINED">DECLINED</option>
+    </select>
+    <div class="searchButton-wrapper">
+        <button id="searchButton" @click="handleSearch" class="disabled">
+          <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
+        </button>
     </div>
   </div>
   <div class="table-context">
@@ -33,20 +45,43 @@
 
 <script setup>
 import jsCookie from "js-cookie";
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, watch } from "vue";
 import { toast } from "vue-sonner";
+import SearchImage from "@/assets/icons8-search.svg";
 import TableLite from 'vue3-table-lite'
 
 // TODO: replace with fetched data
 // Fake Data for 'asc' sortable
 const data = reactive([]);
 var url = '/editorial/proposal?';
-// var page = 0;
 var size = 10;
 
-const fetchProposals = async (page = 1) =>{
+const searchTerm = ref(""); // Search text
+const newTopicProposal = ref(""); // user input with proposition
+const acceptance = ref(""); 
+const rowCount = ref(0);
+const state = ref("All"); 
+
+var lastSearchTerm = "";
+var lastPage = 0;
+var lastOrder = "id";
+var lastSort = "desc";
+
+
+const fetchData = async (page = 0, order = "id", sort = "desc", search = "") =>{
+  const queryParams = [];
+  if (search != ""){
+    queryParams.push(`title=${search}`);
+  }
+  if (state.value != "All"){
+    queryParams.push(`acceptance=${state.value}`);
+  }
+  queryParams.push(`sort=${order},${sort}`);
+  url = `/editorial/proposal?page=${page}&size=${size}&`;
+  url += queryParams.join("&");
+  console.log(url)
   try {
-    const response = await fetch(url+`page=${page}&size=${size}`, {
+    const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -60,7 +95,7 @@ const fetchProposals = async (page = 1) =>{
     }
     else{
       const responseJson = await response.json();
-      data.splice(0, data.length);
+      data.splice(0, size);
       for (let i = 0; i < responseJson.length; i++) {
         data.push({
           id: responseJson[i]["id"],
@@ -69,17 +104,17 @@ const fetchProposals = async (page = 1) =>{
           dateOfUpdate: responseJson[i]["dateOfUpdate"],
           acceptance: responseJson[i]["acceptance"],
         });
-        // fetchProposals = data.length;
+        // fetchData = data.length;
       }
+      rowCount.value = Number(response.headers.get('X-Total-Count'));
     }
   } catch (error) {
     console.log(error);
   }
 }
 
-const searchTerm = ref(""); // Search text
-const newTopicProposal = ref(""); // user input with proposition
-fetchProposals();
+
+fetchData();
 // Table config
 const table = reactive({
   columns: [
@@ -87,7 +122,6 @@ const table = reactive({
           label: "Użytkownik",
           field: "authorName",
           width: "1%",
-          sortable: true,
       },
       {
           label: "Temat",
@@ -170,13 +204,12 @@ const table = reactive({
       return data
   }),
   totalRecordCount: computed(() => {
-      return 80
+      return rowCount.value
   }),
   sortable: {
       order: "id",
-      sort: "asc",
-  },
-  page: 1,
+      sort: "desc",
+  }
 });
 
 
@@ -268,13 +301,37 @@ function addListeners(className, listenerFunction, listenerType){
   });
 
 }
+const handleSearch = () => {
+  lastSearchTerm = searchTerm.value;
+  fetchData(lastPage, lastOrder, lastSort, lastSearchTerm);
+};
 
 const doSearch = (offset, limit, order, sort) => {
-  table.page = offset / 10 + 1;
-  if(offset + limit > data.length / 2)
-    fetchProposals(offset / 10 + 1);
+  table.page = offset / limit;
+  console.log("doSearch", offset, limit, order, sort);
+
+  lastPage = offset / limit;
+  lastOrder = order;
+  lastSort = sort;
+  lastSearchTerm = searchTerm.value;
+  data.splice(0, size);
+  size = limit;
+
+  fetchData(offset / limit, order, sort, lastSearchTerm);
 
 };
+
+watch(searchTerm, (newValue, oldValue) => {
+  if (newValue != oldValue && newValue == "") {
+    handleSearch();
+  }
+});
+
+watch(state, (newValue, oldValue) => {
+  if (newValue != oldValue) {
+    handleSearch();
+  }
+});
 
 const tableLoadingFinish = (page = 1) => {
   
@@ -336,7 +393,7 @@ const addTopic = async () =>{
 
 </script>
 
-<style>
+<style scoped>
 @import '../../assets/userLists.css';
 .vtl-paging-info.col-sm-12.col-md-4,
 .vtl-paging-change-div.col-sm-12.col-md-4,

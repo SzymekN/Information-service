@@ -1,7 +1,7 @@
 package com.client.service;
 
+import com.client.model.dto.UserEditDto;
 import com.client.model.dto.UserDto;
-import com.client.model.dto.UserRegistrationDto;
 import com.client.model.entity.User;
 import com.client.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,19 +59,21 @@ public class UserActionServiceImpl implements UserActionService {
     }
 
     @Override
-    public void updateUser(User user, UserRegistrationDto userRegistrationDto) {
-        editUserByDto(user, userRegistrationDto);
-        userRepository.save(user);
+    public void updateUser(User userToEdit, UserEditDto userEditDto, Long loggedUserId) {
+        editUserByDto(userToEdit, userEditDto, loggedUserId);
+        userRepository.save(userToEdit);
     }
 
     @Override
-    public ResponseEntity<String> updateUserClientToEditorial(Long userId, UserRegistrationDto userRegistrationDto, HttpServletRequest request) {
+    public ResponseEntity<String> updateUserClientToEditorial(Long userId, Long loggedUserId, UserEditDto userEditDto, HttpServletRequest request) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = basicService.copyHeadersFromRequest(request);
         headers.set("X-Caller", "EDIT_FROM_CLIENT");
         URI endpointUri = UriComponentsBuilder.fromUriString(EDITORIAL_EDIT_USER_URL)
-                .queryParam("id", userId).build().toUri();
-        return restTemplate.exchange(endpointUri, HttpMethod.PUT, new HttpEntity<>(userRegistrationDto, headers), String.class);
+                .queryParam("id", userId).queryParam("loggedId", loggedUserId).build().toUri();
+        System.out.println(endpointUri);
+        System.out.println(userEditDto.toString());
+        return restTemplate.exchange(endpointUri, HttpMethod.PUT, new HttpEntity<>(userEditDto, headers), String.class);
     }
 
     @Override
@@ -107,53 +109,55 @@ public class UserActionServiceImpl implements UserActionService {
     }
 
     @Override
-    public ResponseEntity<List<UserDto>> findAllUsersByFieldPaged(Pageable pageable, String field, String value) {
+    public ResponseEntity<List<UserDto>> findAllUsersByAttributeNamePaged(Pageable pageable, String attributeName, String attributeValue) {
         Slice<User> pagedUsers = null;
         Long totalCount = null;
-        if ("username".equals(field)) {
-            pagedUsers = userRepository.findAllByUsernamePaged(pageable, value);
-            totalCount = userRepository.countAllByUsername(value);
-        } else if ("name".equals(field)) {
-            pagedUsers = userRepository.findAllByNamePaged(pageable, value);
-            totalCount = userRepository.countAllByName(value);
-        } else if ("surname".equals(field)) {
-            pagedUsers = userRepository.findAllBySurnamePaged(pageable, value);
-            totalCount = userRepository.countAllBySurname(value);
-        } else if ("email".equals(field)) {
-            pagedUsers = userRepository.findUserByEmail(pageable, value);
-            totalCount = 1L;
+        if ("username".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByUsernamePaged(pageable, attributeValue);
+            totalCount = userRepository.countAllByUsername(attributeValue);
+        } else if ("name".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByNamePaged(pageable, attributeValue);
+            totalCount = userRepository.countAllByName(attributeValue);
+        } else if ("surname".equals(attributeName)) {
+            pagedUsers = userRepository.findAllBySurnamePaged(pageable, attributeValue);
+            totalCount = userRepository.countAllBySurname(attributeValue);
+        } else if ("email".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByEmail(pageable, attributeValue);
+            totalCount = userRepository.countAllByEmail(attributeValue);
         }
 
-        if (pagedUsers == null || !pagedUsers.hasContent() || totalCount == null)
-            return ResponseEntity.noContent().build();
-
         HttpHeaders headers = new HttpHeaders();
+        if (totalCount == null || totalCount == 0) {
+            headers.set("X-Total-Count", "0");
+            return ResponseEntity.noContent().headers(headers).build();
+        }
         headers.set("X-Total-Count", totalCount.toString());
         return ResponseEntity.ok().headers(headers).body(usersToDto(pagedUsers.getContent()));
     }
 
     @Override
-    public ResponseEntity<List<UserDto>> findAllUsersByFieldAndRolePaged(Pageable pageable, String role, String field, String value) {
+    public ResponseEntity<List<UserDto>> findAllUsersByAttributeNameAndRolePaged(Pageable pageable, String role, String attributeName, String attributeValue) {
         Slice<User> pagedUsers = null;
         Long totalCount = null;
-
-        if ("username".equals(field)) {
-            pagedUsers = userRepository.findAllByUsernameAndRolePaged(pageable, value, role);
-            totalCount = userRepository.countAllByUsernameAndRole(value, role);
-        } else if ("name".equals(field)) {
-            pagedUsers = userRepository.findAllByNameAndRolePaged(pageable, value, role);
-            totalCount = userRepository.countAllByNameAndRole(value, role);
-        } else if ("surname".equals(field)) {
-            pagedUsers = userRepository.findAllBySurnameAndRolePaged(pageable, value, role);
-            totalCount = userRepository.countAllBySurnameAndRole(value, role);
-        } else if ("email".equals(field)) {
-            pagedUsers = userRepository.findUserByEmailAndRole(pageable, value, role);
-            totalCount = 1L;
+        if ("username".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByUsernameAndRolePaged(pageable, attributeValue, role);
+            totalCount = userRepository.countAllByUsernameAndRole(attributeValue, role);
+        } else if ("name".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByNameAndRolePaged(pageable, attributeValue, role);
+            totalCount = userRepository.countAllByNameAndRole(attributeValue, role);
+        } else if ("surname".equals(attributeName)) {
+            pagedUsers = userRepository.findAllBySurnameAndRolePaged(pageable, attributeValue, role);
+            totalCount = userRepository.countAllBySurnameAndRole(attributeValue, role);
+        } else if ("email".equals(attributeName)) {
+            pagedUsers = userRepository.findAllByEmailAndRole(pageable, attributeValue, role);
+            totalCount = userRepository.countAllByEmailAndRole(attributeValue, role);
         }
-        if (totalCount == null || pagedUsers == null || !pagedUsers.hasContent())
-            return ResponseEntity.noContent().build();
 
         HttpHeaders headers = new HttpHeaders();
+        if (totalCount == null || totalCount == 0) {
+            headers.set("X-Total-Count", "0");
+            return ResponseEntity.noContent().headers(headers).build();
+        }
         headers.set("X-Total-Count", totalCount.toString());
         return ResponseEntity.ok().headers(headers).body(usersToDto(pagedUsers.getContent()));
     }
@@ -163,12 +167,16 @@ public class UserActionServiceImpl implements UserActionService {
         return userRepository.findUserById(userId);
     }
 
-    private void editUserByDto(User user, UserRegistrationDto userRegistrationDto) {
-        user.setUsername(userRegistrationDto.getUsername());
-        user.setPassword(passwordEncoder.encode(userRegistrationDto.getPassword()));
-        user.getUserDetails().setName(userRegistrationDto.getName());
-        user.getUserDetails().setSurname(userRegistrationDto.getSurname());
-        user.getUserDetails().setEmail(userRegistrationDto.getEmail());
+    private void editUserByDto(User userToEdit, UserEditDto userEditDto, Long loggedUserId) {
+        userToEdit.setUsername(userEditDto.getUsername());
+        userToEdit.getUserDetails().setName(userEditDto.getName());
+        userToEdit.getUserDetails().setSurname(userEditDto.getSurname());
+        if (userToEdit.getUserDetails().getSupplier().equals("APP")) {
+            if (userEditDto.getPasswordToChange() != null)
+                userToEdit.setPassword(passwordEncoder.encode(userEditDto.getPasswordToChange()));
+            if (!loggedUserId.equals(userToEdit.getId()))
+                userToEdit.getAuthority().setAuthorityName(userEditDto.getAuthorityName());
+        }
     }
 
     public List<UserDto> usersToDto(List<User> users) {
@@ -179,6 +187,7 @@ public class UserActionServiceImpl implements UserActionService {
                         .name(user.getUserDetails().getName())
                         .surname(user.getUserDetails().getSurname())
                         .email(user.getUserDetails().getEmail())
+                        .supplier(user.getUserDetails().getSupplier())
                         .authorityName(user.getAuthority().getAuthorityName())
                         .build())
                 .collect(Collectors.toList());
