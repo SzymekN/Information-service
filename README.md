@@ -304,6 +304,26 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
 
 ### Editorial:
 <ol>
+    <li><b>GET /editorial/correct</b></li>
+    This endpoint retrieves a list of article corrects.
+    <br><br>
+    <b>Query Parameters:</b>
+    <br>
+    <ul>
+        <li><b>pageable</b> (optional): A pageable object specifying the page size (10 by default), page number (0 by default), sorting field, and sorting direction for pagination.</li>
+        <li><b>title</b> (optional): A string representing the article's title. If provided, only articles matching the title will be included in the response.</li>
+        <li><b>isCorrected</b> (optional): A boolean value indicating whether the articles should be filtered based on their correction status.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A list of ArticleCorrectDto objects containing the article corrects.</li>
+    </ul>
+    If the articles are retrieved successfully, the status code will be 200 (OK), and the body will contain the list of ArticleCorrectDto objects. If there is an error while processing the request, the status code will be 400 (Bad Request), and an empty response will be returned. If the user is not authenticated, the status code will be 401 (Unauthorized), and an empty response will be returned.
+    <br><br>
     <li><b>POST /editorial/proposal </b></li>
     This endpoint allows users to add a new article proposal to the system.
     <br><br>
