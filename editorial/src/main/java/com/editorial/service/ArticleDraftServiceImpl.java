@@ -121,7 +121,6 @@ public class ArticleDraftServiceImpl implements ArticleDraftService {
                 .title(articleDraft.getTitle())
                 .content(articleDraft.getContent())
                 .isCorrected(false)
-                .isEditedByJournalist(true)
                 .journalistId(articleDraft.getJournalist().getId())
                 .build();
     }
