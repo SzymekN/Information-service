@@ -1,12 +1,13 @@
 package com.editorial.repository;
 
 import com.editorial.model.entity.ArticleCorrect;
-import com.editorial.model.entity.ArticleProposal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,4 +18,8 @@ public interface ArticleCorrectRepository extends JpaRepository<ArticleCorrect, 
 
     @Override
     long count(Specification<ArticleCorrect> specification);
+
+    @Modifying
+    @Query("DELETE FROM ArticleCorrect ac WHERE ac.id =:id")
+    void deleteArticleCorrectById(Long id);
 }

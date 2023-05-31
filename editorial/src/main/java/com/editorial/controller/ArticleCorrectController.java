@@ -4,14 +4,12 @@ import com.editorial.model.dto.ArticleCorrectDto;
 import com.editorial.model.entity.User;
 import com.editorial.service.ArticleCorrectService;
 import com.editorial.service.UserActionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,5 +40,29 @@ public class ArticleCorrectController {
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(List.of());
+    }
+
+    @PutMapping
+    public ResponseEntity<String> updateArticle(@RequestBody @Valid ArticleCorrectDto articleCorrectDto){
+        if (articleCorrectDto == null || articleCorrectDto.getId() == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Provide a body, including id!");
+
+        Optional<User> userChecker = userActionService.getLoggedUser();
+
+        if (userChecker.isPresent()) {
+            User loggedUser = userChecker.get();
+            return articleCorrectService.updateArticle(articleCorrectDto, loggedUser);
+        }else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username of requesting user does not exist in db!");
+    }
+
+    @DeleteMapping("/reject")
+    public ResponseEntity<String> deleteAndMoveArticleToArticleDraft(@RequestParam(name = "id") Long correctId) {
+        Optional<User> userChecker = userActionService.getLoggedUser();
+
+        if (userChecker.isPresent()) {
+            return articleCorrectService.deleteAndMoveArticleToArticleDraft(correctId);
+        } else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username of requesting user does not exist in db!");
     }
 }
