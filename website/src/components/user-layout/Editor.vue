@@ -95,12 +95,16 @@ const saveArticle = async () =>{
   <div class="properties">
     <label for="title">Tytuł artykułu:</label>
     <input type="text" v-model="title" placeholder="Tytuł artykułu" class="title_input"><br/>
-    <label for="category">Wybierz kategorię:</label>
-    <select v-model="category" class="category_input">
-      <option value="politics">Polityka</option>
-      <option value="business">Biznes</option>
-      <option value="business">Sport</option>
-    </select><br/>
+    
+    <div  v-if="role=='ROLE_REDACTOR'">
+      <label for="category">Wybierz kategorię:</label>
+      <select v-model="category" class="category_input">
+        <option value="politics">Polityka</option>
+        <option value="business">Biznes</option>
+        <option value="business">Sport</option>
+      </select><br/>
+    </div>
+
     <label for="category">Oznacz jako:</label>
     <select v-model="acceptance" class="category_input">
       <option value="draft" v-if="role=='ROLE_JOURNALIST'">Szkic</option>
@@ -125,68 +129,68 @@ const saveArticle = async () =>{
 
 
 <style scoped>
- .section_title {
-   font-size: 1.5rem;
-   font-weight: 400;
-   margin: 1rem 0;
- }
+.section_title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 1rem 0;
+}
 
- #editorContainer{
-   background-color: white;
-   margin-bottom: 1rem;
-   box-shadow: 2px 2px 20px -10px;
- }
+#editorContainer{
+  background-color: white;
+  margin-bottom: 1rem;
+  box-shadow: 2px 2px 20px -10px;
+}
 
- #justText {
-   background-color: white;
-   margin-bottom: 1rem;
-   box-shadow: 2px 2px 20px -10px;
-   max-width: 100%;
-   border-radius: 10px;
- }
+#justText {
+  background-color: white;
+  margin-bottom: 1rem;
+  box-shadow: 2px 2px 20px -10px;
+  max-width: 100%;
+  border-radius: 10px;
+}
 
- .properties {
-   background: white;
-   width: fit-content;
-   padding: 1%;
-   //border: 1px solid rgba(128, 128, 128, 0.5);
-   box-shadow: 2px 2px 20px -10px;
-   border-radius: 10px;
- }
- label {
-   margin: 10px;
- }
- input {
-   padding: 10px;
-   font-size: 0.8rem;
-   margin: 2%;
-   border: none;
-   background: rgba(238, 246, 253, 0.7);
-   border-radius: 10px;
-   width: 96%;
- }
+.properties {
+  background: white;
+  width: fit-content;
+  padding: 1%;
+  /* border: 1px solid rgba(128, 128, 128, 0.5); */
+  box-shadow: 2px 2px 20px -10px;
+  border-radius: 10px;
+}
+label {
+  margin: 10px;
+}
+input {
+  padding: 10px;
+  font-size: 0.8rem;
+  margin: 2%;
+  border: none;
+  background: rgba(238, 246, 253, 0.7);
+  border-radius: 10px;
+  width: 96%;
+}
 
- select {
-   font-size: 0.8rem;
-   margin: 2%;
-   border: none;
-   background: rgba(240, 248, 255);
-   border-radius: 10px;
-   width: 96%;
-   height: 3vh;
- }
+select {
+  font-size: 0.8rem;
+  margin: 2%;
+  border: none;
+  background: rgba(240, 248, 255);
+  border-radius: 10px;
+  width: 96%;
+  height: 3vh;
+}
 
- button {
-   margin: 5% 2%;
-   padding: 3%;
-   background: rgb(238, 246, 253);
-   border: none;
-   width: 96%;
-   font-size: 1rem;
- }
+button {
+  margin: 5% 2%;
+  padding: 3%;
+  background: rgb(238, 246, 253);
+  border: none;
+  width: 96%;
+  font-size: 1rem;
+}
 
- button:hover {
-   background-color: #c8d8f1;
- }
+button:hover {
+  background-color: #c8d8f1;
+}
 
 </style>
