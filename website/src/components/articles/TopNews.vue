@@ -1,6 +1,6 @@
 <template>
   <router-link :to="`article?id=${articleUrl}&category=${category}`">
-  <div class="top">
+    <div :class="pageClass" class="top">
       <img :src="imageUrl" height="853" width="1200"/>
       <!-- <img src="/17-g-ry-dla-seniora-jak-si.jpg" height="853" width="1200"/> -->
       <div class="article_title">
@@ -20,6 +20,18 @@ export default {
     articleUrl: Number,
     category: String,
   },
+  data() {
+    return {
+      pageClass: ""
+    };
+  },
+  mounted() {
+    if (this.category === "politics") {
+      this.pageClass = "politics";
+    } else {
+      this.pageClass = "other";
+    }
+  }
 };
 </script>
 
@@ -30,6 +42,14 @@ export default {
   margin: 2% 2% 0 0;
   background: aliceblue;
   font-size: 1vmax;
+}
+
+.politics {
+  height: 27.7vmax;
+}
+
+.other {
+  height: 21.5vmax;
 }
 
 .top:hover .article_title {
@@ -48,8 +68,9 @@ export default {
 .top img {
   float: left;
   max-width: 100%;
-  max-height: 21.5vmax;
+  height: 100%;
 }
+
 
 .article_title {
   position: absolute;

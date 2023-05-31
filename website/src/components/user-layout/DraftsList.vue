@@ -14,12 +14,11 @@
       <router-link :to="{name: 'edit'}"><button>Stwórz</button></router-link>
     </div>
     <div class="input-look">
-      <label>Szukaj:</label><input type="search" v-model="searchTerm" />
-      <div class="searchButton-wrapper">
-        <button id="searchButton" @click="handleSearch" class="disabled">
-          <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
-        </button>
-    </div>
+      <div class="labelCon"><label>Szukaj:</label></div>
+      <input type="search" v-model="searchTerm" />
+      <button id="searchButton" @click="handleSearch" class="disabled">
+        <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
+      </button>
     </div>
   </div>
   <div class="table-context">

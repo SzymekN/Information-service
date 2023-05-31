@@ -3,10 +3,11 @@ import jsCookie from 'js-cookie';
 </script>
 
 <template>
+<div class="user-info">
   <h1>
     Twoje dane
   </h1>
-<div class="content">
+
   <span class="data-label">Imię: </span>
   <span>TEST</span>
   <br/>
@@ -44,21 +45,24 @@ span {
   margin: 3% 1%;
 }
 
-.content{
+.user-info {
+  margin-top: 2rem;
   background: white;
   width: fit-content;
-  padding: 1%;
+  padding: 3%;
   border-radius: 10px;
-  min-width: 20%;
+  min-width: 60%;
+  box-shadow: 1px 1px 20px -10px;
+  margin-left: 20%;
 }
 
 .data-label {
   font-weight: 550;
 }
 
-.content button {
+.user-info button {
   margin: 5% 2% 2% 2%;
-  padding: 3%;
+  padding: 1%;
   background: rgb(238, 246, 253);
   border: none;
   width: fit-content;
@@ -66,11 +70,11 @@ span {
   /*border-radius: 10px;*/
 }
 
-.content button:hover {
+.user-info button:hover {
   background-color: #c8d8f1;
 }
 
-.content .button-del:hover {
+.user-info .button-del:hover {
   background-color: #ef4e70;
 }
 </style>
