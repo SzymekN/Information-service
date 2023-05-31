@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.sql.Timestamp;
 import java.util.Objects;
 
 @Getter
@@ -14,7 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ArticleCorrectDto {
+public class ArticleCorrectToClientDto {
 
     private Long id;
 
@@ -26,28 +25,25 @@ public class ArticleCorrectDto {
     @NotBlank(message = "Content must not be blank!")
     private String content;
 
-    private Timestamp dateOfCorrection;
-
     @NotNull
     private Boolean isCorrected;
 
-    private String journalistName;
+    private Long journalistId;
 
-    private String correctorName;
+    private String category;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ArticleCorrectDto that = (ArticleCorrectDto) o;
+        ArticleCorrectToClientDto that = (ArticleCorrectToClientDto) o;
         return Objects.equals(title, that.title)
                 && Objects.equals(content, that.content)
-                && Objects.equals(journalistName, that.journalistName)
-                && Objects.equals(correctorName, that.correctorName);
+                && Objects.equals(category, that.category);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, content, content, journalistName, correctorName);
+        return Objects.hash(title, content, content);
     }
 }

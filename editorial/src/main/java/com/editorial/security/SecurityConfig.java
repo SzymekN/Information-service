@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 .requestMatchers("/editorial/proposal").hasAnyRole("JOURNALIST", "REDACTOR")
                                 .requestMatchers("/editorial/draft").hasAnyRole("JOURNALIST")
                                 .requestMatchers("/editorial/correct").hasAnyRole("CORRECTOR", "REDACTOR")
+                                .requestMatchers("/editorial/correct/*").hasRole("REDACTOR")
                                 .anyRequest().authenticated())
                 .formLogin(configurer -> configurer.loginPage("/editorial/login"))
                 .logout(configurer -> configurer.permitAll()
