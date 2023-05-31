@@ -324,6 +324,44 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     </ul>
     If the articles are retrieved successfully, the status code will be 200 (OK), and the body will contain the list of ArticleCorrectDto objects. If there is an error while processing the request, the status code will be 400 (Bad Request), and an empty response will be returned. If the user is not authenticated, the status code will be 401 (Unauthorized), and an empty response will be returned.
     <br><br>
+    <li><b>PUT /editorial/correct</b></li>
+    This endpoint allows users to update an existing article correct.
+    <br><br>
+    <b>Request:</b>
+    <br>
+    The request body should contain a JSON object of type ArticleDraftDto with the following properties:
+    <ul>
+        <li><b>id</b> (required): A unique identifier for the article draft.</li>
+        <li><b>title</b> (required): A string representing the updated title of the article draft.</li>
+        <li><b>content</b> (required): A string representing the content of the article draft.</li>
+        <li><b>isCorrected</b> (required): A boolean indicating whether the article has been corrected.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article is updated successfully, the status code will be 200 (OK), and the body will contain the message "Successful update". If the request body is invalid or the ID is not provided, the status code will be 400 (Bad Request), and the body will contain the error message "Provide a body, including id!". If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will contain the error message "Username of requesting user does not exist in db!". If the article with the provided ID is not found, the status code will be 400 (Bad Request), and the body will contain the error message "Correct has not been found!".".
+    <br><br>
+    <li><b>DELETE /editorial/correct/reject</b></li>
+    This endpoint deletes an article correct and performs a move operation.
+    <br><br>
+    <b>Query Parameters:</b>
+    <ul>
+        <li><b>id</b> (required): A long representing the ID of the article correct to delete and move.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article correction is successfully deleted and the article is moved to the article draft, the status code will be 200 (OK), and the body will contain the message "Successful moved". If the ID is not provided or the article correction is not found, the status code will be 400 (Bad Request), and the body will contain the error message "Correct has not been found!". If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will contain the error message "Username of requesting user does not exist in db!".    <br><br>
     <li><b>POST /editorial/proposal </b></li>
     This endpoint allows users to add a new article proposal to the system.
     <br><br>
