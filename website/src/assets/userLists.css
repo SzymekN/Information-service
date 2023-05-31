@@ -3,19 +3,18 @@ body {
 }
 
 .input-look {
-    background: white;
-    width: 40%;
     padding: 1%;
+}
+
+.properties {
+    margin-top: 2rem;
+    background: white;
     margin-bottom: 1rem;
-    /*border: 1px solid rgba(128, 128, 128, 0.5);*/
-    margin-right: 1%;
+    border-radius: 10px;
+    box-shadow: 2px 2px 20px -10px;
 }
 
 .input-add{
-    background: white;
-    float: right;
-    width: 59%;
-    margin-bottom: 1rem;
     padding: 1%;
 }
 .properties label {
@@ -24,29 +23,29 @@ body {
 .properties input {
     padding: 10px;
     font-size: 0.8rem;
-    margin: 2%;
+    margin: 0.5%;
     border: none;
     background: rgba(238, 246, 253, 0.7);
     border-radius: 10px;
-    width: 80%;
+    width: 85%;
+    height: 2rem;
 }
 
-.input-add input {
-    width: 60%;
-}
 .properties button {
-    margin: 2%;
-    padding: 1.25%;
+    margin: 0.5%;
     background: rgb(238, 246, 253);
     border: none;
-    width: fit-content;
     font-size: 0.8rem;
-    float: right;
     border-radius: 10px;
+    height: 2rem;
+    width: 10%;
 }
 
 .properties button:hover {
     background-color: #c8d8f1;
+}
+#searchButton img {
+    max-width: 40px;
 }
 
 .table-context {
@@ -55,13 +54,21 @@ body {
     background: white;
     padding: 1%;
     border-radius: 10px;
+    box-shadow: 2px 2px 20px -10px;
 }
 
-@media (max-width: 1450px) {
-    .input-look input{
-        width: 75%;
-    }
+select {
+    font-size: 0.8rem;
+    margin: 1%;
+    border: none;
+    background: rgba(240, 248, 255);
+    border-radius: 10px;
+    width: 20%;
+    height: 2rem;
+}
 
+.properties > label {
+    margin-left: 1.5%;
 }
 
 @media (max-width: 1100px) {
@@ -71,14 +78,8 @@ body {
         padding: 3%;
     }
 
-    .input-add, .input-look {
-        width: 48%;
-    }
-    .input-look input{
-        width: 95%;
-    }
-    .input-add input{
-        width: 95%;
+    img {
+        width: 50%;
     }
 
     .table-context {

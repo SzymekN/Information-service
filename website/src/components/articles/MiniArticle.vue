@@ -1,6 +1,6 @@
 <template>
   <router-link :to="`article?id=${articleUrl}&category=${category}`">
-  <div class="article">
+  <div :class="pageClass" class="article">
       <img :src="imageUrl" height="853" width="1200" alt="OBRAZ JEST NIEDOSTĘPNY"/>
       <div class="article_title">
         <p>{{ articleTitle }}</p>
@@ -20,11 +20,22 @@ export default {
     articleUrl: Number,
     category: String,
   },
+  data() {
+    return {
+      pageClass: ""
+    };
+  },
+  mounted() {
+    if (this.category === "politics") {
+      this.pageClass = "politics";
+    } else {
+      this.pageClass = "other";
+    }
+  }
 };
 </script>
 
 <style scoped>
-
 .article {
   width: 23%;
   float: left;
@@ -35,9 +46,17 @@ export default {
   text-align: center;
 }
 
+.politics {
+  height: 13vmax;
+}
+
+.other {
+  height: 10vmax;
+}
+
 .article img {
   max-width: 100%;
-  max-height: 10vmax;
+  height: 100%;
   margin-right: 2%;
   display: block;
   transition: filter 0.5s ease;

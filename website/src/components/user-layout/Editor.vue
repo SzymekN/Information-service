@@ -131,17 +131,27 @@ const saveArticle = async () =>{
    margin: 1rem 0;
  }
 
- #editorContainer,
+ #editorContainer{
+   background-color: white;
+   margin-bottom: 1rem;
+   box-shadow: 2px 2px 20px -10px;
+ }
+
  #justText {
    background-color: white;
    margin-bottom: 1rem;
+   box-shadow: 2px 2px 20px -10px;
+   max-width: 100%;
+   border-radius: 10px;
  }
 
  .properties {
    background: white;
    width: fit-content;
    padding: 1%;
-   border: 1px solid rgba(128, 128, 128, 0.5);
+   //border: 1px solid rgba(128, 128, 128, 0.5);
+   box-shadow: 2px 2px 20px -10px;
+   border-radius: 10px;
  }
  label {
    margin: 10px;

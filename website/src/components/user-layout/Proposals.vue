@@ -10,11 +10,14 @@
 
   <div class="properties">
     <div class="input-add">
-      <label>Nowy temat:</label><input v-model="newTopicProposal" type="search"/>
+      <div class="labelCon"><label>Nowy temat:</label></div><input v-model="newTopicProposal" type="search"/>
       <button @click="addTopic">Dodaj</button>
     </div>
     <div class="input-look">
-      <label>Szukaj:</label><input v-model="searchTerm" />
+      <div class="labelCon"><label>Szukaj:</label></div><input v-model="searchTerm" />
+      <button id="searchButton" @click="handleSearch" class="disabled">
+        <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
+      </button>
     </div>
     <label for="state_input">Stan:</label>
     <select v-model="state" class="state_input">
@@ -23,11 +26,6 @@
       <option value="ACCEPTED">ACCEPTED</option>
       <option value="DECLINED">DECLINED</option>
     </select>
-    <div class="searchButton-wrapper">
-        <button id="searchButton" @click="handleSearch" class="disabled">
-          <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
-        </button>
-    </div>
   </div>
   <div class="table-context">
     <table-lite
