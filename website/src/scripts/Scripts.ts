@@ -223,6 +223,12 @@ export async function  fetchLeagueTable(leagueId,data)  {
     localStorage.setItem("league",leagueId);
 }
 
+export function getArticleById(data,id) {
+  return data.filter(
+   function(data){ return data.id == id }
+ );
+ }
+ 
 export async function fetchAllLeagues(){
 var allIds=[4328,4335,4332,4334,4422];
 allIds.forEach(async (leagueId) => {
@@ -230,3 +236,4 @@ allIds.forEach(async (leagueId) => {
     setWithExpiry(leagueId, leagueScores.value, 180000);
 });
 }
+

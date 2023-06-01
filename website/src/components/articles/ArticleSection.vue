@@ -2,7 +2,7 @@
 import TopNews from "./TopNews.vue";
 import MiniArticle from "./MiniArticle.vue";
 import { ref, onMounted, onUnmounted } from 'vue';
-
+import { getArticleById } from '@/scripts/Scripts.ts'
 const articles = ref([]);
 const page = ref(0);
 const isLoading = ref(false);
@@ -34,7 +34,8 @@ const fetchArticles = async () => {
       page.value++;
       const data = await response.json();
       articles.value = [...articles.value, ...data];
-      sessionStorage.setItem(props.category, JSON.stringify(articles.value))
+      sessionStorage.setItem(props.category, JSON.stringify(articles.value));
+      
       isLoading.value = false;
 
       const articlesWithImage = data.map((article) => {
@@ -44,7 +45,20 @@ const fetchArticles = async () => {
       };
     });
 
+   
+    articlesWithImage.forEach((article) => {
+      const category = article.category;
+      const categoryArticles = JSON.parse(sessionStorage.getItem(category)) || [];
+      
+      // If article is already in session storage, don't add it again
+      if(getArticleById(categoryArticles,article.id).length == 0){
+        categoryArticles.push(article);
+        sessionStorage.setItem(category, JSON.stringify(categoryArticles));
+      }
+    });
+    
       localStorage.setItem('articles', JSON.stringify(articlesWithImage));
+      
     } catch (error) {
       console.log(error);
     }
@@ -97,7 +111,7 @@ const fetchArticles = async () => {
       v-if="articles.length"
       :articleTitle="articles[0].title"
       :articleDescription="stripTags(articles[0].content)"
-      :articleUrl="0"
+      :articleUrl=articles[0].id
       :imageUrl="getImage(articles[0].content)"
       :category="props.category"/>
     
@@ -107,7 +121,7 @@ const fetchArticles = async () => {
       :key="index"
       :articleTitle="item.title"
       :articleDescription="stripTags(articles[index].content)"
-      :articleUrl="index+1"
+      :articleUrl="item.id"
       :imageUrl="getImage(item.content)"
       :category="props.category"/>
 

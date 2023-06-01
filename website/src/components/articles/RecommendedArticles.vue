@@ -1,8 +1,8 @@
 <template>
     <div>
-      <h2>Proponowane artykuły</h2>
+      <h2 class="proposed-header">Proponowane artykuły</h2>
       <div class="recommended-articles">
-        <div v-for="article in recommendedArticles" :key="article.id" class="article-container">
+        <div v-for="article in recommendedArticles" :key="article.id" class="article-container" >
             <router-link class="recommendedLink" :to="`article?id=${article.id}&category=${article.category}`">
             <div class="image-container">
                 <img :src="article.image" :alt="article.title" />
@@ -20,7 +20,10 @@
   import { ref, onMounted,watch } from 'vue';
   import { useRoute } from 'vue-router';
   export default {
-    setup() {
+    props:{
+      currentArticleId: Number,
+    },
+    setup(props) {
       const recommendedArticles = ref([]);
       const route = useRoute();
       const getRandomItems = (array, count) => {
@@ -43,9 +46,12 @@
         // Retrieve all articles from local storage
         const allArticles = JSON.parse(localStorage.getItem('articles')) || [];
   
-        // Select random 10 articles
-        const randomArticles = getRandomItems(allArticles, 10);
-  
+        // Filter out the article with the matching ID
+        const filteredArticles = allArticles.filter(article => article.id !== props.currentArticleId);
+
+        // Select random 10 articles from the filtered list
+        const randomArticles = getRandomItems(filteredArticles, 10);
+          
         // Set recommendedArticles with the random articles
         recommendedArticles.value = randomArticles;
       });
@@ -59,19 +65,29 @@
   
   <style>
  
-.recommended-articles {
+ .recommended-articles {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  max-width: 30%;
   float:right;
   overflow: hidden;
 }
 
 .article-container {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 10px;
+  border-bottom: 1px solid gray; 
+  padding-bottom: 10px;
+  min-width: 100%;
+}
+
+a.router-link-active.router-link-exact-active.recommendedLink{
+  min-width: 100%;
+}
+
+.article-container:last-child {
+  border-bottom: none; 
 }
 
 .image-container {
@@ -93,13 +109,16 @@
 }
 
 .title-container h3 {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  word-wrap: break-word;
+  min-width: 100%;
+  max-width: 5%;
   margin-top: 0;
   font-size: small;
+  width:100%;
 }
 
-
+.proposed-header {
+  text-transform: uppercase;
+  margin-block:0;
+  margin-bottom: 10px;
+}
 </style>
