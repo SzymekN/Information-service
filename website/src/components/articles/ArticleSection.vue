@@ -36,6 +36,15 @@ const fetchArticles = async () => {
       articles.value = [...articles.value, ...data];
       sessionStorage.setItem(props.category, JSON.stringify(articles.value))
       isLoading.value = false;
+
+      const articlesWithImage = data.map((article) => {
+      return {
+        ...article,
+        image: getImage(article.content)
+      };
+    });
+
+      localStorage.setItem('articles', JSON.stringify(articlesWithImage));
     } catch (error) {
       console.log(error);
     }

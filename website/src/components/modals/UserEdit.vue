@@ -13,10 +13,10 @@
             <input type="text" v-model="userInfo.name" id="name">
             <label for="surname">Nazwisko:</label>
             <input type="text" v-model="userInfo.surname" id="surname">
-            <label for="email">Email:</label>
-            <input type="text" v-model="userInfo.email" id="email">
-            <label for="password">Hasło:</label>
-            <input type="password" v-model="userInfo.password" id="password" placeholder="••••••••">
+            <!-- <label for="email">Email:</label>
+            <input type="text" v-model="userInfo.email" id="email"> -->
+            <label v-if="userInfo.supplier==='APP'" for="password">Hasło:</label>
+            <input v-if="userInfo.supplier==='APP'" type="password" v-model="userInfo.password" id="passwordToChange" placeholder="••••••••">
           </div>
           <div class="form-group">
             <label for="authorityName">Rola:</label>
@@ -40,8 +40,9 @@
     name: props.user.name || '',
     surname: props.user.surname || '',
     password: '',
-    email: props.user.email || '',
-    authorityName: props.user.authorityName || ''
+    // email: props.user.email || '',
+    authorityName: props.user.authorityName || '',
+    supplier: props.user.supplier || ''
   });
   
   const authorityNameMap = {

@@ -90,6 +90,10 @@ const fetchUsers = async () =>{
   const role=selectedRole.value;
   const field=selectedOption.value;
   const value= textInput;
+
+  // cleaning data before updating it with edited data  
+  data.splice(0);
+
   // var tempUrl=url;
   url+=`page=${page}&size=${size}`;
   const queryParams = [];
@@ -99,8 +103,8 @@ const fetchUsers = async () =>{
   }
 
   if (field&&field!=='default' && value) {
-    queryParams.push(`field=${encodeURIComponent(field)}`);
-    queryParams.push(`value=${encodeURIComponent(value)}`);
+    queryParams.push(`attributeName=${encodeURIComponent(field)}`);
+    queryParams.push(`attributeValue=${encodeURIComponent(value)}`);
   }
 
   url +='&' + queryParams.join('&');
@@ -133,6 +137,7 @@ const fetchUsers = async () =>{
           surname: responseJson[i]["surname"],
           email: responseJson[i]["email"],
           authorityName: responseJson[i]["authorityName"],
+          supplier: responseJson[i]["supplier"],
          });
        }
     }
@@ -300,6 +305,36 @@ function fetchDeleteUser() {
     });
 }
 
+const fetchEditUser = async (userData) =>{
+  url='/editorial/actions/edit?';
+
+  url +=`id=${encodeURIComponent(selectedUser.id)}`;
+ 
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      toast.error(text)
+    }
+    else {
+        editModalOpen.value = false;
+        cleanModal();
+        // Fetch the updated list of users
+        fetchUsers();
+        // TO DO: success alert
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const activateEditModal = (pointerEvent) => {
   const rowId = parseInt(pointerEvent.currentTarget.getAttribute("rowId"));
   const row = data.find((item) => item.id === rowId);
@@ -307,11 +342,12 @@ const activateEditModal = (pointerEvent) => {
   editModalOpen.value = true;
 };
 
+const getKeyByValue = (object, value) => {
+  return Object.keys(object).find(key => object[key] === value);
+};
+
 function updateUser(userData) {
-  editModalOpen.value = false;
-
   const form = userData.currentTarget; // Select the form element
-
   const formFields = form.querySelectorAll('input, select');
   const fieldValues = {};
 
@@ -329,46 +365,56 @@ function updateUser(userData) {
 
     // Update the user object with the new values
     for (const [key, value] of Object.entries(fieldValues)) {
-      if (userToUpdate[key] !== value&&value!="") {
+      if (value!="") { //userToUpdate[key] !== value&&
         updatedValues[key] = value; // Store the updated key-value pair
+      }
+      if(key=="authorityName"){
+        updatedValues[key] = getKeyByValue(authorityNameMap,value);
       }
     }
 
     console.log("Updated values:", updatedValues);
+    fetchEditUser(updatedValues);
   } else {
     console.log("User not found");
   }
-  // TODO: Send a request to update the user on the server
 }
 
-const cleanAddModal = () => {
+const cleanModal = (modal) => {
   const usernameInput = document.getElementById('username');
   const nameInput = document.getElementById('name');
   const surnameInput = document.getElementById('surname');
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
+  var passwordInput;
   const authorityNameSelect = document.getElementById('authorityName');
 
-  // Clear input field values
-  usernameInput.value = '';
-  nameInput.value = '';
-  surnameInput.value = '';
-  emailInput.value = '';
-  passwordInput.value = '';
-
-  // Reset select field to the default option
-  authorityNameSelect.value = 'DEFAULT';
+  if(modal==="addModalOpen"){
+    passwordInput = document.getElementById('password');
+    const emailInput = document.getElementById('email');
+    emailInput.value = '';
+  }
+  else
+    passwordInput = document.getElementById('passwordToChange');
+    
+     // Clear input field values
+     usernameInput.value = '';
+    nameInput.value = '';
+    surnameInput.value = '';
+    passwordInput.value = '';
+    // Reset select field to the default option
+    authorityNameSelect.value = 'DEFAULT';
 };
 
 const closeModal = (modal) => {
   if(modal==="editModalOpen")
     editModalOpen.value = false;
   else if(modal==="addModalOpen"){
-    cleanAddModal();
+    cleanModal(modal);
     addModalOpen.value = false;
   }
-  else if(modal==="deleteModalOpen")
+  else if(modal==="deleteModalOpen"){
+    // cleanModal(modal);
     deleteModalOpen.value = false;
+  }
 };
 
 const activateAddModal = () => {
@@ -394,7 +440,7 @@ const fetchAddUser = async (newUser) =>{
     }
     else {
         // Clean and close the modal
-        cleanAddModal();
+        cleanModal();
         addModalOpen.value = false;
 
         // Fetch the updated list of users
