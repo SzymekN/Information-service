@@ -1,8 +1,7 @@
 package com.editorial.service;
 
-import com.editorial.model.dto.UserEditDto;
 import com.editorial.model.dto.UserDto;
-import com.editorial.model.dto.UserRegistrationDto;
+import com.editorial.model.dto.UserEditDto;
 import com.editorial.model.entity.User;
 import com.editorial.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -164,6 +163,11 @@ public class UserActionServiceImpl implements UserActionService {
     @Override
     public User findUserById(Long id) {
         return userRepository.findUserById(id);
+    }
+
+    @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findUserByName(username);
     }
 
     private void editUserByDto(User userToEdit, UserEditDto userEditDto, Long loggedUserId) {

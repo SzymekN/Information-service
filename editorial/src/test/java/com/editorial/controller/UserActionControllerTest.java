@@ -1,8 +1,7 @@
 package com.editorial.controller;
 
-import com.editorial.model.dto.UserEditDto;
 import com.editorial.model.dto.UserDto;
-import com.editorial.model.dto.UserRegistrationDto;
+import com.editorial.model.dto.UserEditDto;
 import com.editorial.model.entity.Authority;
 import com.editorial.model.entity.User;
 import com.editorial.repository.UserRepository;
@@ -37,7 +36,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserActionController.class)
@@ -144,6 +142,7 @@ public class UserActionControllerTest {
         loggedUser.setId(1L);
         loggedUser.setAuthority(new Authority("ADMIN"));
         User userToEdit = new User();
+        userToEdit.setUsername("testt");
         userEditDto.setName("name");
         userEditDto.setSurname("name");
         userEditDto.setUsername("test");
@@ -151,6 +150,8 @@ public class UserActionControllerTest {
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
         when(userRepository.findUserById(userId)).thenReturn(userToEdit);
+        when(userActionService.findUserById(userId)).thenReturn(userToEdit);
+        when(userRepository.findUserByName(anyString())).thenReturn(User.builder().username(null).build());
         when(userActionService.updateUserEditorialToClient(any(Long.class), any(Long.class), any(UserEditDto.class),
                 any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         // then
