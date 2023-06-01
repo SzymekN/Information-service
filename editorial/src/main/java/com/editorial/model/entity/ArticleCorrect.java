@@ -1,10 +1,6 @@
 package com.editorial.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serializable;
@@ -26,24 +22,16 @@ public class ArticleCorrect implements Serializable {
     private Long id;
 
     @Column(name = "title")
-    @Size(min = 3, max = 200, message = "Title must contain more than 2 and less than 201 characters!")
-    @Pattern(regexp = "^[^<>*%:&/\\\\]+[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s]+[0-9]*$", message = "Title must not contain such characters as:<>*%:&/\\")
     private String title;
 
     @Column(name = "content")
-    @NotBlank(message = "Content must not be blank!")
     private String content;
 
     @Column(name = "date_of_correction")
     private Timestamp dateOfCorrection;
 
     @Column(name = "is_corrected")
-    @NotNull
     private Boolean isCorrected;
-
-    @Column(name = "is_edited_by_journalist")
-    @NotNull
-    private Boolean isEditedByJournalist;
 
     @Column(name = "journalist_id_c")
     private Long journalistId;

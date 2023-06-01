@@ -1,7 +1,9 @@
 package com.client.controller;
 
+import com.client.model.dto.ArticleCorrectToClientDto;
 import com.client.model.dto.ArticleDto;
 import com.client.service.ArticleService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,4 +55,13 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
 
+    @PostMapping("/fe")
+    public ResponseEntity<String> addArticleFromEditorial(@Valid @RequestBody ArticleCorrectToClientDto articleCorrectToClientDto, @RequestHeader("X-Caller") String caller) {
+        if (!"ARTICLE_FROM_EDITORIAL".equals(caller))
+            return ResponseEntity.badRequest().body("Unsuccessful transfer process in client microservice.");
+        else {
+            articleService.saveArticle(articleCorrectToClientDto);
+            return ResponseEntity.ok("Successful moved");
+        }
+    }
 }
