@@ -59,6 +59,10 @@ section {
   margin-bottom: -1%;
 }
 
+hr {
+  margin-right: 2%;;
+}
+
 @media (min-width: 1024px) {
   body {
     display: flex;

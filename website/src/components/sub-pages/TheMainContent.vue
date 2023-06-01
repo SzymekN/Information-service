@@ -61,10 +61,13 @@ onMounted (() => {
 #content_container {
   width: 80%;
   float: left;
-  /* margin-top: 7.5rem; */
 }
 .section_content {
   float: left;
+}
+
+section {
+  box-shadow: 2px 2px 20px -10px;
 }
 
 @media (max-width: 640px){

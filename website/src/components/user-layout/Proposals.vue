@@ -10,43 +10,76 @@
 
   <div class="properties">
     <div class="input-add">
-      <label>Nowy temat:</label><input v-model="newTopicProposal" />
+      <div class="labelCon"><label>Nowy temat:</label></div><input v-model="newTopicProposal" type="search"/>
       <button @click="addTopic">Dodaj</button>
     </div>
     <div class="input-look">
-      <label>Szukaj:</label><input v-model="searchTerm" />
+      <div class="labelCon"><label>Szukaj:</label></div><input v-model="searchTerm" />
+      <button id="searchButton" @click="handleSearch" class="disabled">
+        <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
+      </button>
     </div>
+    <label for="state_input">Stan:</label>
+    <select v-model="state" class="state_input">
+      <option value="All" selected>All</option>
+      <option value="PENDING">PENDING</option>
+      <option value="ACCEPTED">ACCEPTED</option>
+      <option value="DECLINED">DECLINED</option>
+    </select>
   </div>
   <div class="table-context">
     <table-lite
-        :is-static-mode="true"
+        :is-static-mode="false"
         :columns="table.columns"
         :rows="table.rows"
         :total="table.totalRecordCount"
         :sortable="table.sortable"
         @is-finished="tableLoadingFinish"
         @row-clicked="tableLoadingFinish"
+        @do-search="doSearch"
     ></table-lite>
   </div>
 </template>
 
 <script setup>
 import jsCookie from "js-cookie";
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, watch } from "vue";
 import { toast } from "vue-sonner";
+import SearchImage from "@/assets/icons8-search.svg";
 import TableLite from 'vue3-table-lite'
 
 // TODO: replace with fetched data
 // Fake Data for 'asc' sortable
 const data = reactive([]);
 var url = '/editorial/proposal?';
-var page = 0;
 var size = 10;
 
-const fetchProposals = async () =>{
-  try {
+const searchTerm = ref(""); // Search text
+const newTopicProposal = ref(""); // user input with proposition
+const acceptance = ref(""); 
+const rowCount = ref(0);
+const state = ref("All"); 
 
-    const response = await fetch(url+`page=${page}&size=${size}`, {
+var lastSearchTerm = "";
+var lastPage = 0;
+var lastOrder = "id";
+var lastSort = "desc";
+
+
+const fetchData = async (page = 0, order = "id", sort = "desc", search = "") =>{
+  const queryParams = [];
+  if (search != ""){
+    queryParams.push(`title=${search}`);
+  }
+  if (state.value != "All"){
+    queryParams.push(`acceptance=${state.value}`);
+  }
+  queryParams.push(`sort=${order},${sort}`);
+  url = `/editorial/proposal?page=${page}&size=${size}&`;
+  url += queryParams.join("&");
+  console.log(url)
+  try {
+    const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -59,8 +92,8 @@ const fetchProposals = async () =>{
       toast.error(text)
     }
     else{
-      console.log(response)
       const responseJson = await response.json();
+      data.splice(0, size);
       for (let i = 0; i < responseJson.length; i++) {
         data.push({
           id: responseJson[i]["id"],
@@ -69,35 +102,17 @@ const fetchProposals = async () =>{
           dateOfUpdate: responseJson[i]["dateOfUpdate"],
           acceptance: responseJson[i]["acceptance"],
         });
+        // fetchData = data.length;
       }
+      rowCount.value = Number(response.headers.get('X-Total-Count'));
     }
   } catch (error) {
     console.log(error);
   }
 }
 
-// for (let i = 0; i < 127; i++) {
-//   data.push({
-//       id: i,
-//       user: ""+i,
-//       topic: "TEST" + i,
-//       date: new Date().toDateString(),
-//       state: "approved",
-//   });
-// }
 
-// data.push({
-//   id: 127,
-//   user: ""+127,
-//   topic: "TEST" + 127,
-//   date: (new Date().toDateString()),
-//   state: "rejected",
-// });
-
-const searchTerm = ref(""); // Search text
-const newTopicProposal = ref(""); // user input with proposition
-// const maxId = ref(128); // last id assigned
-fetchProposals();
+fetchData();
 // Table config
 const table = reactive({
   columns: [
@@ -105,7 +120,6 @@ const table = reactive({
           label: "Użytkownik",
           field: "authorName",
           width: "1%",
-          sortable: true,
       },
       {
           label: "Temat",
@@ -136,7 +150,6 @@ const table = reactive({
             if (row.acceptance == "DECLINED")
               color = "#a31505";
             
-              
             if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR'){
               var acceptanceSelect = document.createElement("select");
               acceptanceSelect.setAttribute("name", "acceptance");
@@ -186,29 +199,21 @@ const table = reactive({
       },
   ],
   rows: computed(() => {
-      return data.filter(
-      (x) =>
-          x.authorName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-          x.title.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-          x.acceptance.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-          x.dateOfUpdate.toLowerCase().includes(searchTerm.value.toLowerCase())
-      );
+      return data
   }),
   totalRecordCount: computed(() => {
-      return table.rows.length;
+      return rowCount.value
   }),
   sortable: {
       order: "id",
-      sort: "asc",
-  },
+      sort: "desc",
+  }
 });
 
 
 // Change topic
 function changeTopicListener(){
-
   let newTopic = prompt("Podaj nowy temat")
-  console.log(this.value)
   if (newTopic == null || newTopic == "")
     return;
   let id = this.getAttribute('topicId');
@@ -294,14 +299,45 @@ function addListeners(className, listenerFunction, listenerType){
   });
 
 }
+const handleSearch = () => {
+  lastSearchTerm = searchTerm.value;
+  fetchData(lastPage, lastOrder, lastSort, lastSearchTerm);
+};
 
-const tableLoadingFinish = () => {
+const doSearch = (offset, limit, order, sort) => {
+  table.page = offset / limit;
+  console.log("doSearch", offset, limit, order, sort);
 
+  lastPage = offset / limit;
+  lastOrder = order;
+  lastSort = sort;
+  lastSearchTerm = searchTerm.value;
+  data.splice(0, size);
+  size = limit;
+
+  fetchData(offset / limit, order, sort, lastSearchTerm);
+
+};
+
+watch(searchTerm, (newValue, oldValue) => {
+  if (newValue != oldValue && newValue == "") {
+    handleSearch();
+  }
+});
+
+watch(state, (newValue, oldValue) => {
+  if (newValue != oldValue) {
+    handleSearch();
+  }
+});
+
+const tableLoadingFinish = (page = 1) => {
+  
+  // table.page = page;
   table.isLoading = false;
   addListeners("topic", changeTopicListener, "click");
   if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
       addListeners("acceptance", changeStateListener, "change");
-
 };
 
 const addTopic = async () =>{
@@ -355,6 +391,13 @@ const addTopic = async () =>{
 
 </script>
 
-<style>
+<style scoped>
 @import '../../assets/userLists.css';
+.vtl-paging-info.col-sm-12.col-md-4,
+.vtl-paging-change-div.col-sm-12.col-md-4,
+.vtl-paging-pagination-ul.vtl-pagination li:first-child,
+.vtl-paging-pagination-ul.vtl-pagination li:last-child
+{
+    display:none;
+}
 </style>

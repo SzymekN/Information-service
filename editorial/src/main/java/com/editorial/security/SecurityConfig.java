@@ -34,10 +34,13 @@ public class SecurityConfig {
                                 .requestMatchers("/editorial/registration/fc").permitAll()
                                 .requestMatchers("/editorial/validate").permitAll()
                                 .requestMatchers("/editorial/registration/**").permitAll()//later only for users with the ADMIN role
+                                .requestMatchers("/editorial/actions/get/users").hasRole("ADMIN")
                                 .requestMatchers("/editorial/actions/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/editorial/test").hasAnyRole("JOURNALIST", "USER", "ADMIN") // journalist only previously
                                 .requestMatchers("/editorial/proposal").hasAnyRole("JOURNALIST", "REDACTOR")
                                 .requestMatchers("/editorial/draft").hasAnyRole("JOURNALIST")
+                                .requestMatchers("/editorial/correct").hasAnyRole("CORRECTOR", "REDACTOR")
+                                .requestMatchers("/editorial/correct/*").hasRole("REDACTOR")
                                 .anyRequest().authenticated())
                 .formLogin(configurer -> configurer.loginPage("/editorial/login"))
                 .logout(configurer -> configurer.permitAll()
