@@ -109,7 +109,7 @@ const fetchArticles = async () => {
       :articleDescription="stripTags(articles[index].content)"
       :articleUrl="index+1"
       :imageUrl="getImage(item.content)"
-      :category="props.category"/>    
+      :category="props.category"/>
 
     <MiniArticle
       v-if="isLoading == true"

@@ -32,7 +32,7 @@
             <tbody>
               <tr v-for="(club, index) in clubs" :key="index">
                 <td>{{ club.intRank }}</td>
-                <td><img :src="club.strTeamBadge" alt="Team Logo" /></td>
+                <td><img :src="club.strTeamBadge" alt="Team Logo" class="herb"/></td>
                 <td>{{ club.strTeam }}</td>
                 <td>
                   <div class="form">
@@ -115,12 +115,18 @@ export default {
   border-radius: 10px;
   padding: 1%;
   font-size: 0.6rem;
+  box-shadow: 2px 2px 20px -10px;
 }
 .button-container {
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
+
+.herb {
+  filter: drop-shadow(1px 1px 1px #222);
+}
+
 .scoresTable {
     border-collapse: collapse;
     width: 100%;

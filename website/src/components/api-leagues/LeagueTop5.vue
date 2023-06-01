@@ -87,6 +87,7 @@ export default {
     border-radius: 10px;
     float: right;
     min-width: 20%;
+    box-shadow: 2px 2px 20px -10px;
   }
   
   .scores-table {

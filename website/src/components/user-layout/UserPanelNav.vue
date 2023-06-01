@@ -35,10 +35,12 @@ table {
   border: none;
   font-size: 0.9rem;
   width: 100%;
+  border-radius: 10px;
 }
 
 .buttons button:hover {
   background-color: rgba(240, 248, 255);
+  box-shadow: 1px 1px 20px -10px;
 }
 
 a {
