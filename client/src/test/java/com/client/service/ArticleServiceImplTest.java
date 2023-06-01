@@ -1,6 +1,7 @@
 package com.client.service;
 
 import com.client.config.TestDbConfig;
+import com.client.model.dto.ArticleCorrectToClientDto;
 import com.client.model.dto.ArticleDto;
 import com.client.model.entity.Article;
 import com.client.model.entity.Authority;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,7 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import static reactor.core.publisher.Mono.when;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -174,6 +180,40 @@ public class ArticleServiceImplTest {
         int page = -1;
         int size = -1;
         // when & then
-        Assertions.assertThrows(IllegalArgumentException.class , () -> articleService.findByCategoryPaged(page, size, "politics"));
+        assertThrows(IllegalArgumentException.class , () -> articleService.findByCategoryPaged(page, size, "politics"));
+    }
+
+    @Test
+    void save_article_should_throw_exception_when_required_field_not_provided() {
+        // given
+        ArticleCorrectToClientDto articleCorrectToClientDto = new ArticleCorrectToClientDto();
+        articleCorrectToClientDto.setTitle("Sample Title");
+        articleCorrectToClientDto.setCategory("Sample Category");
+        articleCorrectToClientDto.setJournalistId(1L);
+        articleCorrectToClientDto.setCategory("Test");
+
+        // when & then
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            articleService.saveArticle(articleCorrectToClientDto);
+        });
+    }
+
+    @Test
+    void dtoToArticle_should_convert_dto_to_article() {
+        // given
+        ArticleCorrectToClientDto articleCorrectToClientDto = new ArticleCorrectToClientDto();
+        articleCorrectToClientDto.setTitle("Sample Title");
+        articleCorrectToClientDto.setContent("Sample Content");
+        articleCorrectToClientDto.setCategory("Sample Category");
+        articleCorrectToClientDto.setJournalistId(123L);
+
+        // when
+        Article article = articleService.dtoToArticle(articleCorrectToClientDto);
+
+        // then
+        assertEquals(articleCorrectToClientDto.getTitle(), article.getTitle());
+        assertEquals(articleCorrectToClientDto.getContent(), article.getContent());
+        assertEquals(articleCorrectToClientDto.getCategory(), article.getCategory());
+        assertNotNull(article.getDateOfSubmission());
     }
 }

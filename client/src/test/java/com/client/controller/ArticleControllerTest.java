@@ -1,5 +1,6 @@
 package com.client.controller;
 
+import com.client.model.dto.ArticleCorrectToClientDto;
 import com.client.model.dto.ArticleDto;
 import com.client.security.SecurityConfig;
 import com.client.service.ArticleService;
@@ -23,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -152,5 +154,55 @@ public class ArticleControllerTest {
                         .param("size", String.valueOf(size))
                         .param("category", category))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void add_article_from_editorial_should_return_successful_moved_response_when_valid_request() throws Exception {
+        // given
+        ArticleCorrectToClientDto articleCorrectToClientDto = new ArticleCorrectToClientDto();
+        articleCorrectToClientDto.setTitle("test");
+        articleCorrectToClientDto.setContent("test");
+        articleCorrectToClientDto.setIsCorrected(true);
+        String caller = "ARTICLE_FROM_EDITORIAL";
+        doNothing().when(articleService).saveArticle(articleCorrectToClientDto);
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.post("/client/articles/fe")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Caller", caller)
+                        .content(asJsonString(articleCorrectToClientDto)))
+        //then
+                .andExpect(status().isOk())
+                .andExpect(content().string("Successful moved"));
+    }
+
+    @Test
+    @WithAnonymousUser
+    void add_article_from_editorial_should_return_bad_request_response_when_invalid_caller() throws Exception {
+        // given
+        ArticleCorrectToClientDto articleCorrectToClientDto = new ArticleCorrectToClientDto();
+        articleCorrectToClientDto.setTitle("test");
+        articleCorrectToClientDto.setContent("test");
+        articleCorrectToClientDto.setIsCorrected(true);
+        String caller = "INVALID_CALLER";
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.post("/client/articles/fe")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Caller", caller)
+                        .content(asJsonString(articleCorrectToClientDto)))
+        //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Unsuccessful transfer process in client microservice."));
+    }
+
+    private static String asJsonString(Object obj) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

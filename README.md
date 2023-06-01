@@ -204,6 +204,22 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     If there are no articles found, <b>a 204 No Content</b> status code is returned.
     If there's an error with the query parameters, <b>a 400 Bad Request</b> status code is returned.
     <br><br>
+    <li><b>POST /client/articles/fe</b></li>
+    This endpoint is used to add an article from the editorial microservice to the client microservice.It can only be accessed by the caller with X-Caller header set to "ARTICLE_FROM_EDITORIAL". So it <b>SHOULD NOT BE DIRECTLY ACCESSED!!!</b>
+    <br><br>
+    <b>Request Headers:</b>
+    <ul>
+        <li>X-Caller (required): This header must be set to "ARTICLE_FROM_EDITORIAL" to ensure that the request is coming from the editorial microservice.</li>
+    </ul>
+    <br>
+    <b>Request Body:</b>
+    <br>
+    The request body should be a JSON object representing the ArticleCorrectToClientDto. It contains the necessary information about the article, such as the title, content, date of correction, etc.
+    <br><br>
+    <b>Response:</b>
+    <br>
+    If the article is successfully saved in the client microservice, the status code will be 200 (OK), and the body will contain the message "Successful moved". If the request is rejected or unsuccessful in the client microservice, the status code will be 400 (Bad Request), and the body will contain the message "Unsuccessful transfer process in the client microservice".
+    <br><br>  
 </ol>
 
 ### Users:
@@ -216,8 +232,8 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <ul>
     <li>pageable (optional): a pageable object specifying the page size (10 by default), page number (0 by default), sorting field, and sorting direction for pagination.</li>
     <li>role (optional): a string representing the role of the users to filter by.</li>
-    <li>field (optional): a string representing the column in the database to filter the users by.</li>
-    <li>value (optional): a string representing the value to match in the specified field.</li>
+    <li>attributeName (optional): a string representing the column in the database to filter the users by.</li>
+    <li>attributeValue (optional): a string representing the value to match in the specified field.</li>
     </ul>
     <br>
     <b>Response:</b>
@@ -304,6 +320,83 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
 
 ### Editorial:
 <ol>
+    <li><b>GET /editorial/correct</b></li>
+    This endpoint retrieves a list of article corrects.
+    <br><br>
+    <b>Query Parameters:</b>
+    <br>
+    <ul>
+        <li><b>pageable</b> (optional): A pageable object specifying the page size (10 by default), page number (0 by default), sorting field, and sorting direction for pagination.</li>
+        <li><b>title</b> (optional): A string representing the article's title. If provided, only articles matching the title will be included in the response.</li>
+        <li><b>isCorrected</b> (optional): A boolean value indicating whether the articles should be filtered based on their correction status.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A list of ArticleCorrectDto objects containing the article corrects.</li>
+    </ul>
+    If the articles are retrieved successfully, the status code will be 200 (OK), and the body will contain the list of ArticleCorrectDto objects. If there is an error while processing the request, the status code will be 400 (Bad Request), and an empty response will be returned. If the user is not authenticated, the status code will be 401 (Unauthorized), and an empty response will be returned.
+    <br><br>
+    <li><b>PUT /editorial/correct</b></li>
+    This endpoint allows users to update an existing article correct.
+    <br><br>
+    <b>Request:</b>
+    <br>
+    The request body should contain a JSON object of type ArticleDraftDto with the following properties:
+    <ul>
+        <li><b>id</b> (required): A unique identifier for the article draft.</li>
+        <li><b>title</b> (required): A string representing the updated title of the article draft.</li>
+        <li><b>content</b> (required): A string representing the content of the article draft.</li>
+        <li><b>isCorrected</b> (required): A boolean indicating whether the article has been corrected.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article is updated successfully, the status code will be 200 (OK), and the body will contain the message "Successful update". If the request body is invalid or the ID is not provided, the status code will be 400 (Bad Request), and the body will contain the error message "Provide a body, including id!". If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will contain the error message "Username of requesting user does not exist in db!". If the article with the provided ID is not found, the status code will be 400 (Bad Request), and the body will contain the error message "Correct has not been found!".".
+    <br><br>
+    <li><b>DELETE /editorial/correct/reject</b></li>
+    This endpoint deletes an article correct and performs a move operation.
+    <br><br>
+    <b>Query Parameters:</b>
+    <ul>
+        <li><b>id</b> (required): A long representing the ID of the article correct to delete and move.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article correction is successfully deleted and the article is moved to the article draft, the status code will be 200 (OK), and the body will contain the message "Successful moved". If the ID is not provided or the article correction is not found, the status code will be 400 (Bad Request), and the body will contain the error message "Correct has not been found!". If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will contain the error message "Username of requesting user does not exist in db!".
+    <br><br>
+    <li><b>DELETE /editorial/correct/accept</b></li>
+    This endpoint deletes an article correct from the editorial system and moves it to the client service.
+    <br><br>
+    <b>Query Parameters:</b>
+    <ul>
+        <li><b>id</b> (required): A long representing the ID of the article correct to delete and move.</li>
+        <li><b>category</b> (required): The category of the article.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article correction is successfully deleted and transferred to the client service, the status code will be 200 (OK), and the body will contain the message "Successful moved". If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will contain the message "Username of requesting user does not exist in the database". If the article correction is not found, the status code will be 400 (Bad Request), and the body will contain the message "Correct has not been found". If the request is rejected or unsuccessful in the client microservice, the status code will be 400 (Bad Request), and the body will contain the message "Unsuccessful transfer process in the client microservice".
+    <br><br>    
     <li><b>POST /editorial/proposal </b></li>
     This endpoint allows users to add a new article proposal to the system.
     <br><br>
