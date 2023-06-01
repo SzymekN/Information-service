@@ -41,7 +41,7 @@
   </div>
   <UserEdit v-if="editModalOpen" :user="selectedUser" @submit="updateUser" @close="closeModal('editModalOpen')"></UserEdit>
   <UserAdd v-if="addModalOpen" @submit="addUser" @close="closeModal('addModalOpen')"></UserAdd>
-  <UserDelete v-if="deleteModalOpen" :user="selectedUser.username" @submit="fetchDeleteUser" @close="closeModal('deleteModalOpen')"></UserDelete>
+  <UserDelete v-if="deleteModalOpen" :user="selectedUser.username" :isAdmin="true" @submit="fetchDeleteUser" @close="closeModal('deleteModalOpen')"></UserDelete>
 </template>
 
 
@@ -109,7 +109,6 @@ const fetchUsers = async () =>{
 
   url +='&' + queryParams.join('&');
 
-  console.log(url)
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -128,7 +127,6 @@ const fetchUsers = async () =>{
     }
     else {
        const responseJson = await response.json();
-       console.log(responseJson)
       for (let i = 0; i < responseJson.length; i++) {
          data.push({
           id: responseJson[i]["id"],
@@ -237,7 +235,6 @@ const tableLoadingFinish = () => {
   
     addListeners("deleteButton", activateDeleteModal);
     addListeners("editButton", activateEditModal);
-    // addListeners("addButton", activateAddModal);
 };
 
 const handleRoleChange = (e) => {
@@ -328,7 +325,6 @@ const fetchEditUser = async (userData) =>{
         cleanModal();
         // Fetch the updated list of users
         fetchUsers();
-        // TO DO: success alert
     }
   } catch (error) {
     console.log(error);
@@ -373,7 +369,7 @@ function updateUser(userData) {
       }
     }
 
-    console.log("Updated values:", updatedValues);
+    // console.log("Updated values:", updatedValues);
     fetchEditUser(updatedValues);
   } else {
     console.log("User not found");

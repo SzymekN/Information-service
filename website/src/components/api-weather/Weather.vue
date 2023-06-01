@@ -26,7 +26,7 @@
           const weatherValues=getWithExpiry("weather");
           if(weatherValues==null){
             await fetchWeather();
-            console.log("weather")
+            // console.log("weather")
           }
           else{
             weather.value=weatherValues;

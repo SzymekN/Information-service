@@ -3,9 +3,11 @@ import TopNews from "./TopNews.vue";
 import MiniArticle from "./MiniArticle.vue";
 import { ref, onMounted, onUnmounted } from 'vue';
 import { getArticleById } from '@/scripts/Scripts.ts'
+import { useRoute } from 'vue-router'
 const articles = ref([]);
 const page = ref(0);
 const isLoading = ref(false);
+const route = useRoute();
 // const category = ref('')
 var size = 9;
 var fetchUrl = '/client/articles/pages?';
@@ -20,7 +22,7 @@ const fetchArticles = async () => {
       //read from session storage instead of making request
       if (sessionStorage.getItem(props.category) && articles.value.length < JSON.parse(sessionStorage.getItem(props.category)).length) {
         const data = JSON.parse(sessionStorage.getItem(props.category))
-        console.log(data.length)
+        // console.log(data.length)
         if (articles.value.length + size < data.length){
           articles.value = [...articles.value, ...data.slice(page.value * size, (page.value + 1) * size)];
           page.value++;
@@ -57,6 +59,7 @@ const fetchArticles = async () => {
       }
     });
     
+    if(route.path==='/home')
       localStorage.setItem('articles', JSON.stringify(articlesWithImage));
       
     } catch (error) {

@@ -1,9 +1,20 @@
 <template>
     <div class="user-modal">
       <div class="modal-content">
-        <div class="heading">
-          <h2>Usuwanie użytkownika</h2>        </div>
-        <p>Czy na pewno chcesz usunąć użytkownika <b>{{ user }}</b>?</p>
+        <div v-if="isAdmin">
+          <div class="heading">
+            <h2>Usuwanie użytkownika</h2>  
+          </div>
+          <p>Czy na pewno chcesz usunąć użytkownika <b>{{ user }}</b>?</p>      
+        </div>
+        <div v-else>
+          <div class="heading">
+            <h2>Usuwanie konta</h2>   
+          </div>
+        <p>Czy na pewno chcesz usunąć swoje konto?</p>
+
+        </div>
+
         <div class="buttons">
             <button @click="$emit('close')" class="cancel-button" >Anuluj</button>
             <button @click="$emit('submit')" class="confirm-button">Usuń</button>         
@@ -18,6 +29,10 @@ export default {
     user: {
       type: String,
       required: true
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false
     }
   }
 };

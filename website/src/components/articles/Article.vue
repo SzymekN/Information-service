@@ -21,8 +21,8 @@ onMounted(() => {
   let category = route.query["category"];
   let index = route.query["id"];
   const sessionData = Object.values(JSON.parse(sessionStorage.getItem(category) || '[]'));
-  console.log(index)
-  console.log(sessionData)
+  // console.log(index)
+  // console.log(sessionData)
   article =getArticleById(sessionData,index);
   
   if (article.length > 0) {

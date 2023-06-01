@@ -18,7 +18,7 @@
             <label v-if="userInfo.supplier==='APP'" for="password">Hasło:</label>
             <input v-if="userInfo.supplier==='APP'" type="password" v-model="userInfo.password" id="passwordToChange" placeholder="••••••••">
           </div>
-          <div class="form-group">
+          <div v-if="userInfo.authorityName==='ADMIN'" class="form-group">
             <label for="authorityName">Rola:</label>
             <select v-model="userInfo.authorityName" id="authorityName">
                 <option v-for="(roleName, roleKey) in authorityNameMap" :value="roleName" :key="roleKey">
@@ -34,6 +34,7 @@
   
   <script setup>
   import { reactive  } from 'vue';
+
   const props = defineProps(['user']);
   const userInfo = reactive({
     username: props.user.username || '',
@@ -42,7 +43,8 @@
     password: '',
     // email: props.user.email || '',
     authorityName: props.user.authorityName || '',
-    supplier: props.user.supplier || ''
+    supplier: props.user.supplier || '',
+    isAdmin: props.user.isAdmin || false
   });
   
   const authorityNameMap = {

@@ -142,7 +142,7 @@ async function fetchCurrencies(): Promise<Ref<ExchangeTable[]>> {
     const response = await fetch(nbpUrl);
     const exchangeTableArray = await response.json();
     exchangeTable.value = exchangeTableArray;
-    console.log(exchangeTable.value)
+    // console.log(exchangeTable.value)
     return exchangeTable;
   } catch (error) {
     console.error(error);
