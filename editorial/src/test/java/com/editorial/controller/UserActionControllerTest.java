@@ -137,6 +137,7 @@ public class UserActionControllerTest {
         loggedUser.setId(1L);
         loggedUser.setAuthority(new Authority("ADMIN"));
         User userToEdit = new User();
+        userToEdit.setUsername("testt");
         userEditDto.setName("name");
         userEditDto.setSurname("name");
         userEditDto.setUsername("test");
@@ -144,6 +145,8 @@ public class UserActionControllerTest {
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
         when(userRepository.findUserById(userId)).thenReturn(userToEdit);
+        when(userActionService.findUserById(userId)).thenReturn(userToEdit);
+        when(userRepository.findUserByName(anyString())).thenReturn(User.builder().username(null).build());
         when(userActionService.updateUserEditorialToClient(any(Long.class), any(Long.class), any(UserEditDto.class),
                 any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         // then

@@ -77,6 +77,9 @@ public class UserActionController {
 
         if (loggedUser.getAuthority().getAuthorityName().equals("ADMIN") || loggedUser.getId().equals(userId)) {
             User userToEdit = userActionService.findUserById(userId);
+            if (!userToEdit.getUsername().equals(userEditDto.getUsername())
+                    && userActionService.findUserByUsername(userEditDto.getUsername()) != null)
+                return ResponseEntity.badRequest().body("Username already exists in db!");
             userActionService.updateUser(userToEdit, userEditDto, loggedUser.getId());
             ResponseEntity<String> editorialResponse = userActionService.updateUserClientToEditorial(userId, loggedUser.getId(), userEditDto, request);
             if (!editorialResponse.getStatusCode().is2xxSuccessful())

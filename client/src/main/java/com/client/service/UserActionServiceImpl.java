@@ -43,6 +43,7 @@ public class UserActionServiceImpl implements UserActionService {
         return Optional.ofNullable(userRepository.findUserByName(authentication.getName()));
     }
 
+
     @Override
     public ResponseEntity<String> deleteUserClientToEditorial(Long userId, HttpServletRequest request) {
         RestTemplate restTemplate = new RestTemplate();
@@ -80,6 +81,11 @@ public class UserActionServiceImpl implements UserActionService {
     @Override
     public User findUserById(Long userId) {
         return userRepository.findUserById(userId);
+    }
+
+    @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findUserByName(username);
     }
 
     private void editUserByDto(User userToEdit, UserEditDto userEditDto, Long loggedUserId) {

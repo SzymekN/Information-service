@@ -14,4 +14,5 @@ public interface UserActionService {
     ResponseEntity<String> updateUserEditorialToClient(Long userId, Long loggedUserId, UserEditDto userEditDto, HttpServletRequest servletRequest);
     void deleteUserById(Long id);
     User findUserById(Long id);
+    User findUserByUsername(String username);
 }
