@@ -1,8 +1,7 @@
 package com.editorial.service;
 
-import com.editorial.model.dto.UserEditDto;
 import com.editorial.model.dto.UserDto;
-import com.editorial.model.dto.UserRegistrationDto;
+import com.editorial.model.dto.UserEditDto;
 import com.editorial.model.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +21,5 @@ public interface UserActionService {
     ResponseEntity<List<UserDto>> findAllUsersByRolePaged(Pageable pageable, String role);
     ResponseEntity<List<UserDto>> findAllUsersByAttributeNamePaged(Pageable pageable, String attributeName, String attributeValue);
     ResponseEntity<List<UserDto>> findAllUsersByAttributeNameAndRolePaged(Pageable pageable, String role, String attributeName, String attributeValue);
+    User findUserByUsername(String username);
 }

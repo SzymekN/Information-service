@@ -1,8 +1,7 @@
 package com.client.controller;
 
-import com.client.model.dto.UserEditDto;
 import com.client.model.dto.UserDto;
-import com.client.model.dto.UserRegistrationDto;
+import com.client.model.dto.UserEditDto;
 import com.client.model.entity.Authority;
 import com.client.model.entity.User;
 import com.client.repository.UserRepository;
@@ -141,6 +140,7 @@ public class UserActionControllerTest {
         loggedUser.setId(1L);
         loggedUser.setAuthority(new Authority("ADMIN"));
         User userToEdit = new User();
+        userToEdit.setUsername("testt");
         userEditDto.setName("name");
         userEditDto.setSurname("name");
         userEditDto.setUsername("test");
@@ -148,6 +148,8 @@ public class UserActionControllerTest {
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
         when(userRepository.findUserById(userId)).thenReturn(userToEdit);
+        when(userActionService.findUserById(userId)).thenReturn(userToEdit);
+        when(userRepository.findUserByName(anyString())).thenReturn(User.builder().username(null).build());
         when(userActionService.updateUserClientToEditorial(any(Long.class), any(Long.class), any(UserEditDto.class),
                 any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         // then

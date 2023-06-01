@@ -167,6 +167,11 @@ public class UserActionServiceImpl implements UserActionService {
         return userRepository.findUserById(userId);
     }
 
+    @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findUserByName(username);
+    }
+
     private void editUserByDto(User userToEdit, UserEditDto userEditDto, Long loggedUserId) {
         userToEdit.setUsername(userEditDto.getUsername());
         userToEdit.getUserDetails().setName(userEditDto.getName());
