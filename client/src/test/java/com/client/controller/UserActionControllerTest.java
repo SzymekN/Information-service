@@ -80,7 +80,7 @@ public class UserActionControllerTest {
         when(userActionService.getUserInfo(any(User.class))).thenReturn(expectedUserDto);
 
         // when
-        mockMvc.perform(get("/client/actions/get/user/info").with(csrf()))
+        mockMvc.perform(get("/client/actions/user/info").with(csrf()))
         // then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(expectedUserDto.getId()))
@@ -101,7 +101,7 @@ public class UserActionControllerTest {
         when(userActionService.getLoggedUser()).thenReturn(Optional.empty());
 
         // when
-        mockMvc.perform(get("/client/actions/get/user/info").with(csrf()))
+        mockMvc.perform(get("/client/actions/user/info").with(csrf()))
         // then
                 .andExpect(status().isUnauthorized());
 

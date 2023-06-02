@@ -224,7 +224,7 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
 
 ### Users:
 <ol>
-    <li><b>GET /client/actions/get/user/info (/editorial/actions/get/user/info)</b></li>
+    <li><b>GET /client/actions/user/info (/editorial/actions/user/info)</b></li>
     This endpoint retrieves the user information for the logged-in user. It checks if the user is authenticated and authorized to access their own information.
     <br><br>
     <b>Query Parameters:</b>

@@ -53,7 +53,7 @@ public class UserActionController {
             return userActionService.findAllUsersPaged(pageable);
     }
 
-    @GetMapping("/get/user/info")
+    @GetMapping("/user/info")
     public ResponseEntity<UserDto> getUserInfo(){
         Optional<User> userChecker = userActionService.getLoggedUser();
         if (userChecker.isEmpty())
