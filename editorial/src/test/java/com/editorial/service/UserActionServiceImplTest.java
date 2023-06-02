@@ -87,6 +87,53 @@ class UserActionServiceImplTest {
     }
 
     @Test
+    void get_user_info_should_return_user_info() {
+        // given
+        UserDto expectedUserDto = UserDto.builder()
+                .id(user2.getId())
+                .username(user2.getUsername())
+                .name(user2.getUserDetails().getName())
+                .surname(user2.getUserDetails().getSurname())
+                .email(user2.getUserDetails().getEmail())
+                .supplier(user2.getUserDetails().getSupplier())
+                .build();
+        // when
+        UserDto actualUserDto = userActionService.getUserInfo(user2);
+
+        // then
+        assertEquals(expectedUserDto.getId(), actualUserDto.getId());
+        assertEquals(expectedUserDto.getUsername(), actualUserDto.getUsername());
+        assertEquals(expectedUserDto.getName(), actualUserDto.getName());
+        assertEquals(expectedUserDto.getSurname(), actualUserDto.getSurname());
+        assertEquals(expectedUserDto.getEmail(), actualUserDto.getEmail());
+        assertEquals(expectedUserDto.getSupplier(), actualUserDto.getSupplier());
+    }
+
+    @Test
+    void user_to_dto_should_convert_user_to_user_dto() {
+        // given
+        UserDto expectedUserDto = UserDto.builder()
+                .id(user2.getId())
+                .username(user2.getUsername())
+                .name(user2.getUserDetails().getName())
+                .surname(user2.getUserDetails().getSurname())
+                .email(user2.getUserDetails().getEmail())
+                .supplier(user2.getUserDetails().getSupplier())
+                .build();
+
+        // when
+        UserDto actualUserDto = userActionService.userToDto(user2);
+
+        // then
+        assertEquals(expectedUserDto.getId(), actualUserDto.getId());
+        assertEquals(expectedUserDto.getUsername(), actualUserDto.getUsername());
+        assertEquals(expectedUserDto.getName(), actualUserDto.getName());
+        assertEquals(expectedUserDto.getSurname(), actualUserDto.getSurname());
+        assertEquals(expectedUserDto.getEmail(), actualUserDto.getEmail());
+        assertEquals(expectedUserDto.getSupplier(), actualUserDto.getSupplier());
+    }
+
+    @Test
     void get_logged_user_should_return_logged_user() {
         // given
         Authentication authentication = mock(Authentication.class);
