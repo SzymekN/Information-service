@@ -4,6 +4,7 @@ import com.client.model.dto.UserDto;
 import com.client.model.dto.UserEditDto;
 import com.client.model.entity.Authority;
 import com.client.model.entity.User;
+import com.client.model.entity.UserDetails;
 import com.client.repository.UserRepository;
 import com.client.security.SecurityConfig;
 import com.client.service.BasicServiceImpl;
@@ -34,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserActionController.class)
@@ -50,6 +52,61 @@ public class UserActionControllerTest {
     private UserRepository userRepository;
     @MockBean
     private BasicServiceImpl basicService;
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void get_user_info_should_return_user_info_when_user_is_logged_in() throws Exception {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("testuser");
+        UserDetails userDetails = new UserDetails();
+        userDetails.setName("John");
+        userDetails.setSurname("Doe");
+        userDetails.setEmail("john.doe@example.com");
+        userDetails.setSupplier("APP");
+        user.setUserDetails(userDetails);
+
+        UserDto expectedUserDto = UserDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .name(user.getUserDetails().getName())
+                .surname(user.getUserDetails().getSurname())
+                .email(user.getUserDetails().getEmail())
+                .supplier(user.getUserDetails().getSupplier())
+                .build();
+
+        when(userActionService.getLoggedUser()).thenReturn(Optional.of(user));
+        when(userActionService.getUserInfo(any(User.class))).thenReturn(expectedUserDto);
+
+        // when
+        mockMvc.perform(get("/client/actions/user/info").with(csrf()))
+        // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(expectedUserDto.getId()))
+                .andExpect(jsonPath("$.username").value(expectedUserDto.getUsername()))
+                .andExpect(jsonPath("$.name").value(expectedUserDto.getName()))
+                .andExpect(jsonPath("$.surname").value(expectedUserDto.getSurname()))
+                .andExpect(jsonPath("$.email").value(expectedUserDto.getEmail()))
+                .andExpect(jsonPath("$.supplier").value(expectedUserDto.getSupplier()));
+
+        verify(userActionService, times(1)).getLoggedUser();
+        verify(userActionService, times(1)).getUserInfo(any(User.class));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void get_user_info_should_return_unauthorized_when_user_is_not_logged_in() throws Exception {
+        // given
+        when(userActionService.getLoggedUser()).thenReturn(Optional.empty());
+
+        // when
+        mockMvc.perform(get("/client/actions/user/info").with(csrf()))
+        // then
+                .andExpect(status().isUnauthorized());
+
+        verify(userActionService, times(1)).getLoggedUser();
+    }
 
     @Test
     @WithMockUser(roles = "ADMIN")

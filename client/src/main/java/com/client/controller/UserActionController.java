@@ -53,6 +53,15 @@ public class UserActionController {
             return userActionService.findAllUsersPaged(pageable);
     }
 
+    @GetMapping("/user/info")
+    public ResponseEntity<UserDto> getUserInfo(){
+        Optional<User> userChecker = userActionService.getLoggedUser();
+        if (userChecker.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        UserDto userDto = userActionService.getUserInfo(userChecker.get());
+        return ResponseEntity.status(HttpStatus.OK).body(userDto);
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteUser(@RequestParam(name = "id") Long userId, HttpServletRequest request) {
         Optional<User> userChecker = userActionService.getLoggedUser();

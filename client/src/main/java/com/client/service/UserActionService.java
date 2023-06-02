@@ -22,4 +22,5 @@ public interface UserActionService {
     ResponseEntity<List<UserDto>> findAllUsersByAttributeNamePaged(Pageable pageable, String attributeName, String attributeValue);
     ResponseEntity<List<UserDto>> findAllUsersByAttributeNameAndRolePaged(Pageable pageable, String role, String attributeName, String attributeValue);
     User findUserByUsername(String username);
+    UserDto getUserInfo(User user);
 }
