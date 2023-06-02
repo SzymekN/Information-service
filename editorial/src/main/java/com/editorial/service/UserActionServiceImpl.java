@@ -170,6 +170,10 @@ public class UserActionServiceImpl implements UserActionService {
         return userRepository.findUserByName(username);
     }
 
+    public UserDto getUserInfo(User user) {
+        return userToDto(user);
+    }
+
     private void editUserByDto(User userToEdit, UserEditDto userEditDto, Long loggedUserId) {
         userToEdit.setUsername(userEditDto.getUsername());
         userToEdit.getUserDetails().setName(userEditDto.getName());
@@ -194,5 +198,16 @@ public class UserActionServiceImpl implements UserActionService {
                         .authorityName(user.getAuthority().getAuthorityName())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public UserDto userToDto(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .name(user.getUserDetails().getName())
+                .surname(user.getUserDetails().getSurname())
+                .email(user.getUserDetails().getEmail())
+                .supplier(user.getUserDetails().getSupplier())
+                .build();
     }
 }
