@@ -60,7 +60,7 @@ import {useRouter} from 'vue-router'
       toast.error(text)
     }
     else{
-       const responseJson = await response.json();
+      //  const responseJson = await response.json();
         var user=await getUser();
       sessionStorage.setItem("user", JSON.stringify(user));
       sessionStorage.setItem("loginMonitShown", "false");
