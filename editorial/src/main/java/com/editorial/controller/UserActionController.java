@@ -51,6 +51,15 @@ public class UserActionController {
             return userActionService.findAllUsersPaged(pageable);
     }
 
+    @GetMapping("/user/info")
+    public ResponseEntity<UserDto> getUserInfo(){
+        Optional<User> userChecker = userActionService.getLoggedUser();
+        if (userChecker.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        UserDto userDto = userActionService.getUserInfo(userChecker.get());
+        return ResponseEntity.status(HttpStatus.OK).body(userDto);
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteUser(@RequestParam(name = "id") Long userId, HttpServletRequest request) {
         Optional<User> userChecker = userActionService.getLoggedUser();
@@ -101,6 +110,9 @@ public class UserActionController {
 
         if (loggedUser.getAuthority().getAuthorityName().equals("ADMIN") || loggedUser.getId().equals(userId)) {
             User userToEdit = userActionService.findUserById(userId);
+            if (!userToEdit.getUsername().equals(userEditDto.getUsername())
+                    && userActionService.findUserByUsername(userEditDto.getUsername()) != null)
+                return ResponseEntity.badRequest().body("Username already exists in db!");
             userActionService.updateUser(userToEdit, userEditDto, loggedUser.getId());
             ResponseEntity<String> clientResponse = userActionService.updateUserEditorialToClient(userId, loggedUser.getId(), userEditDto, request);
             if (!clientResponse.getStatusCode().is2xxSuccessful())

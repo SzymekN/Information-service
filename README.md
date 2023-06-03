@@ -224,6 +224,15 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
 
 ### Users:
 <ol>
+    <li><b>GET /client/actions/user/info (/editorial/actions/user/info)</b></li>
+    This endpoint retrieves the user information for the logged-in user. It checks if the user is authenticated and authorized to access their own information.
+    <br><br>
+    <b>Query Parameters:</b>
+    <br>
+    <b>Response:</b>
+    <br>
+    If the user is not authenticated, a 401 Unauthorized status code is returned. In contrast, if the request is successful and the user information is retrieved, a 200 OK status code is returned along with the UserDto object representing the user's information.
+    <br><br>
     <li><b>GET /client/actions/get/users (/editorial/actions/get/users)</b></li>
     This endpoint retrieves a list of users from the database based on optional query parameters. Only users with ADMIN privileges can get a list of users.
     <br><br>

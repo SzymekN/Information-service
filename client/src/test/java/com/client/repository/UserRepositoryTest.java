@@ -148,7 +148,7 @@ public class UserRepositoryTest {
         Slice<User> userSlice = userRepository.findAllByNamePaged(pageable, name);
 
         assertNotNull(userSlice);
-        assertEquals(5, userSlice.getContent().size());
+        assertEquals(4, userSlice.getContent().size());
     }
 
     @Test
@@ -158,7 +158,7 @@ public class UserRepositoryTest {
         Slice<User> userSlice = userRepository.findAllBySurnamePaged(pageable, surname);
 
         assertNotNull(userSlice);
-        assertEquals(5, userSlice.getContent().size());
+        assertEquals(4, userSlice.getContent().size());
     }
 
     @Test
@@ -168,7 +168,7 @@ public class UserRepositoryTest {
         Slice<User> userSlice = userRepository.findAllByEmail(pageable, email);
 
         assertNotNull(userSlice);
-        assertEquals(3, userSlice.getContent().size());
+        assertEquals(2, userSlice.getContent().size());
     }
 
     @Test
@@ -190,7 +190,7 @@ public class UserRepositoryTest {
         Slice<User> userSlice = userRepository.findAllByNameAndRolePaged(pageable, name, role);
 
         assertNotNull(userSlice);
-        assertEquals(2, userSlice.getContent().size());
+        assertEquals(1, userSlice.getContent().size());
     }
 
     @Test
@@ -201,7 +201,7 @@ public class UserRepositoryTest {
         Slice<User> userSlice = userRepository.findAllBySurnameAndRolePaged(pageable, surname, role);
 
         assertNotNull(userSlice);
-        assertEquals(2, userSlice.getContent().size());
+        assertEquals(1, userSlice.getContent().size());
     }
 
     @Test
@@ -212,7 +212,7 @@ public class UserRepositoryTest {
         Slice<User> userSlice = userRepository.findAllByEmailAndRole(pageable, email, role);
 
         assertNotNull(userSlice);
-        assertEquals(2, userSlice.getContent().size());
+        assertEquals(1, userSlice.getContent().size());
     }
 
     @Test
@@ -247,7 +247,7 @@ public class UserRepositoryTest {
         Long count = userRepository.countAllByName(name);
 
         assertNotNull(count);
-        assertEquals(5, count);
+        assertEquals(4, count);
     }
 
     @Test
@@ -256,7 +256,7 @@ public class UserRepositoryTest {
         Long count = userRepository.countAllBySurname(surname);
 
         assertNotNull(count);
-        assertEquals(5, count);
+        assertEquals(4, count);
     }
 
     @Test
@@ -265,7 +265,7 @@ public class UserRepositoryTest {
         Long count = userRepository.countAllByEmail(email);
 
         assertNotNull(count);
-        assertEquals(3, count);
+        assertEquals(2, count);
     }
 
     @Test
@@ -285,7 +285,7 @@ public class UserRepositoryTest {
         Long count = userRepository.countAllByNameAndRole(name, role);
 
         assertNotNull(count);
-        assertEquals(2, count);
+        assertEquals(1, count);
     }
 
     @Test
@@ -295,7 +295,7 @@ public class UserRepositoryTest {
         Long count = userRepository.countAllBySurnameAndRole(surname, role);
 
         assertNotNull(count);
-        assertEquals(2, count);
+        assertEquals(1, count);
     }
 
     @Test
@@ -305,6 +305,6 @@ public class UserRepositoryTest {
         Long count = userRepository.countAllByEmailAndRole(email, role);
 
         assertNotNull(count);
-        assertEquals(2, count);
+        assertEquals(1, count);
     }
 }
