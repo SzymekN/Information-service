@@ -41,6 +41,7 @@
     import { ref } from 'vue';
     import UserDelete from '@/components/modals/UserDelete.vue';
     import UserEdit from '@/components/modals/UserEdit.vue';
+    import { logout } from '@/scripts/Scripts.ts';
     const editModalOpen = ref(false);
     const deleteModalOpen = ref(false);
     const user = ref(JSON.parse(sessionStorage.getItem('user')));
@@ -134,9 +135,7 @@
       } else {
         alert("Pomyślnie usunięto konto")
         deleteModalOpen.value = false;
-        jsCookie.remove('role');
-        jsCookie.remove('ROLE');
-        window.location.href = '/home'; 
+        logout();
       }
     })
     .catch((error) => {

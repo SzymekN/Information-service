@@ -3,18 +3,13 @@ import TheTitle from "@/components/main-layout/TheTitle.vue";
 import UserPanelNav from "@/components/user-layout/UserPanelNav.vue";
 import jsCookie from "js-cookie";
 import { Toaster } from "vue-sonner";
-
+import { logout } from '@/scripts/Scripts.ts';
 const hasRole = () => {
   if (jsCookie.get("ROLE"))
     return  (atob(jsCookie.get("ROLE")));
   else return false;
 };
-const logout=()=>{
-  jsCookie.remove('role');
-  jsCookie.remove('ROLE');
-  sessionStorage.removeItem('user');
-  window.location.href = '/home';      
-}
+
 </script>
 
 <template>

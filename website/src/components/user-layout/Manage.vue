@@ -18,7 +18,7 @@
       </div>
       <div class="select-wrapper role-wrapper">
         <select v-model="selectedRole" @change="handleRoleChange">
-          <option id="role-sefetchUserslect" v-for="(roleName, roleKey) in authorityNameMap" :value="roleKey" :key="roleKey">
+          <option  v-for="(roleName, roleKey) in authorityNameMap" :value="roleKey" :key="roleKey">
             {{ roleName }}
           </option>
         </select>
@@ -128,15 +128,17 @@ const fetchUsers = async () =>{
     else {
        const responseJson = await response.json();
       for (let i = 0; i < responseJson.length; i++) {
-         data.push({
-          id: responseJson[i]["id"],
-          username: responseJson[i]["username"],
-          name: responseJson[i]["name"],
-          surname: responseJson[i]["surname"],
-          email: responseJson[i]["email"],
-          authorityName: responseJson[i]["authorityName"],
-          supplier: responseJson[i]["supplier"],
-         });
+        if(responseJson[i]["id"]!==JSON.parse(sessionStorage.getItem('user')).id){
+          data.push({
+            id: responseJson[i]["id"],
+            username: responseJson[i]["username"],
+            name: responseJson[i]["name"],
+            surname: responseJson[i]["surname"],
+            email: responseJson[i]["email"],
+            authorityName: responseJson[i]["authorityName"],
+            supplier: responseJson[i]["supplier"],
+          });
+        }
        }
     }
   } catch (error) {
@@ -383,7 +385,7 @@ const cleanModal = (modal) => {
   const surnameInput = document.getElementById('surname');
   var passwordInput;
   const authorityNameSelect = document.getElementById('authorityName');
-console.log(modal)
+// console.log(modal)
   if(modal==="addModalOpen"){
     passwordInput = document.getElementById('password');
     const emailInput = document.getElementById('email');
@@ -396,7 +398,8 @@ console.log(modal)
      usernameInput.value = '';
     nameInput.value = '';
     surnameInput.value = '';
-    passwordInput.value = '';
+    if(passwordInput!=null)
+      passwordInput.value = '';
     // Reset select field to the default option
     authorityNameSelect.value = 'DEFAULT';
 };

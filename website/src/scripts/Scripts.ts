@@ -86,7 +86,7 @@ export interface LeagueScores{
 import { ref, Ref} from "vue";
 
 import { weatherApiKey } from '../../Keys'
-
+import jsCookie from 'js-cookie';
 
 const weatherUrl = 'https://api.openweathermap.org/data/2.5/onecall?exclude=minutely,hourly';
 const weather = ref<WeatherModel>();
@@ -221,6 +221,32 @@ export async function  fetchLeagueTable(leagueId,data)  {
     else
         clubs.value = leagueValues;
     localStorage.setItem("league",leagueId);
+}
+
+export const logout = () => {
+
+  fetch('/editorial/logout', {
+  method: 'GET',
+  credentials: 'same-origin',
+})
+.then(response => {
+  // Handle the response from the server
+  if (response.ok) {
+    jsCookie.remove('role');
+    jsCookie.remove('ROLE');
+    window.location.href = '/home';
+    // Logout successful, do something
+    console.log('Logged out successfully');
+  } else {
+    // Logout failed, do something
+    console.error('Logout failed');
+  }
+})
+.catch(error => {
+  // Handle errors that may occur during the request
+  console.error('Logout failed', error);
+});
+
 }
 
 export function getArticleById(data,id) {

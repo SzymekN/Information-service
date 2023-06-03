@@ -8,6 +8,7 @@ const hasRole = (role) => {
   else return false;
 };
 
+
 </script>
 
 <template>

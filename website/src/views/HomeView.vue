@@ -2,33 +2,9 @@
 import TheNavBar from "@/components/main-layout/TheNavBar.vue";
 import TheTitle from "@/components/main-layout/TheTitle.vue";
 import Footer from "@/components/main-layout/Footer.vue";
-import list from "../data/login.json"
+import list from "../data/login.json";
+import { logout } from '@/scripts/Scripts.ts';
 import jsCookie from "js-cookie";
-
-  const logout = () => {
-    //   fetch('/logout', {
-    //   method: 'GET',
-    //   credentials: 'same-origin',
-    // })
-    // .then(response => {
-    //   // Handle the response from the server
-    //   if (response.ok) {
-    //     // Logout successful, do something
-    //     console.log('Logged out successfully');
-    //   } else {
-    //     // Logout failed, do something
-    //     console.error('Logout failed');
-    //   }
-    // })
-    // .catch(error => {
-    //   // Handle errors that may occur during the request
-    //   console.error('Logout failed', error);
-    // });
-    jsCookie.remove('role');
-    jsCookie.remove('ROLE');
-    window.location.href = '/home';
-
-  }
 
 </script>
 

@@ -13,7 +13,10 @@ import {useRouter} from 'vue-router'
             headers: {
               'Content-Type': 'application/json',
             },
-          });
+          }).catch(error=>{if(error.reponse.status===401){
+            toast.error("Nie potwierdzono linka w mailu.")
+          }
+        });
           if (!response.ok) {
             const text = await response.text();
             console.log(text)
@@ -23,6 +26,7 @@ import {useRouter} from 'vue-router'
             return responseJson;
           }
         }
+        
         catch(error){
           console.log(error);
         }

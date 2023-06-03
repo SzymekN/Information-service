@@ -20,7 +20,7 @@
             <label v-if="userInfo.supplier==='APP'" for="password">Hasło:</label>
             <input v-if="userInfo.supplier==='APP'" type="password" v-model="userInfo.password" id="passwordToChange" placeholder="••••••••">
           </div>
-          <div v-if="userInfo.authorityName==='ADMIN'" class="form-group">
+          <div v-if="userInfo.isAdmin&&route.path==='/userpanel/manage'&&userInfo.supplier==='APP'" class="form-group">
             <label for="authorityName">Rola:</label>
             <select v-model="userInfo.authorityName" id="authorityName">
                 <option v-for="(roleName, roleKey) in authorityNameMap" :value="roleName" :key="roleKey">
@@ -37,6 +37,7 @@
   <script setup>
   import { reactive  } from 'vue';
   import { useRoute } from 'vue-router';
+  import jsCookie from 'js-cookie';
   const route=useRoute();
   
   const props = defineProps(['user']);
@@ -52,6 +53,9 @@
     isAdmin: props.user.isAdmin || false
   });
   
+  // console.log(route.path+" "+jsCookie.get("ROLE").substring(5))
+  if(atob(jsCookie.get("ROLE")).substring(5)==="ADMIN")
+      userInfo.isAdmin=true;
   const authorityNameMap = {
     ADMIN: 'Administrator',
     JOURNALIST: 'Dziennikarz',
