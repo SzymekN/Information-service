@@ -26,5 +26,11 @@
         "link":"/userpanel/edit",
         "text":"Edytor artykułów",
         "authorities":["ROLE_JOURNALIST"]
+    },
+    {
+        "link":"/userpanel/manage",
+        "text":"Zarządzanie użytkownikami",
+        "authorities":["ROLE_ADMIN"]
     }
+
 ]

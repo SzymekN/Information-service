@@ -7,6 +7,34 @@ import LoginGoogle from "@/components/buttons/LoginGoogle.vue";
 
   const router = useRouter()
 
+
+  const getUser= async ()=>{
+        try{
+          const response = await fetch('/editorial/actions/user/info', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }).catch(error=>{if(error.reponse.status===401){
+            toast.error("Nie potwierdzono linka w mailu.")
+          }
+        });
+          if (!response.ok) {
+            const text = await response.text();
+            console.log(text)
+          }
+          else {
+            const responseJson = await response.json();
+            return responseJson;
+          }
+        }
+        
+        catch(error){
+          console.log(error);
+        }
+    };
+  //TODO: change it to request to backend instead of fake
+
   const login = async () =>{
     
     const username = document.querySelector('input[name="username"]').value;
@@ -35,6 +63,9 @@ import LoginGoogle from "@/components/buttons/LoginGoogle.vue";
       toast.error(text)
     }
     else{
+      //  const responseJson = await response.json();
+        var user=await getUser();
+      sessionStorage.setItem("user", JSON.stringify(user));
       sessionStorage.setItem("loginMonitShown", "false");
       router.push('/')
     }

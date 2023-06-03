@@ -1,17 +1,21 @@
 <template>
-  <router-link :to="`article?id=${articleUrl}&category=${category}`">
+  <router-link :to="`article?id=${articleUrl}&category=${articleCategory  }`">
     <div :class="pageClass" class="top">
       <img :src="imageUrl" height="853" width="1200"/>
-      <!-- <img src="/17-g-ry-dla-seniora-jak-si.jpg" height="853" width="1200"/> -->
       <div class="article_title">
-            <h1>{{articleTitle}}</h1>
-            <div class="article_description"><p>{{articleDescription}}</p></div>
-          </div>
+        <h1>{{ articleTitle }}</h1>
+        <div class="article_description">
+          <p>{{ articleDescription }}</p>
         </div>
+      </div>
+    </div>
   </router-link>
 </template>
 
 <script>
+import { ref, onMounted } from 'vue';
+import {getArticleById} from '@/scripts/Scripts.ts';
+
 export default {
   props: {
     imageUrl: String,
@@ -20,18 +24,25 @@ export default {
     articleUrl: Number,
     category: String,
   },
-  data() {
+  setup(props) {
+    const pageClass = ref('');
+
+    const sessionData = Object.values(JSON.parse(sessionStorage.getItem(props.category) || '[]'));
+    const article = getArticleById(sessionData, props.articleUrl);
+    var articleCategory=article[0].category;
+    onMounted(() => {
+      if (props.category === 'politics') {
+        pageClass.value = 'politics';
+      } else {
+        pageClass.value = 'other';
+      }
+    });
+
     return {
-      pageClass: ""
+      pageClass,
+      articleCategory
     };
   },
-  mounted() {
-    if (this.category === "politics") {
-      this.pageClass = "politics";
-    } else {
-      this.pageClass = "other";
-    }
-  }
 };
 </script>
 
@@ -57,7 +68,8 @@ export default {
   transform: translate(-50%, -78%);
   display: block;
 }
-.top:hover .article_description p{
+
+.top:hover .article_description p {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 10;
@@ -65,16 +77,16 @@ export default {
   overflow: hidden;
   height: 100%;
 }
+
 .top img {
   float: left;
   max-width: 100%;
   height: 100%;
 }
 
-
 .article_title {
   position: absolute;
-  background:  rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   width: 100%;
   height: 45%;
   text-align: center;
@@ -88,30 +100,33 @@ export default {
   transition: height 0.5s ease, transform 0.5s ease;
   margin: 0 auto;
 }
-.article_title h1{
+
+.article_title h1 {
   margin-bottom: 0;
 }
 
-.article_description{
+.article_description {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.article_description p{
+
+.article_description p {
   width: 80%;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   text-overflow: ellipsis;
   overflow: hidden;
-  margin-top:0;
+  margin-top: 0;
 }
+
 a {
   color: white;
   vertical-align: middle;
 }
 
-@media (max-width: 640px){
+@media (max-width: 640px) {
   .top {
     width: 98%;
   }

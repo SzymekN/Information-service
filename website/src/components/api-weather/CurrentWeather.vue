@@ -19,7 +19,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import {setWithExpiry,getWithExpiry} from "@/scripts/HandleItems.ts"
+import {setWithExpiry,getWithExpiry} from '@/scripts/Scripts.ts';
 export default defineComponent({
   props: {
     weather: {

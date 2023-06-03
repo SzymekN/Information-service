@@ -10,8 +10,8 @@
   import { defineComponent } from 'vue';
   import CurrentWeather from './CurrentWeather.vue';
   import Forecast from './Forecast.vue';
-  import { useWeather } from '@/scripts/WeatherService';
-  import { getWithExpiry } from "@/scripts/HandleItems.ts"
+  import { useWeather } from '@/scripts/Scripts.ts';
+  import { getWithExpiry } from "@/scripts/Scripts.ts";
   
   export default defineComponent({
     components: {
@@ -26,7 +26,7 @@
           const weatherValues=getWithExpiry("weather");
           if(weatherValues==null){
             await fetchWeather();
-            console.log("weather")
+            // console.log("weather")
           }
           else{
             weather.value=weatherValues;

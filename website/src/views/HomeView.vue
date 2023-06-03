@@ -4,6 +4,7 @@ import TheTitle from "@/components/main-layout/TheTitle.vue";
 import Footer from "@/components/main-layout/Footer.vue";
 import LoginButton from "@/components/buttons/LoginButton.vue";
 
+
 </script>
 <template>
 <!--MARK: 1. HEADER-->

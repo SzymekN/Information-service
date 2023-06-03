@@ -45,7 +45,7 @@ export default {
       }
     },
   setup(props){
-    console.log('props.duration:', props.duration);
+    // console.log('props.duration:', props.duration);
     const cards = ref(props.cards);
     const prevCards = ref(props.prevCards);
     const scrollContainer1 = ref("scrollContainer1");

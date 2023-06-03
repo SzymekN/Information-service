@@ -10,6 +10,7 @@ const hasRole = () => {
     return  (atob(jsCookie.get("ROLE")));
   else return false;
 };
+
 </script>
 
 <template>

@@ -1,4 +1,9 @@
 <template>
+    <div class="section_content">
+      <p class = "section_title">O TYM SIĘ MÓWI W SPORCIE</p>
+      <hr>
+      <ArticleSection :category="'politics'"/>
+    </div>
     <div class="table-container">
       <select class="select-container" v-model="selectedLeague" @change="fetchLeagueTable(selectedLeague,getClubs())">
         <option :value=PremierLeagueId>Premier League</option>
@@ -32,13 +37,18 @@
           
       </div>
     </div>
+    
   </template>
   
   <script>
 import { ref } from "vue";
 import {fetchLeagueTable,fetchAllLeagues} from "@/scripts/Scripts.ts"
-export default {
+import ArticleSection from "@/components/articles/ArticleSection.vue";
 
+export default {
+  components: {
+    ArticleSection,
+  },
   setup() {
     const PremierLeagueId = 4328;
     const LaLigaId = 4335;
@@ -67,13 +77,16 @@ export default {
       LaLigaId,
       SerieAId,
       Ligue1Id,
-      EkstraklasaId
+      EkstraklasaId,
     };
   }
 };
 </script>
   
   <style scoped>
+  .section_content {
+    max-width:80%;
+  }
   img {
     max-width: 35px;
     filter: drop-shadow(1px 1px 1px #222);
@@ -86,8 +99,7 @@ export default {
     padding: 1%;
     border-radius: 10px;
     float: right;
-    min-width: 20%;
-    box-shadow: 2px 2px 20px -10px;
+    max-width: 20%;
   }
   
   .scores-table {

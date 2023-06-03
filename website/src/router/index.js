@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory,useRoute} from "vue-router"
+import {createRouter, createWebHistory} from "vue-router"
 import HomeView from "@/views/HomeView.vue"
 import UserPanelView from "@/views/UserPanelView.vue"
 import LoginView from "@/views/LoginView.vue"
@@ -16,6 +16,7 @@ import DraftsList from "@/components/user-layout/DraftsList.vue"
 import ArticlesList from "@/components/user-layout/ArticlesList.vue"
 import Editor from "@/components/user-layout/Editor.vue"
 import RegisterView from "@/views/RegisterView.vue";
+import Manage from "@/components/user-layout/Manage.vue";
 import ValidateView from "@/views/ValidateView.vue";
 
 import jsCookie from 'js-cookie';
@@ -54,7 +55,7 @@ const router = createRouter({
                     component: Business
                 },
                 {
-                    path: '/sport/',
+                    path: '/sport',
                     name: 'leagueTop5',
                     component: LeagueTop5,
                     params: false,
@@ -97,9 +98,16 @@ const router = createRouter({
                     component: DraftsList
                 },
                 {
+
+                    path: "/userpanel/manage",
+                    name: 'manageUsers',
+                    component: Manage
+               },
+                {
                     path: "/userpanel/articles",
                     name: 'articlesList',
                     component: ArticlesList
+
                 },
             ],
         },

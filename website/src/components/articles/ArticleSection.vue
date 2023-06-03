@@ -2,10 +2,12 @@
 import TopNews from "./TopNews.vue";
 import MiniArticle from "./MiniArticle.vue";
 import { ref, onMounted, onUnmounted } from 'vue';
-
+import { getArticleById } from '@/scripts/Scripts.ts'
+import { useRoute } from 'vue-router'
 const articles = ref([]);
 const page = ref(0);
 const isLoading = ref(false);
+const route = useRoute();
 // const category = ref('')
 var size = 9;
 var fetchUrl = '/client/articles/pages?';
@@ -20,7 +22,7 @@ const fetchArticles = async () => {
       //read from session storage instead of making request
       if (sessionStorage.getItem(props.category) && articles.value.length < JSON.parse(sessionStorage.getItem(props.category)).length) {
         const data = JSON.parse(sessionStorage.getItem(props.category))
-        console.log(data.length)
+        // console.log(data.length)
         if (articles.value.length + size < data.length){
           articles.value = [...articles.value, ...data.slice(page.value * size, (page.value + 1) * size)];
           page.value++;
@@ -34,8 +36,32 @@ const fetchArticles = async () => {
       page.value++;
       const data = await response.json();
       articles.value = [...articles.value, ...data];
-      sessionStorage.setItem(props.category, JSON.stringify(articles.value))
+      sessionStorage.setItem(props.category, JSON.stringify(articles.value));
+      
       isLoading.value = false;
+
+      const articlesWithImage = data.map((article) => {
+      return {
+        ...article,
+        image: getImage(article.content)
+      };
+    });
+
+   
+    articlesWithImage.forEach((article) => {
+      const category = article.category;
+      const categoryArticles = JSON.parse(sessionStorage.getItem(category)) || [];
+      
+      // If article is already in session storage, don't add it again
+      if(getArticleById(categoryArticles,article.id).length == 0){
+        categoryArticles.push(article);
+        sessionStorage.setItem(category, JSON.stringify(categoryArticles));
+      }
+    });
+    
+    if(route.path==='/home')
+      localStorage.setItem('articles', JSON.stringify(articlesWithImage));
+      
     } catch (error) {
       console.log(error);
     }
@@ -88,7 +114,7 @@ const fetchArticles = async () => {
       v-if="articles.length"
       :articleTitle="articles[0].title"
       :articleDescription="stripTags(articles[0].content)"
-      :articleUrl="0"
+      :articleUrl=articles[0].id
       :imageUrl="getImage(articles[0].content)"
       :category="props.category"/>
     
@@ -98,7 +124,7 @@ const fetchArticles = async () => {
       :key="index"
       :articleTitle="item.title"
       :articleDescription="stripTags(item.content)"
-      :articleUrl="index+1"
+      :articleUrl="item.id"
       :imageUrl="getImage(item.content)"
       :category="props.category"/>
 

@@ -9,7 +9,7 @@
 <script>
 import { ref } from "vue";
 import SlidingArray from "./SlidingArray.vue";
-import { useCurrencies } from '@/scripts/CurrenciesService.ts'
+import { useCurrencies } from '@/scripts/Scripts.ts'
 
 export default {
   components: {
