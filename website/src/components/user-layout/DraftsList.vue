@@ -43,11 +43,7 @@ import TableLite from 'vue3-table-lite'
 import router from "@/router";
 import SearchImage from "@/assets/icons8-search.svg";
 
-
-// TODO: replace with fetched data
-// Fake Data for 'asc' sortable
 const data = reactive([]);
-const newDraftTitle = ref("");
 const articlesMap = ref(new Map());
 const rowCount = ref(0);
 
@@ -89,7 +85,6 @@ const fetchData = async (page = 0, order = "id", sort = "desc", search = "") =>{
           authorName: responseJson[i]["authorName"],
           title: responseJson[i]["title"],
           dateOfUpdate: responseJson[i]["dateOfUpdate"],
-          acceptance: "DRAFT",
           content: responseJson[i]["content"],
         });
         articlesMap.value.set(data[i]["id"], data[i]);
@@ -103,7 +98,6 @@ const fetchData = async (page = 0, order = "id", sort = "desc", search = "") =>{
 }
 
 const searchTerm = ref(""); // Search text
-const newTopicProposal = ref(""); // user input with proposition
 fetchData();
 // Table config
 const table = reactive({
@@ -122,15 +116,6 @@ const table = reactive({
           field: "dateOfUpdate",
           width: "1%",
           sortable: true,
-      },
-      {
-          label: "Stan",
-          field: "acceptance",
-          width: "1%",
-          display: function (row) {
-            let color = "#e8b53f";     
-            return '<span style=color:'+color+'>'+row.acceptance+'</span>'
-          },
       },
   ],
   rows: computed(() => {
@@ -173,7 +158,7 @@ const rowClicked = (row) => {
   console.log(row);
   let id = Number(row.id);
   sessionStorage.setItem("articleToEdit", JSON.stringify(articlesMap.value.get((id))));
-  router.push({name: 'edit', query:{redirected: true} });
+  router.push({name: 'edit', query:{redirected: true, acceptance: "draft"} });
 };
 
 watch(searchTerm, (newValue, oldValue) => {

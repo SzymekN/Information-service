@@ -8,9 +8,6 @@ import jsCookie from "js-cookie";
 
 onMounted (() => {
 
-  if (jsCookie.get("ROLE"))
-    console.log("ROLE: " + atob(jsCookie.get("ROLE")));
-
   // toasting info about login and logout
   if (!sessionStorage.getItem("loginMonitShown"))
     sessionStorage.setItem("loginMonitShown", "false");
@@ -42,12 +39,6 @@ onMounted (() => {
         <ArticleSection/>
     </div>
 
-    <!-- <div class="section_content">
-
-      <p class = "section_title">EDUKACJA</p>
-      <hr>
-        <ArticleSection/>
-    </div> -->
   </div>
 
   <section>

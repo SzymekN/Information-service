@@ -14,12 +14,17 @@
     },
     {
         "link":"/userpanel/articles",
+        "text":"Artykuły do poprawy/zatwierdzenia",
+        "authorities":["ROLE_REDACTOR", "ROLE_CORRECTOR"]
+    },
+    {
+        "link":"/userpanel/drafts",
         "text":"Artykuły w przygotowaniu",
-        "authorities":["ROLE_JOURNALIST", "ROLE_REDACTOR", "ROLE_CORRECTOR"]
+        "authorities":["ROLE_JOURNALIST"]
     },
     {
         "link":"/userpanel/edit",
         "text":"Edytor artykułów",
-        "authorities":["ROLE_JOURNALIST", "ROLE_REDACTOR"]
+        "authorities":["ROLE_JOURNALIST"]
     }
 ]

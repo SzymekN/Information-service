@@ -2,36 +2,9 @@
 import TheNavBar from "@/components/main-layout/TheNavBar.vue";
 import TheTitle from "@/components/main-layout/TheTitle.vue";
 import Footer from "@/components/main-layout/Footer.vue";
-import list from "../data/login.json"
-import jsCookie from "js-cookie";
-
-  const logout = () => {
-    //   fetch('/logout', {
-    //   method: 'GET',
-    //   credentials: 'same-origin',
-    // })
-    // .then(response => {
-    //   // Handle the response from the server
-    //   if (response.ok) {
-    //     // Logout successful, do something
-    //     console.log('Logged out successfully');
-    //   } else {
-    //     // Logout failed, do something
-    //     console.error('Logout failed');
-    //   }
-    // })
-    // .catch(error => {
-    //   // Handle errors that may occur during the request
-    //   console.error('Logout failed', error);
-    // });
-    jsCookie.remove('role');
-    jsCookie.remove('ROLE');
-    window.location.href = '/home';
-
-  }
+import LoginButton from "@/components/buttons/LoginButton.vue";
 
 </script>
-
 <template>
 <!--MARK: 1. HEADER-->
   <header>
@@ -42,10 +15,9 @@ import jsCookie from "js-cookie";
       <TheTitle msg="Serwis informacyjny" />
     </div>
 
-    <div class="buttons" v-for="item in list">
-      <button v-if="!jsCookie.get('ROLE')"><router-link :to="item.link" ><a>{{item.text}}</a></router-link></button>
-      <button v-if="jsCookie.get('ROLE')"><router-link :to="'#'"  @click="logout()"><a>{{"Wyloguj"}}</a></router-link></button>
-    </div>
+    <div class="buttons">
+      <LoginButton></LoginButton>
+   </div>
   </header>
 
 <!--MARK: 2. NAVIGATION BAR-->
@@ -132,19 +104,6 @@ footer {
 
 }
 
-.buttons button {
-  /*background-color: rgba(240, 248, 255);*/
-  border: none;
-  font-size: 0.9rem;
-  /*width: 100%;*/
-  background-color: rgba(149, 206, 255, 0.2);
-  border-radius: 50px;
-}
-
-.buttons button:hover {
-  background-color: #333333;
-
-}
 
 a {
   color: #666666;
