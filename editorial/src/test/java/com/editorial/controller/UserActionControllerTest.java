@@ -1,10 +1,10 @@
 package com.editorial.controller;
 
-import com.editorial.model.dto.UserEditDto;
 import com.editorial.model.dto.UserDto;
-import com.editorial.model.dto.UserRegistrationDto;
+import com.editorial.model.dto.UserEditDto;
 import com.editorial.model.entity.Authority;
 import com.editorial.model.entity.User;
+import com.editorial.model.entity.UserDetails;
 import com.editorial.repository.UserRepository;
 import com.editorial.security.SecurityConfig;
 import com.editorial.service.BasicServiceImpl;
@@ -37,7 +37,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserActionController.class)
@@ -54,6 +54,61 @@ public class UserActionControllerTest {
     private UserRepository userRepository;
     @MockBean
     private BasicServiceImpl basicService;
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void get_user_info_should_return_user_info_when_user_is_logged_in() throws Exception {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("testuser");
+        UserDetails userDetails = new UserDetails();
+        userDetails.setName("John");
+        userDetails.setSurname("Doe");
+        userDetails.setEmail("john.doe@example.com");
+        userDetails.setSupplier("APP");
+        user.setUserDetails(userDetails);
+
+        UserDto expectedUserDto = UserDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .name(user.getUserDetails().getName())
+                .surname(user.getUserDetails().getSurname())
+                .email(user.getUserDetails().getEmail())
+                .supplier(user.getUserDetails().getSupplier())
+                .build();
+
+        when(userActionService.getLoggedUser()).thenReturn(Optional.of(user));
+        when(userActionService.getUserInfo(any(User.class))).thenReturn(expectedUserDto);
+
+        // when
+        mockMvc.perform(get("/editorial/actions/user/info").with(csrf()))
+                // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(expectedUserDto.getId()))
+                .andExpect(jsonPath("$.username").value(expectedUserDto.getUsername()))
+                .andExpect(jsonPath("$.name").value(expectedUserDto.getName()))
+                .andExpect(jsonPath("$.surname").value(expectedUserDto.getSurname()))
+                .andExpect(jsonPath("$.email").value(expectedUserDto.getEmail()))
+                .andExpect(jsonPath("$.supplier").value(expectedUserDto.getSupplier()));
+
+        verify(userActionService, times(1)).getLoggedUser();
+        verify(userActionService, times(1)).getUserInfo(any(User.class));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void get_user_info_should_return_unauthorized_when_user_is_not_logged_in() throws Exception {
+        // given
+        when(userActionService.getLoggedUser()).thenReturn(Optional.empty());
+
+        // when
+        mockMvc.perform(get("/editorial/actions/user/info").with(csrf()))
+                // then
+                .andExpect(status().isUnauthorized());
+
+        verify(userActionService, times(1)).getLoggedUser();
+    }
 
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -144,6 +199,7 @@ public class UserActionControllerTest {
         loggedUser.setId(1L);
         loggedUser.setAuthority(new Authority("ADMIN"));
         User userToEdit = new User();
+        userToEdit.setUsername("testt");
         userEditDto.setName("name");
         userEditDto.setSurname("name");
         userEditDto.setUsername("test");
@@ -151,6 +207,8 @@ public class UserActionControllerTest {
         // when
         when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
         when(userRepository.findUserById(userId)).thenReturn(userToEdit);
+        when(userActionService.findUserById(userId)).thenReturn(userToEdit);
+        when(userRepository.findUserByName(anyString())).thenReturn(User.builder().username(null).build());
         when(userActionService.updateUserEditorialToClient(any(Long.class), any(Long.class), any(UserEditDto.class),
                 any(HttpServletRequest.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         // then
