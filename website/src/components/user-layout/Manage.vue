@@ -495,7 +495,7 @@ function addUser(userData) {
 };
 </script>
 
-<style>
+<style scoped>
 @import '../../assets/userLists.css';
 
 .disabled{
