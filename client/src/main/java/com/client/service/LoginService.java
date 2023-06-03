@@ -8,5 +8,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface LoginService {
     boolean checkIfUserExistsByEmail(String email);
-    ResponseEntity<Object> setUserSession(HttpServletRequest request, HttpServletResponse response, UserRegistrationDto userRegistrationDto, LoginDto loginDto);
+    ResponseEntity<String> setUserSession(HttpServletRequest request, HttpServletResponse response, UserRegistrationDto userRegistrationDto, LoginDto loginDto);
 }

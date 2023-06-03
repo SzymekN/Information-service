@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -60,7 +60,7 @@ public class LoginController {
     }
 
     @PostMapping("/login/v2")
-    public ResponseEntity<Object> login(@RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
         try {
             return loginService.setUserSession(request, response, null, loginDto);
         } catch (AuthenticationException e) {
@@ -84,7 +84,7 @@ public class LoginController {
     }
 
     @GetMapping("/login/oauth2/code/google")
-    public ResponseEntity<Object> getAuthorizationGoogle(@RequestParam("code") String code, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws JSONException {
+    public ResponseEntity<String> getAuthorizationGoogle(@RequestParam("code") String code, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws JSONException {
         RestTemplate restTemplate = new RestTemplate();
         String responseBody = googleAuthService.getTokenResponseBody(restTemplate, code, clientId, redirectUri, clientSecret);
         if (responseBody == null) {
@@ -108,9 +108,9 @@ public class LoginController {
                 return new ResponseEntity<>(editorialResponse.getBody(), editorialResponse.getStatusCode());
         }
 
-        Object authenticatedUserDto = loginService.setUserSession(httpServletRequest, httpServletResponse, userRegistrationDto, null);
+        loginService.setUserSession(httpServletRequest, httpServletResponse, userRegistrationDto, null);
 
-        return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).header(HttpHeaders.LOCATION, WEBSITE_URL).body(authenticatedUserDto);
+        return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(WEBSITE_URL)).build();
     }
 
     @GetMapping("/test")

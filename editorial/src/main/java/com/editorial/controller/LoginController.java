@@ -2,6 +2,7 @@ package com.editorial.controller;
 
 import com.editorial.model.dto.LoginDto;
 import com.editorial.service.LoginService;
+import com.editorial.service.LoginServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,10 @@ public class LoginController {
     }
 
     @PostMapping("/login/v2")
-    public ResponseEntity<Object> login(@RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
         try {
-            return loginService.setUserSession(request, response, loginDto);
+            loginService.setUserSession(request, response, loginDto);
+            return ResponseEntity.ok("Login successful.");
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password!");
         }
