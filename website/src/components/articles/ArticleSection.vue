@@ -97,7 +97,7 @@ const fetchArticles = async () => {
       v-for="(item, index) in articles.slice(1)"
       :key="index"
       :articleTitle="item.title"
-      :articleDescription="stripTags(articles[index].content)"
+      :articleDescription="stripTags(item.content)"
       :articleUrl="index+1"
       :imageUrl="getImage(item.content)"
       :category="props.category"/>

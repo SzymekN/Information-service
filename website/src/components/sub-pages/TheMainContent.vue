@@ -39,12 +39,6 @@ onMounted (() => {
         <ArticleSection/>
     </div>
 
-    <!-- <div class="section_content">
-
-      <p class = "section_title">EDUKACJA</p>
-      <hr>
-        <ArticleSection/>
-    </div> -->
   </div>
 
   <section>

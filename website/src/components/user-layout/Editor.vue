@@ -11,8 +11,8 @@ import router from "@/router";
 const quillEditor = ref()
 const content = ref("")
 const title = ref()
-const category = ref("politics")
-const acceptance = ref("draft")
+const category = ref("")
+const acceptance = ref("")
 const options = reactive({
     theme: 'snow',
     placeholder: 'Zacznij pisać artykuł...',
@@ -28,41 +28,15 @@ onMounted(() => {
   if (redirected != undefined){
     content.value = JSON.parse(sessionStorage.getItem("articleToEdit")).content
     title.value = JSON.parse(sessionStorage.getItem("articleToEdit")).title
-    // category.value = JSON.parse(sessionStorage.getItem("articleToEdit")).category
     articleId = JSON.parse(sessionStorage.getItem("articleToEdit")).id
+    acceptance.value = route.query["acceptance"]
   }
   role.value = atob(jsCookie.get("ROLE"))
   console.log(role.value)
 })
 
-const saveArticle = async () =>{
+const updateArticle = async (url, method, body, redirect = false) =>{
   try {
-    var method;
-    var body;
-    var url = '/editorial/draft';
-
-    if (acceptance.value == "ready") {
-      method = "DELETE"
-      body = {}
-      url += `?id=${articleId}`
-    }
-    else if (articleId == 0){
-      method = "POST"
-      body = {
-        "title": title.value,
-        "content": content.value,
-        // "category": category.value,
-      }
-    }
-    else{
-      method = "PUT"
-      body = {
-        "id": articleId,
-        "title": title.value,
-        "content": content.value,
-        // "category": category.value,
-      }
-    }
     const response = await fetch(url, {
       method: method,
       credentials: 'include',
@@ -79,12 +53,96 @@ const saveArticle = async () =>{
       setTimeout(() => toast.error("Wystąpił błąd podczas zapisywania"), 100)
     }
     else{
-      toast.success("Artykuł zapisany")
-      router.push({ name: 'draftsList' })
+      if (method == "POST" || method == "PUT"){
+        toast.success("Artykuł zapisany")
+      } else if (method == "DELETE"){
+        toast.success("Artykuł przeniesiony")
+      }
+      if (redirect == true){
+        if (role.value == "ROLE_JOURNALIST"){
+          console.log("redirecting")
+          router.push({ name: 'draftsList' })
+        }
+        else{
+          console.log("redirecting")
+          router.push({ name: 'articlesList' })
+        }
+      }
     }
   } catch (error) {
     console.log(error);
   }
+}
+
+const handleEdit = async () =>{
+
+  var method;
+  var body = {
+    "title": title.value,
+    "content": content.value,
+  };
+  var url = '/editorial/draft';
+
+  if (acceptance.value == ""){
+    toast.error("Wybierz status artykułu")
+    return;
+  }
+  if (role.value == "ROLE_JOURNALIST"){
+    url = '/editorial/draft';
+  }
+  else
+  {
+    url = '/editorial/correct';
+  }
+  var updateURL = url;
+
+  if (acceptance.value == "ready" && (role.value == "ROLE_REDACTOR" || role.value == "ROLE_JOURNALIST")) {
+    if (role.value == "ROLE_REDACTOR"){
+      url += '/reject'
+    }
+    method = "DELETE"
+    url += `?id=${articleId}`
+  }
+  else if(acceptance.value == "approved"){
+    if (category.value == ""){
+      toast.error("Wybierz kategorię")
+      return;
+    }
+    url += '/accept'
+    method = "DELETE"
+    url += `?id=${articleId}&category=${category.value}`
+  }
+  else if (articleId == 0){
+    method = "POST"
+  }
+  else{
+    method = "PUT"
+    body["id"] = articleId
+    if (role.value != "ROLE_JOURNALIST"){
+      if (acceptance.value == "corrected")
+        body["isCorrected"] = 1
+      else 
+        body["isCorrected"] = 0
+    }
+  }
+
+  if (method == "DELETE"){
+    if (role.value == "ROLE_JOURNALIST" && articleId == 0){
+      await updateArticle(url, "POST", body, true);
+    }
+    else{
+      body["id"] = articleId
+      if (role.value != "ROLE_JOURNALIST"){
+        if (acceptance.value == "corrected")
+        body["isCorrected"] = 1
+        else 
+        body["isCorrected"] = 0
+      }
+      await updateArticle(updateURL, "PUT", body);
+    }
+  }
+
+  updateArticle(url, method, body, true);
 }
 
 </script>
@@ -100,8 +158,9 @@ const saveArticle = async () =>{
       <label for="category">Wybierz kategorię:</label>
       <select v-model="category" class="category_input">
         <option value="politics">Polityka</option>
+        <option value="technology">Technologia</option>
         <option value="business">Biznes</option>
-        <option value="business">Sport</option>
+        <option value="sport">Sport</option>
       </select><br/>
     </div>
 
@@ -109,10 +168,10 @@ const saveArticle = async () =>{
     <select v-model="acceptance" class="category_input">
       <option value="draft" v-if="role=='ROLE_JOURNALIST'">Szkic</option>
       <option value="ready" v-if="role=='ROLE_JOURNALIST' || role=='ROLE_REDACTOR' || role=='ROLE_CORRECTOR'">Gotowy</option>
-      <option value="corrected" v-if="role=='ROLE_CORRECTOR'">Poprawiony</option>
+      <option value="corrected" v-if="role=='ROLE_CORRECTOR' || role=='ROLE_REDACTOR'">Poprawiony</option>
       <option value="approved" v-if="role=='ROLE_REDACTOR'">Zaakceptowany</option>
     </select><br/>
-    <button class="save_button" @click="saveArticle">Zapisz</button>
+    <button class="save_button" @click="handleEdit">Zapisz</button>
     <br/><br/>
   </div>
   <h1 class="title">{{ title }}</h1>

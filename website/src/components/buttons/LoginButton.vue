@@ -6,9 +6,6 @@
 <script setup>
 import jsCookie from "js-cookie";
 import { toast } from "vue-sonner";
-import {useRouter} from 'vue-router'
-
-const router = useRouter()
 
 const logout = () => {
     fetch('/logout', {
@@ -22,8 +19,7 @@ const logout = () => {
       jsCookie.remove('role');
       jsCookie.remove('ROLE');
       toast.success('Wylogowano pomyślnie');
-      // window.location.href = "/";
-      router.push('/')
+      window.location.href = "/";
     } else {
       // Logout failed, do something
       toast.error('Wystąpił błąd podczas wylogowywania');

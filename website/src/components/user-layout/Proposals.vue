@@ -9,15 +9,19 @@
   <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
 
   <div class="properties">
-    <div class="input-add">
-      <div class="labelCon"><label>Nowy temat:</label></div><input v-model="newTopicProposal" type="search"/>
-      <button @click="addTopic">Dodaj</button>
-    </div>
+    <form @submit.prevent>
+      <div class="input-add">
+        <div class="labelCon"><label>Nowy temat:</label></div><input v-model="newTopicProposal" type="search"/>
+        <button @click="addTopic">Dodaj</button>
+      </div>
+    </form>
     <div class="input-look">
-      <div class="labelCon"><label>Szukaj:</label></div><input v-model="searchTerm" />
-      <button id="searchButton" @click="handleSearch" class="disabled">
-        <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
-      </button>
+      <form @submit.prevent>
+        <div class="labelCon"><label>Szukaj:</label></div><input v-model="searchTerm" />
+        <button id="searchButton" @click="handleSearch" class="disabled">
+          <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
+        </button>
+      </form>
     </div>
     <label for="state_input">Stan:</label>
     <select v-model="state" class="state_input">
@@ -162,7 +166,7 @@ const table = reactive({
               let pendingOption = document.createElement("option");
               pendingOption.setAttribute("value", "PENDING");
               pendingOption.innerHTML = "PENDING";
-              pendingOption.setAttribute("style", "color:orange");
+              pendingOption.setAttribute("style", "color:#e8b53f");
               if (row.acceptance === "PENDING"){
                 pendingOption.selected = true;
                 pendingOption.setAttribute("selected", "selected");
@@ -171,7 +175,7 @@ const table = reactive({
               let acceptedOption = document.createElement("option");
               acceptedOption.setAttribute("value", "ACCEPTED");
               acceptedOption.innerHTML = "ACCEPTED";
-              acceptedOption.setAttribute("style", "color:green");
+              acceptedOption.setAttribute("style", "color:#05a32f");
               if (row.acceptance === "ACCEPTED"){
                 acceptedOption.selected = true;
                 acceptedOption.setAttribute("selected", "selected");
@@ -180,7 +184,7 @@ const table = reactive({
               let declinedOption = document.createElement("option");
               declinedOption.setAttribute("value", "DECLINED");
               declinedOption.innerHTML = "DECLINED";
-              declinedOption.setAttribute("style", "color:red");
+              declinedOption.setAttribute("style", "color:#a31505");
               if (row.acceptance === "DECLINED"){
                 declinedOption.selected = true;
                 declinedOption.setAttribute("selected", "selected");
@@ -367,19 +371,9 @@ const addTopic = async () =>{
       }
 
       else{
-        const text = await response.text();
-
         toast.success("Dodano temat")
-        let state = "PENDING"
-        if(atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR')
-          state = "ACCEPTED"
-
-        data.push({
-          id: 0,
-          authorName: 'user',
-          title: newTopic,
-          dateOfUpdate: new Date().toDateString(),
-          acceptance: state,})
+        fetchData();
+        newTopicProposal.value = "";
       }
   } catch (error) {
       console.log(error);

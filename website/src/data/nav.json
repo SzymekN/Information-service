@@ -4,16 +4,16 @@
         "text":"Strona główna"
     },
     {
-        "link":"/edukacja-artykuly",
-        "text":"Edukacja"
+        "link":"/politics",
+        "text":"Polityka"
     },
     {
-        "link":"/technologia-artykuly",
+        "link":"/science",
+        "text":"Nauka"
+    },
+    {
+        "link":"/technology",
         "text":"Technologia"
-    },
-    {
-        "link":"/pogoda",
-        "text":"Pogoda"
     },
     {
         "link":"/business",
