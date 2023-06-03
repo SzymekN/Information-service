@@ -318,11 +318,12 @@ const fetchEditUser = async (userData) =>{
 
     if (!response.ok) {
       const text = await response.text();
+      console.log(text)
       toast.error(text)
     }
     else {
         editModalOpen.value = false;
-        cleanModal();
+        cleanModal('editModalOpen');
         // Fetch the updated list of users
         fetchUsers();
     }
@@ -382,15 +383,15 @@ const cleanModal = (modal) => {
   const surnameInput = document.getElementById('surname');
   var passwordInput;
   const authorityNameSelect = document.getElementById('authorityName');
-
+console.log(modal)
   if(modal==="addModalOpen"){
     passwordInput = document.getElementById('password');
     const emailInput = document.getElementById('email');
     emailInput.value = '';
   }
   else
-    passwordInput = document.getElementById('passwordToChange');
-    
+    passwordInput = document.getElementById('password');
+    // console.log(passwordInput);
      // Clear input field values
      usernameInput.value = '';
     nameInput.value = '';
@@ -436,7 +437,7 @@ const fetchAddUser = async (newUser) =>{
     }
     else {
         // Clean and close the modal
-        cleanModal();
+        cleanModal('addModalOpen');
         addModalOpen.value = false;
 
         // Fetch the updated list of users

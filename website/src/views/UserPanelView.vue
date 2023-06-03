@@ -9,6 +9,12 @@ const hasRole = () => {
     return  (atob(jsCookie.get("ROLE")));
   else return false;
 };
+const logout=()=>{
+  jsCookie.remove('role');
+  jsCookie.remove('ROLE');
+  sessionStorage.removeItem('user');
+  window.location.href = '/home';      
+}
 </script>
 
 <template>
@@ -26,7 +32,7 @@ const hasRole = () => {
     <h1>WITAJ, {{hasRole()}}</h1>
 
     <div class="buttons">
-      <button><a href="#">Wyloguj się</a></button>
+      <button><a @click=logout() href="#">Wyloguj się</a></button>
     </div>
   </header>
 

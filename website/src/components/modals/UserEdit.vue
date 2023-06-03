@@ -15,6 +15,8 @@
             <input type="text" v-model="userInfo.surname" id="surname">
             <!-- <label for="email">Email:</label>
             <input type="text" v-model="userInfo.email" id="email"> -->
+            <label v-if="route.path==='/userpanel/profile'" for="passwordToConfirm">Wprowadź stare hasło:</label>
+            <input v-if="route.path==='/userpanel/profile'" type="password" v-model="userInfo.passwordToConfirm" id="passwordToConfirm" placeholder="••••••••">
             <label v-if="userInfo.supplier==='APP'" for="password">Hasło:</label>
             <input v-if="userInfo.supplier==='APP'" type="password" v-model="userInfo.password" id="passwordToChange" placeholder="••••••••">
           </div>
@@ -34,13 +36,16 @@
   
   <script setup>
   import { reactive  } from 'vue';
-
+  import { useRoute } from 'vue-router';
+  const route=useRoute();
+  
   const props = defineProps(['user']);
   const userInfo = reactive({
     username: props.user.username || '',
     name: props.user.name || '',
     surname: props.user.surname || '',
     password: '',
+    passwordToConfirm: '',
     // email: props.user.email || '',
     authorityName: props.user.authorityName || '',
     supplier: props.user.supplier || '',

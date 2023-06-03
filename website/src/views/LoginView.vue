@@ -6,6 +6,27 @@ import {useRouter} from 'vue-router'
 
   const router = useRouter()
 
+  const getUser= async ()=>{
+        try{
+          const response = await fetch('/editorial/actions/user/info', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          if (!response.ok) {
+            const text = await response.text();
+            console.log(text)
+          }
+          else {
+            const responseJson = await response.json();
+            return responseJson;
+          }
+        }
+        catch(error){
+          console.log(error);
+        }
+    };
   //TODO: change it to request to backend instead of fake
   const login = async () =>{
     
@@ -35,6 +56,9 @@ import {useRouter} from 'vue-router'
       toast.error(text)
     }
     else{
+       const responseJson = await response.json();
+        var user=await getUser();
+      sessionStorage.setItem("user", JSON.stringify(user));
       sessionStorage.setItem("loginMonitShown", "false");
       router.push('/')
     }

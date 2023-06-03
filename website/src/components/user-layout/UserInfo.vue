@@ -5,19 +5,19 @@
   </h1>
 
   <span class="data-label">Imię: </span>
-  <span></span>
+  <span>{{ user.name }}</span>
   <br/>
 
   <span class="data-label">Nazwisko: </span>
-  <span></span>
+  <span>{{ user.surname }}</span>
   <br/>
 
   <span class="data-label">Login: </span>
-  <span></span>
+  <span>{{ user.username }}</span>
   <br/>
 
   <span class="data-label">E-mail: </span>
-  <span></span>
+  <span>{{ user.email }}</span>
   <br/>
 
   <!-- <span class="data-label">Rola: </span>
@@ -33,7 +33,7 @@
   </button>
 </div>
 <UserEdit v-if="editModalOpen" :user="user" @submit="updateUser" @close="closeModal('editModalOpen')"></UserEdit>
-<UserDelete v-if="deleteModalOpen" :user="user.id" @submit="deleteUser" @close="closeModal('deleteModalOpen')"></UserDelete>
+<UserDelete v-if="deleteModalOpen" :user="JSON.stringify(user.id)" @submit="fetchDeleteUser" @close="closeModal('deleteModalOpen')"></UserDelete>
 </template>
 
 <script setup>
@@ -43,15 +43,9 @@
     import UserEdit from '@/components/modals/UserEdit.vue';
     const editModalOpen = ref(false);
     const deleteModalOpen = ref(false);
-    var user=ref({
-      id: jsCookie.get('id'),
-      username: jsCookie.get('username'),
-      name: jsCookie.get('name'),
-      surname: jsCookie.get('surname'),
-      email: jsCookie.get('email'),
-      supplier: jsCookie.get('supplier'),
-      isAdmin: jsCookie.get('isAdmin')
-    })
+    const user = ref(JSON.parse(sessionStorage.getItem('user')));
+    // console.log(user)
+    var url;
     const activateModal = (e) => {
       if (e.target.id === 'editButton') {
         editModalOpen.value = true;
@@ -69,12 +63,88 @@
       }
     }
 
-    const updateUser=()=>{
-      console.log('updateUser')
+    const fetchEditUser = async (userData) =>{
+    url='/editorial/actions/edit?';
+    console.log(userData)
+    url +=`id=${encodeURIComponent(JSON.stringify(user.value.id))}`;
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.log(text)
+      }
+      else {
+          editModalOpen.value = false;
+          cleanModal();
+          alert("Zmieniono dane użytkownika. Zaloguj się ponownie.")
+          jsCookie.remove('role');
+          jsCookie.remove('ROLE');
+          window.location.href = '/home';          
+      }
+    } catch (error) {
+      console.log(error);
     }
-    const deleteUser=()=>{
-      console.log('deleteUser')
+}
+
+    const updateUser=(userData)=>{
+      const form=userData.currentTarget;
+      const formFields = form.querySelectorAll('input, select');
+      const fieldValues = {};
+
+      // Get the values from the form fields
+      formFields.forEach((field) => {
+        const fieldName = field.id;
+        const fieldValue = field.value;
+        fieldValues[fieldName] = fieldValue;
+      });
+      console.log(atob(jsCookie.get("ROLE")))
+      fieldValues['authorityName']=atob(jsCookie.get("ROLE")).substring(5);
+
+      const updatedValues = {}; // Object to store the updated keys and values
+
+    // Update the user object with the new values
+    for (const [key, value] of Object.entries(fieldValues)) {
+      if (value!="") { //userToUpdate[key] !== value&&
+        updatedValues[key] = value; // Store the updated key-value pair
+      }
     }
+    fetchEditUser(updatedValues);
+    }
+
+    function fetchDeleteUser() {
+  url = `/editorial/actions/delete?id=${encodeURIComponent(JSON.stringify(user.value.id))}`;
+  fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        const text = response.text();
+        console.log(text)
+        // toast.error(text);
+      } else {
+        alert("Pomyślnie usunięto konto")
+        deleteModalOpen.value = false;
+        jsCookie.remove('role');
+        jsCookie.remove('ROLE');
+        window.location.href = '/home'; 
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+    
 
     const cleanModal=(modal)=>{
       const usernameInput = document.getElementById('username');
