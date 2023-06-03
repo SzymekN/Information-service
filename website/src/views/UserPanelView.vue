@@ -3,7 +3,8 @@ import TheTitle from "@/components/main-layout/TheTitle.vue";
 import UserPanelNav from "@/components/user-layout/UserPanelNav.vue";
 import jsCookie from "js-cookie";
 import { Toaster } from "vue-sonner";
-import { logout } from '@/scripts/Scripts.ts';
+import LoginButton from "@/components/buttons/LoginButton.vue";
+
 const hasRole = () => {
   if (jsCookie.get("ROLE"))
     return  (atob(jsCookie.get("ROLE")));
@@ -27,7 +28,7 @@ const hasRole = () => {
     <h1>WITAJ, {{hasRole()}}</h1>
 
     <div class="buttons">
-      <button><a @click=logout() href="#">Wyloguj się</a></button>
+      <LoginButton></LoginButton>
     </div>
   </header>
 

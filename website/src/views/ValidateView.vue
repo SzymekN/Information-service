@@ -5,7 +5,7 @@ import router from "@/router";
 
 const route = useRoute();
 
-const potwierdz = async () => {
+const confirm = async () => {
     var code = route.query["code"] 
     const response = await fetch(`/client/validate?code=${code}`, {
         method: 'GET',
@@ -29,7 +29,7 @@ const potwierdz = async () => {
   <div class="validateCon">
     <h1>Dziękujemy za rejestrację!</h1>
     <p>Kliknij w poniższy przycisk by potwierdzić.</p>
-    <button @click="potwierdz">Potwierdź</button>
+    <button @click="confirm">Potwierdź</button>
   </div>
 </template>
 

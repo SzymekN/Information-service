@@ -4,12 +4,16 @@ import UserPanelView from "@/views/UserPanelView.vue"
 import LoginView from "@/views/LoginView.vue"
 import TheMainContent from "@/components/sub-pages/TheMainContent.vue"
 import Business from "@/components/sub-pages/Business.vue"
+import Politics from "@/components/sub-pages/Politics.vue"
+import Science from "@/components/sub-pages/Science.vue"
+import Technology from "@/components/sub-pages/Technology.vue"
 import Article from "@/components/articles/Article.vue"
 import LeagueTop5 from "@/components/api-leagues/LeagueTop5.vue"
 import LeagueTable from "@/components/api-leagues/LeagueTable.vue"
 import UserInfo from "@/components/user-layout/UserInfo.vue"
 import Proposals from "@/components/user-layout/Proposals.vue"
 import DraftsList from "@/components/user-layout/DraftsList.vue"
+import ArticlesList from "@/components/user-layout/ArticlesList.vue"
 import Editor from "@/components/user-layout/Editor.vue"
 import RegisterView from "@/views/RegisterView.vue";
 import Manage from "@/components/user-layout/Manage.vue";
@@ -33,6 +37,18 @@ const router = createRouter({
                 {
                     path: '/article',
                     component: Article
+                },
+                {
+                    path: "/politics",
+                    component: Politics
+                },
+                {
+                    path: "/science",
+                    component: Science
+                },
+                {
+                    path: "/technology",
+                    component: Technology
                 },
                 {
                     path: '/business',
@@ -77,14 +93,21 @@ const router = createRouter({
                     component: Proposals
                 },
                 {
-                    path: "/userpanel/articles",
+                    path: "/userpanel/drafts",
                     name: 'draftsList',
                     component: DraftsList
                 },
                 {
+
                     path: "/userpanel/manage",
                     name: 'manageUsers',
                     component: Manage
+               },
+                {
+                    path: "/userpanel/articles",
+                    name: 'articlesList',
+                    component: ArticlesList
+
                 },
             ],
         },
@@ -116,12 +139,12 @@ const router = createRouter({
 })
 
 //route guard
-const protectedRoutes = ['userpanel', 'edit', 'proposals', 'draftsList', 'profile'];
+const protectedRoutes = ['userpanel', 'edit', 'proposals', 'draftsList', 'articlesList', 'profile'];
 
 const roleRoutes = {
     'ROLE_JOURNALIST': ['userpanel', 'edit', 'proposals', 'draftsList', 'profile'],
-    'ROLE_CORRECTOR': ['userpanel', 'edit', 'draftsList', 'profile'],
-    'ROLE_REDACTOR': ['userpanel', 'edit', 'proposals', 'draftsList', 'profile'],
+    'ROLE_CORRECTOR': ['userpanel', 'edit', 'articlesList', 'profile'],
+    'ROLE_REDACTOR': ['userpanel', 'edit', 'proposals', 'articlesList', 'profile'],
     'ROLE_USER': ['userpanel', 'profile'],
     'ROLE_ADMIN': 'all'
 }

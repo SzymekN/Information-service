@@ -5,10 +5,9 @@ import ArticleSection from "@/components/articles/ArticleSection.vue";
 </script>
 
 <template>
-    <Currencies/>
-    <p class = "section_title">O TYM SIĘ MÓWI W BIZNESIE</p>
+    <p class = "section_title">O TYM SIĘ MÓWI W POLITYCE</p>
     <hr>
-    <ArticleSection :category="'business'"/>
+    <ArticleSection :category="'politics'"/>
 </template>
 
 <style scoped>

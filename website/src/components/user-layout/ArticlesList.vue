@@ -1,190 +1,209 @@
-
-<!-- TODO: DELETE AFTER REFACTOR -->
+<!-- https://vue3-lite-table.vercel.app/usage -->
 <template>
-  <div class="properties">
-    <div class="input-add">
-      <label>Nowy temat:</label><input v-model="newTopicProposal" />
-      <button @click="addTopic">Dodaj</button>
+
+    <div class="properties">
+      <div class="input-look">
+        <form @submit.prevent>
+            <div class="labelCon"><label>Szukaj:</label></div>
+            <input type="search" v-model="searchTerm" />
+            <button id="searchButton" @click="handleSearch" class="disabled">
+            <img :src="SearchImage" alt="Wyszukaj" class="search-icon" />
+            </button>
+        </form>
+      </div>
     </div>
-    <div class="input-look">
-      <label>Szukaj:</label><input v-model="searchTerm" />
+    <div class="table-context">
+      <table-lite
+          :is-static-mode="false"
+          :columns="table.columns"
+          :rows="table.rows"
+          :total="table.totalRecordCount"
+          :sortable="table.sortable"
+          @is-finished="tableLoadingFinish"
+          @row-clicked="rowClicked"
+          @do-search="doSearch"
+      ></table-lite>
     </div>
-  </div>
-  <div class="table-context">
-    <table-lite
-        :is-static-mode="true"
-        :columns="table.columns"
-        :rows="table.rows"
-        :total="table.totalRecordCount"
-        :sortable="table.sortable"
-        @is-finished="tableLoadingFinish"
-        @row-clicked="tableLoadingFinish"
-    ></table-lite>
-  </div>
   </template>
   
   <script setup>
   import jsCookie from "js-cookie";
-  import { reactive, ref, computed, onBeforeMount } from "vue";
+  import { reactive, ref, computed, watch } from "vue";
+  import { toast } from "vue-sonner";
   import TableLite from 'vue3-table-lite'
   import router from "@/router";
+  import SearchImage from "@/assets/icons8-search.svg";
+  
   
   // TODO: replace with fetched data
   // Fake Data for 'asc' sortable
   const data = reactive([]);
-  const articles = ref([]);
   const articlesMap = ref(new Map());
+  const rowCount = ref(0);
   
-  const fetchArticles = async () => {
+  var lastSearchTerm = "";
+  var lastPage = 0;
+  var lastOrder = "id";
+  var lastSort = "desc";
+  
+  var url = '/editorial/correct?';
+  var size = 10;
+  
+  const fetchData = async (page = 0, order = "id", sort = "desc", search = "") =>{
+    const queryParams = [];
+    if (search != ""){
+      queryParams.push(`title=${search}`);
+    }
+    queryParams.push(`sort=${order},${sort}`);
+    url = `/editorial/correct?page=${page}&size=${size}&`;
+    url += queryParams.join("&");
     try {
-        table.isLoading = true;
-        const response = await fetch('/client/articles');
-        articles.value = await response.json();
-        console.log(articles.value);
-        data.value = [];
-        for (let i = 0; i < articles.value.length; i++) {
-            articlesMap.value.set(articles.value[i]["id"], articles.value[i]);
-            data.push({
-                id: articles.value[i]["id"],
-                user: articles.value[i]["authorName"],
-                topic: articles.value[i]["title"],
-                date: articles.value[i]["dateOfSubmission"],
-                // state: articles[i]["state"],
-                state: "TODO",
-            });
+      const response = await fetch(url, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        const text = await response.text();
+        toast.error(text)
+      }
+      else{
+        const responseJson = await response.json();
+        data.splice(0, data.length);
+        for (let i = 0; i < responseJson.length; i++) {
+          data.push({
+            id: responseJson[i]["id"],
+            title: responseJson[i]["title"],
+            content: responseJson[i]["content"],
+            journalistName: responseJson[i]["journalistName"],
+            correctorName: responseJson[i]["correctorName"],
+            dateOfCorrection: responseJson[i]["dateOfCorrection"],
+            isCorrected: responseJson[i]["isCorrected"],
+          });
+          articlesMap.value.set(data[i]["id"], data[i]);
+          // fetchData = data.length;
         }
-    console.log("finished fetching data");
-    // console.log(data);
-    console.log("map: ",articlesMap.value);
-    tableLoadingFinish();
-
+        rowCount.value = Number(response.headers.get('X-Total-Count'));
+      }
     } catch (error) {
       console.log(error);
     }
-  };
-
-  onBeforeMount(fetchArticles);
-
-  const searchTerm = ref(""); // Search text
-  const newTopicProposal = ref(""); // user input with proposition
+  }
   
+  const searchTerm = ref(""); // Search text
+  fetchData();
   // Table config
   const table = reactive({
     columns: [
         {
-            label: "Użytkownik",
-            field: "user",
-            width: "1%",
-            sortable: true,
-        },
-        {
-            label: "Temat",
-            field: "topic",
+            label: "Tytuł",
+            field: "title",
             width: "5%",
             sortable: true,
             display: function (row) {
-                return '<span><a href="#" class="topic" topicId="'+row.id+'">'+row.topic+'</a></span>'
+                return '<span><a href="#" class="topic" topicId="'+row.id+'">'+row.title+'</a></span>'
             },
         },
         {
-            label: "Data ostatniej edycji",
-            field: "date",
+            label: "Autor",
+            field: "journalistName",
             width: "1%",
-            sortable: true,
         },
         {
-            label: "Stan",
-            field: "state",
+            label: "Korektor",
+            field: "correctorName",
+            width: "1%",
+            display: function (row) {
+                if (!row.correctorName || row.correctorName == null || row.correctorName == "undefined"){
+                    return '<span style=color:#e8b53f>Brak</span>'
+                }
+                return '<span>'+row.correctorName+'</span>'
+            },
+        },
+        {
+            label: "Data korekcji",
+            field: "dateOfCorrection",
             width: "1%",
             sortable: true,
             display: function (row) {
-                let color = "#e8b53f";
-                if (row.state == "draft")
-                    color = "#e8b53f";
-                if (row.state == "approved")
-                    color = "#05a32f";
-                if (row.state == "rejected")
-                    color = "#a31505";
-                
-                //make state clickable if user is admin or redactor
-                if (jsCookie.get('role') == 'admin' || jsCookie.get('role') == 'redactor')
-                    return '<span><a href="#" style=color:'+color+' class="state" topicId="'+row.id+'">'+row.state+'</a></span>'
-                return '<span style=color:'+color+'>'+row.state+'</span>'
+                if (!row.dateOfCorrection || row.dateOfCorrection == null || row.dateOfCorrection == "undefined"){
+                    return '<span style=color:#e8b53f>Brak</span>'
+                }
+                return '<span>'+row.dateOfCorrection.toLocaleString()+'</span>'
+            },
+        },
+        {
+            label: "Stan",
+            field: "isCorrected",
+            width: "1%",
+            display: function (row) {
+            let color = row.isCorrected == true ? "#05a32f" : "#e8b53f";
+            let message = row.isCorrected == true ? "Poprawiony" : "Do poprawy";
+              return '<span style=color:'+color+'>'+message+'</span>'
             },
         },
     ],
     rows: computed(() => {
-        return data.filter(
-        (x) =>
-            x.user.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-            x.topic.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-            x.date.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-            x.state.toLowerCase().includes(searchTerm.value.toLowerCase())
-        );
+        return data
     }),
     totalRecordCount: computed(() => {
-        return table.rows.length;
+        return rowCount.value;
     }),
     sortable: {
         order: "id",
         sort: "asc",
-    },
+    }
   });
   
-  function editArticleListener(){
-    
-    let id = Number(this.getAttribute('topicId'));
-    sessionStorage.setItem("articleToEdit", JSON.stringify(articlesMap.value.get((id))));
-    router.push({name: 'edit', query:{redirected: true} });
-
-  }
-  
-  function changeStateListener(){
-  
-    //TODO: make request instead of local change
-    let id = this.getAttribute('topicId');
-    let currentState = data[id].state;
-    console.log(currentState);
-    console.log(id);
-    console.log(data[id]);
-    console.log(this)
-    if (currentState == 'proposed')
-        data[id].state = 'approved';
-    else if (currentState == 'approved')
-        data[id].state = 'rejected';
-    else
-        data[id].state = 'proposed';
-  
-  
-    tableLoadingFinish()
-  }
-  
-  function addListeners(className, listenerFunction){
-    let elements = document.getElementsByClassName(className)
-  
-    Array.prototype.forEach.call(elements, function (element) {
-    //checking if cell already has onclick assigned
-    if(element.getAttribute('listener') !== 'true'){
-        element.setAttribute('listener', 'true');
-        element.addEventListener("click", listenerFunction);
-    }
-    });
-  
-  }
-  
-  const tableLoadingFinish = () => {
-  
+  const tableLoadingFinish = () =>{
     table.isLoading = false;
-    addListeners("topic", editArticleListener);
-    // if (jsCookie.get('role') == 'admin' || jsCookie.get('role') == 'redactor')
-        // addListeners("state", changeStateListener);
+  }
+  
+  const handleSearch = () => {
+    lastSearchTerm = searchTerm.value;
+    fetchData(lastPage, lastOrder, lastSort, lastSearchTerm);
+  };
+  
+  const doSearch = (offset, limit, order, sort) => {
+    table.page = offset / limit;
+    console.log("doSearch", offset, limit, order, sort);
+  
+    lastPage = offset / limit;
+    lastOrder = order;
+    lastSort = sort;
+    lastSearchTerm = searchTerm.value;
+    data.splice(0, size);
+    size = limit;
+  
+    fetchData(offset / limit, order, sort, lastSearchTerm);
   
   };
   
+  const rowClicked = (row) => {
+    console.log(row);
+    let id = Number(row.id);
+    sessionStorage.setItem("articleToEdit", JSON.stringify(articlesMap.value.get((id))));
+    let acc = articlesMap.value.get((id)).isCorrected == true ? "corrected" : "ready";
+    router.push({name: 'edit', query:{redirected: true, acceptance: acc} });
+  };
+  
+  watch(searchTerm, (newValue, oldValue) => {
+    if (newValue != oldValue && newValue == "") {
+      handleSearch();
+    }
+  });
   
   </script>
-
-
-<style>
-@import '../../assets/userLists.css';
-</style>
+  
+  <style scoped>
+  
+  @import '../../assets/userLists.css';
+  
+  ::v-deep(.vtl-tbody-tr){
+    cursor: pointer;
+  }
+  
+  </style>

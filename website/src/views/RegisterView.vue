@@ -5,6 +5,7 @@ import {useRouter} from 'vue-router'
 import { ref } from 'vue'
 import {useLoading} from 'vue-loading-overlay'
 import 'vue-loading-overlay/dist/css/index.css';
+import LoginGoogle from "@/components/buttons/LoginGoogle.vue";
 
 const router = useRouter()
 
@@ -130,10 +131,7 @@ const register = async () =>{
             </button>
           </div>
           <div class="container-login100-form-btn container-login200-form-btn">
-            <button class="login100-form-btn login200-form-btn">
-              <img src="../../public/google_icon.png" height="48" width="48"/>
-              Zarejestruj się przez Google
-            </button>
+            <LoginGoogle/>
           </div>
           <br>
           <div class="text-center p-t-136">

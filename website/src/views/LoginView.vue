@@ -3,8 +3,10 @@ import TheTitle from "@/components/main-layout/TheTitle.vue";
 import {Toaster, toast } from 'vue-sonner'
 import Cookie from "js-cookie";
 import {useRouter} from 'vue-router'
+import LoginGoogle from "@/components/buttons/LoginGoogle.vue";
 
   const router = useRouter()
+
 
   const getUser= async ()=>{
         try{
@@ -32,6 +34,7 @@ import {useRouter} from 'vue-router'
         }
     };
   //TODO: change it to request to backend instead of fake
+
   const login = async () =>{
     
     const username = document.querySelector('input[name="username"]').value;
@@ -71,53 +74,9 @@ import {useRouter} from 'vue-router'
       console.log(error);
     }
 
-    // Do something with the username and password values
-    if (username == "admin"){
-      Cookie.set('role', 'admin')
-      router.push('/')
-    }
-
-    if (username == "journalist"){
-      Cookie.set('role', 'journalist')
-      router.push('/')
-    }
-
-    if (username == "redactor"){
-      Cookie.set('role', 'redactor')
-      router.push('/')
-    }
-
-    if (username == "corrector"){
-      Cookie.set('role', 'corrector')
-      router.push('/')
-    }
-
-    console.log(username, password);
   }
 
-  const loginGoogle = async () =>{
-    try{
-    const url = '/client/login/google';
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-    });
-    const res = await response.json();
-    console.log(res);
-    if (!response.ok) {
-      toast.error(text)
-    }
-    else
-      window.location.href = res.url;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  
 </script>
-
 <template>
   <Toaster  richColors position="top-center" closeButton />
   <body>
@@ -161,10 +120,7 @@ import {useRouter} from 'vue-router'
             </button>
           </div>
           <div class="container-login100-form-btn container-login200-form-btn">
-            <button class="login100-form-btn login200-form-btn" @click="loginGoogle()">
-              <img src="../../public/google_icon.png" height="48" width="48"/>
-              Zaloguj się przez Google
-            </button>
+              <LoginGoogle/>
           </div>
           <br>
           <div class="text-center p-t-136">
@@ -193,4 +149,5 @@ import {useRouter} from 'vue-router'
 
 <style scoped>
 @import '../assets/login.css';
+
 </style>
