@@ -118,7 +118,7 @@ public class UserRepositoryTest {
         Slice<User> userSlice = userRepository.findAllPaged(pageable);
 
         assertNotNull(userSlice);
-        assertEquals(5, userSlice.getContent().size());
+        assertEquals(6, userSlice.getContent().size());
     }
 
     @Test
@@ -138,7 +138,7 @@ public class UserRepositoryTest {
         Slice<User> userSlice = userRepository.findAllByUsernamePaged(pageable, username);
 
         assertNotNull(userSlice);
-        assertEquals(5, userSlice.getContent().size());
+        assertEquals(6, userSlice.getContent().size());
     }
 
     @Test
@@ -148,7 +148,7 @@ public class UserRepositoryTest {
         Slice<User> userSlice = userRepository.findAllByNamePaged(pageable, name);
 
         assertNotNull(userSlice);
-        assertEquals(4, userSlice.getContent().size());
+        assertEquals(5, userSlice.getContent().size());
     }
 
     @Test
@@ -158,7 +158,7 @@ public class UserRepositoryTest {
         Slice<User> userSlice = userRepository.findAllBySurnamePaged(pageable, surname);
 
         assertNotNull(userSlice);
-        assertEquals(4, userSlice.getContent().size());
+        assertEquals(5, userSlice.getContent().size());
     }
 
     @Test
@@ -220,7 +220,7 @@ public class UserRepositoryTest {
         Long count = userRepository.countAllUsers();
 
         assertNotNull(count);
-        assertEquals(5, count);
+        assertEquals(6, count);
     }
 
     @Test
@@ -238,7 +238,7 @@ public class UserRepositoryTest {
         Long count = userRepository.countAllByUsername(username);
 
         assertNotNull(count);
-        assertEquals(5, count);
+        assertEquals(6, count);
     }
 
     @Test
@@ -247,7 +247,7 @@ public class UserRepositoryTest {
         Long count = userRepository.countAllByName(name);
 
         assertNotNull(count);
-        assertEquals(4, count);
+        assertEquals(5, count);
     }
 
     @Test
@@ -256,7 +256,7 @@ public class UserRepositoryTest {
         Long count = userRepository.countAllBySurname(surname);
 
         assertNotNull(count);
-        assertEquals(4, count);
+        assertEquals(5, count);
     }
 
     @Test
