@@ -59,7 +59,7 @@ class ArticleCorrectServiceImplTest {
     }
 
     @Test
-    void getCorrects_should_return_corrects_with_matching_title_and_isCorrected() {
+    void get_corrects_should_return_corrects_with_matching_title_and_is_corrected() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         String title = "Sample Title";
@@ -87,7 +87,7 @@ class ArticleCorrectServiceImplTest {
     }
 
     @Test
-    void updateArticle_should_update_existing_correct_and_return_successful_update() {
+    void update_article_should_update_existing_correct_and_return_successful_update() {
         // given
         ArticleCorrectDto articleCorrectDto = new ArticleCorrectDto();
         articleCorrectDto.setId(1L);
@@ -113,7 +113,7 @@ class ArticleCorrectServiceImplTest {
     }
 
     @Test
-    void updateArticle_should_return_bad_request_when_correct_not_found() {
+    void update_article_should_return_bad_request_when_correct_not_found() {
         // given
         ArticleCorrectDto articleCorrectDto = new ArticleCorrectDto();
         articleCorrectDto.setId(1L);
@@ -132,7 +132,7 @@ class ArticleCorrectServiceImplTest {
     }
 
     @Test
-    void deleteAndMoveArticleToArticleDraft_should_delete_correct_and_save_draft() {
+    void delete_and_move_article_to_article_draft_should_delete_correct_and_save_draft() {
         // given
         Long correctId = 1L;
 
@@ -156,7 +156,7 @@ class ArticleCorrectServiceImplTest {
     }
 
     @Test
-    void deleteAndMoveArticleToArticleDraft_should_return_bad_request_when_correct_not_found() {
+    void delete_and_move_article_to_article_draft_should_return_bad_request_when_correct_not_found() {
         // given
         Long correctId = 1L;
 
@@ -173,7 +173,7 @@ class ArticleCorrectServiceImplTest {
     }
 
     @Test
-    void deleteAndMoveArticleToClientService_should_throw_ResourceAccessException() {
+    void delete_and_move_article_to_client_service_should_throw_resource_access_exception() {
         // given
         Long correctId = 1L;
         String category = "Sample Category";

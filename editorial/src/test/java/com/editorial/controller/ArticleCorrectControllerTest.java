@@ -1,6 +1,7 @@
 package com.editorial.controller;
 
 import com.editorial.model.dto.ArticleCorrectDto;
+import com.editorial.model.dto.ArticleCorrectToClientDto;
 import com.editorial.model.entity.User;
 import com.editorial.security.SecurityConfig;
 import com.editorial.service.ArticleCorrectService;
@@ -17,15 +18,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -128,4 +132,46 @@ public class ArticleCorrectControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(object);
     }
+
+    @Test
+    @WithMockUser(roles = "REDACTOR")
+    void add_article_from_client_should_return_successful_moved_response_when_valid_request() throws Exception {
+        // given
+        ArticleCorrectToClientDto articleCorrectToClientDto = new ArticleCorrectToClientDto();
+        articleCorrectToClientDto.setTitle("test");
+        articleCorrectToClientDto.setContent("test");
+        articleCorrectToClientDto.setIsCorrected(true);
+        String caller = "ARTICLE_FROM_CLIENT";
+        doNothing().when(articleCorrectService).saveArticleCorrect(articleCorrectToClientDto);
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.post("/editorial/correct/fc")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                        .header("X-Caller", caller)
+                        .content(asJsonString(articleCorrectToClientDto)))
+                //then
+                .andExpect(status().isOk())
+                .andExpect(content().string("Successful moved"));
+    }
+
+    @Test
+    @WithMockUser(roles = "REDACTOR")
+    void add_article_from_client_should_return_bad_request_response_when_invalid_caller() throws Exception {
+        // given
+        ArticleCorrectToClientDto articleCorrectToClientDto = new ArticleCorrectToClientDto();
+        articleCorrectToClientDto.setTitle("test");
+        articleCorrectToClientDto.setContent("test");
+        articleCorrectToClientDto.setIsCorrected(true);
+        String caller = "INVALID_CALLER";
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.post("/editorial/correct/fc")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                        .header("X-Caller", caller)
+                        .content(asJsonString(articleCorrectToClientDto)))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Unsuccessful transfer process in editorial microservice."));
+    }
+
 }
