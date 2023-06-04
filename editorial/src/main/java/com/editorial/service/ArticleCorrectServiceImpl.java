@@ -113,6 +113,21 @@ public class ArticleCorrectServiceImpl implements ArticleCorrectService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Correct has not been found!");
     }
 
+    @Override
+    public void saveArticleCorrect(ArticleCorrectToClientDto articleCorrectToClientDto) {
+        ArticleCorrect articleCorrect = dtoToArticleCorrect(articleCorrectToClientDto);
+        articleCorrectRepository.save(articleCorrect);
+    }
+
+    public ArticleCorrect dtoToArticleCorrect(ArticleCorrectToClientDto articleCorrectToClientDto) {
+        return ArticleCorrect.builder()
+                .title(articleCorrectToClientDto.getTitle())
+                .content(articleCorrectToClientDto.getContent())
+                .isCorrected(articleCorrectToClientDto.getIsCorrected())
+                .journalistId(articleCorrectToClientDto.getJournalistId())
+                .build();
+    }
+
     public List<ArticleCorrectDto> articleCorrectsToDto(List<ArticleCorrect> articleCorrects) {
         return articleCorrects.stream()
                 .map(articleCorrect -> ArticleCorrectDto.builder()

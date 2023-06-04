@@ -1,6 +1,7 @@
 package com.editorial.controller;
 
 import com.editorial.model.dto.ArticleCorrectDto;
+import com.editorial.model.dto.ArticleCorrectToClientDto;
 import com.editorial.model.entity.User;
 import com.editorial.service.ArticleCorrectService;
 import com.editorial.service.UserActionService;
@@ -75,5 +76,15 @@ public class ArticleCorrectController {
             return articleCorrectService.deleteAndMoveArticleToClientService(correctId, request, category);
         } else
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username of requesting user does not exist in db!");
+    }
+
+    @PostMapping("/fc")
+    public ResponseEntity<String> addArticleCorrectFromClient(@Valid @RequestBody ArticleCorrectToClientDto articleCorrectToClientDto, @RequestHeader("X-Caller") String caller) {
+        if (!"ARTICLE_FROM_CLIENT".equals(caller))
+            return ResponseEntity.badRequest().body("Unsuccessful transfer process in editorial microservice.");
+        else {
+            articleCorrectService.saveArticleCorrect(articleCorrectToClientDto);
+            return ResponseEntity.ok("Successful moved");
+        }
     }
 }

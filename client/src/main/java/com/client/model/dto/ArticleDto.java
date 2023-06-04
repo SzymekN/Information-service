@@ -18,7 +18,7 @@ public class ArticleDto {
     private Long id;
 
     @Size(min = 3, max = 200, message = "Title must contain more than 2 and less than 201 characters!")
-    @Pattern(regexp = "^[^<>*%:&/\\\\]+[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s]+[0-9]*$", message = "Title must not contain such characters as:<>*%:&/\\")
+    @Pattern(regexp = "^[^<>*%:&/\\\\]+[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s]+[0-9]*[!?]?$", message = "Title must not contain such characters as:<>*%:&/\\")
     private String title;
 
     @NotBlank(message = "Content must not be blank!")

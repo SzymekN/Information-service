@@ -10,4 +10,5 @@ public class UrlConstants {
     public static final String GOOGLE_TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
     public static final String GOOGLE_USERINFO_ENDPOINT = "https://www.googleapis.com/oauth2/v1/userinfo";
     public static final String WEBSITE_URL = "http://localhost:5173/";
+    public static final String EDITORIAL_ARTICLE_URL = "http://gateway:8080/editorial/correct/fc";
 }
