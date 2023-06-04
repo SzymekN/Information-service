@@ -36,7 +36,7 @@ public class TestDbConfig {
 
     @Bean
     public ArticleService articleService() {
-        return new ArticleServiceImpl(articleRepository, userRepository);
+        return new ArticleServiceImpl(articleRepository, userRepository, basicService);
     }
 
     @Bean

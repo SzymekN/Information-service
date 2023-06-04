@@ -2,9 +2,12 @@ package com.client.controller;
 
 import com.client.model.dto.ArticleCorrectToClientDto;
 import com.client.model.dto.ArticleDto;
+import com.client.model.entity.User;
 import com.client.security.SecurityConfig;
 import com.client.service.ArticleService;
+import com.client.service.UserActionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -16,16 +19,22 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,6 +47,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ArticleControllerTest {
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    private UserActionService userActionService;
     @MockBean
     private ArticleService articleService;
     private List<ArticleDto> articleDtoList;
@@ -195,6 +206,24 @@ public class ArticleControllerTest {
         //then
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Unsuccessful transfer process in client microservice."));
+    }
+
+
+    @Test
+    @WithMockUser(roles = "REDACTOR")
+    public void delete_and_move_article_to_editorial_service_should_return_ok_when_valid_id_and_header_provided() throws Exception {
+        //given
+        User loggedUser = new User();
+        when(userActionService.getLoggedUser()).thenReturn(Optional.of(loggedUser));
+        when(articleService.deleteAndMoveArticleToEditorialService(anyLong(), any(HttpServletRequest.class))).thenReturn(ResponseEntity.ok("Successful moved"));
+
+        //when
+        mockMvc.perform(delete("/client/articles/withdraw").with(csrf())
+                        .param("id", "1")
+                        .header("X-Caller", "ARTICLE_FROM_CLIENT"))
+        //then
+                .andExpect(status().isOk())
+                .andExpect(content().string("Successful moved"));
     }
 
     private static String asJsonString(Object obj) {

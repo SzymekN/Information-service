@@ -39,6 +39,7 @@ public class SecurityConfig {
                                 .requestMatchers("/client/actions/user/info").hasAnyRole("USER", "ADMIN", "JOURNALIST", "REDACTOR", "CORRECTOR")
                                 .requestMatchers("/client/actions/**").hasAnyRole("USER", "ADMIN", "JOURNALIST", "REDACTOR", "CORRECTOR")
                                 .requestMatchers("/client/test").hasRole("USER")
+                                .requestMatchers("/client/articles/withdraw").hasRole("REDACTOR")
                                 .requestMatchers("/client/articles/**").permitAll()
                                 .anyRequest().authenticated())
                 .formLogin(configurer -> configurer.loginPage("/client/login"))
