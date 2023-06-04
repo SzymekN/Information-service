@@ -219,7 +219,24 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
     <b>Response:</b>
     <br>
     If the article is successfully saved in the client microservice, the status code will be 200 (OK), and the body will contain the message "Successful moved". If the request is rejected or unsuccessful in the client microservice, the status code will be 400 (Bad Request), and the body will contain the message "Unsuccessful transfer process in the client microservice".
-    <br><br>  
+    <br><br>
+    <li><b>DELETE /client/articles/withdraw</b></li>
+    This endpoint deletes an article from the client system and moves it to the editorial service.
+    <br><br>
+    <b>Query Parameters:</b>
+    <ul>
+        <li><b>id</b> (required): A long representing the ID of the article to delete and move.</li>
+    </ul>
+    <br>
+    <b>Response:</b>
+    <br>
+    The response is a JSON object with the following properties:
+    <ul>
+        <li><b>status</b>: An integer representing the HTTP status code of the response.</li>
+        <li><b>body</b>: A string containing the response message.</li>
+    </ul>
+    If the article is successfully deleted and transferred to the editorial service, the status code will be 200 (OK), and the body will contain the message "Successful moved". If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will contain the message "Username of requesting user does not exist in the database". If the article is not found, the status code will be 400 (Bad Request), and the body will contain the message "Article has not been found". If the request is rejected or unsuccessful in the editorial microservice, the status code will be 400 (Bad Request), and the body will contain the message "Unsuccessful transfer process in the editorial microservice".
+    <br><br>
 </ol>
 
 ### Users:
@@ -405,7 +422,23 @@ To shut down the server simply use CTRL+C hotkey or close terminal.
         <li><b>body</b>: A string containing the response message.</li>
     </ul>
     If the article correction is successfully deleted and transferred to the client service, the status code will be 200 (OK), and the body will contain the message "Successful moved". If the user is not authorized or the username does not exist in the database, the status code will be 401 (Unauthorized), and the body will contain the message "Username of requesting user does not exist in the database". If the article correction is not found, the status code will be 400 (Bad Request), and the body will contain the message "Correct has not been found". If the request is rejected or unsuccessful in the client microservice, the status code will be 400 (Bad Request), and the body will contain the message "Unsuccessful transfer process in the client microservice".
-    <br><br>    
+    <br><br>
+    <li><b>POST /editorial/correct/fc</b></li>
+    This endpoint is used to add an article correct from the client microservice to the editorial microservice.It can only be accessed by the caller with X-Caller header set to "ARTICLE_FROM_CLIENT". So it <b>SHOULD NOT BE DIRECTLY ACCESSED!!!</b>
+    <br><br>
+    <b>Request Headers:</b>
+    <ul>
+        <li>X-Caller (required): This header must be set to "ARTICLE_FROM_CLIENT" to ensure that the request is coming from the client microservice.</li>
+    </ul>
+    <br>
+    <b>Request Body:</b>
+    <br>
+    The request body should be a JSON object representing the ArticleCorrectToClientDto. It contains the necessary information about the article correct, such as the title, content, etc.
+    <br><br>
+    <b>Response:</b>
+    <br>
+    If the article correct is successfully saved in the editorial microservice, the status code will be 200 (OK), and the body will contain the message "Successful moved". If the request is rejected or unsuccessful in the editorial microservice, the status code will be 400 (Bad Request), and the body will contain the message "Unsuccessful transfer process in the editorial microservice".
+    <br><br>
     <li><b>POST /editorial/proposal </b></li>
     This endpoint allows users to add a new article proposal to the system.
     <br><br>
