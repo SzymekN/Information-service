@@ -106,7 +106,7 @@ public class UserActionController {
         User loggedUser = userChecker.get();
 
         if (!loggedUser.getAuthority().getAuthorityName().equals("ADMIN")
-                && (userEditDto.getPasswordToConfirm() == null || !passwordEncoder.matches(userEditDto.getPasswordToConfirm(), loggedUser.getPassword())))
+                && (userEditDto.getPasswordToConfirm() == null || !passwordEncoder.matches(userEditDto.getPasswordToConfirm(), loggedUser.getPassword())) && !loggedUser.getUserDetails().getSupplier().equals("GOOGLE"))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Insufficient privileges - you are neither admin nor provided the right password!");
 
         if (loggedUser.getAuthority().getAuthorityName().equals("ADMIN") || loggedUser.getId().equals(userId)) {
