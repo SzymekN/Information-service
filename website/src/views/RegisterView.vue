@@ -56,6 +56,7 @@ const register = async () =>{
     }
     else{
       loader.hide()
+      setTimeout(() => toast.success("Zarejestrowano pomyślnie"), 100)
       router.push('/')
     }
 

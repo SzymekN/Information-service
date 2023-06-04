@@ -14,7 +14,7 @@ const hasRole = () => {
 </script>
 
 <template>
-  <Toaster richColors/>
+  <Toaster richColors position="top-center" />
   <!--MARK: 1. HEADER-->
   <header>
     <router-link to="/">

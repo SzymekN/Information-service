@@ -93,7 +93,8 @@ const fetchData = async (page = 0, order = "id", sort = "desc", search = "") =>{
 
     if (!response.ok) {
       const text = await response.text();
-      toast.error(text)
+      console.log(text)
+      toast.error("Nie udało się pobrać danych")
     }
     else{
       const responseJson = await response.json();
@@ -252,7 +253,8 @@ const changeProposalFetch = async(bodyStruct) =>{
 
   if (!response.ok) {
     const text = await response.text();
-    toast.error(text)
+    console.log(text)
+    toast.error("Nie udało się zmienić propozycji")
   }
   else{
     toast.success("Zmieniono propozycję")
@@ -267,7 +269,7 @@ const changeProposalFetch = async(bodyStruct) =>{
     }
   }
   } catch (error) {
-    toast.error(error)
+    toast.error("Nie udało się zmienić propozycji")
     console.log(error);
   }
 
@@ -367,7 +369,8 @@ const addTopic = async () =>{
 
       if (!response.ok) {
         const text = await response.text();
-        toast.error(text)
+        toast.error("Nie udało się dodać tematu")
+        console.log(text)
       }
 
       else{

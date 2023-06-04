@@ -40,7 +40,7 @@ const fetchArticles = async () => {
       
       isLoading.value = false;
 
-      const articlesWithImage = data.map((article) => {
+      const articlesWithImage = articles.value.map((article) => {
       return {
         ...article,
         image: getImage(article.content)
@@ -132,6 +132,7 @@ const fetchArticles = async () => {
       v-if="isLoading == true"
       v-for="i in 8" :key="i"
       :imageUrl="getImage(articles[0].content)"
+      :category="props.category"
       />
       
 </template>

@@ -8,6 +8,7 @@ import LoginButton from "@/components/buttons/LoginButton.vue";
 </script>
 <template>
 <!--MARK: 1. HEADER-->
+  <Toaster  richColors position="top-center" closeButton />
   <header>
   <router-link to="/">
     <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />

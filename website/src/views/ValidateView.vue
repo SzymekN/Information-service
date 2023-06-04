@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { toast } from "vue-sonner";
+import {Toaster, toast } from 'vue-sonner'
 import router from "@/router";
 
 const route = useRoute();
@@ -15,17 +15,18 @@ const confirm = async () => {
         },
     });
     if (!response.ok) {
-        const text = await response.text();
-        toast.error(text)
+        setTimeout(() => toast.error("Wystąpił błąd podczas weryfikacji"), 100)
     }
     else {
-        toast.success("Konto zweryfikowane")
-        router.push({ name: 'Home' })
+        setTimeout(() => toast.success("Konto zweryfikowane"), 100)
+        router.push('/home')
     }
 }
 
 </script>
 <template>
+  <Toaster richColors position="top-center" />
+
   <div class="validateCon">
     <h1>Dziękujemy za rejestrację!</h1>
     <p>Kliknij w poniższy przycisk by potwierdzić.</p>
@@ -54,6 +55,7 @@ body {
   background: rgba(149, 206, 255, 0.5);
   transition: all 0.4s;
   font-size: 0.9rem;
+  cursor: pointer;
 }
 
 .validateCon button:hover {
