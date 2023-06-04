@@ -157,6 +157,7 @@ const handleEdit = async () =>{
     <div  v-if="role=='ROLE_REDACTOR'">
       <label for="category">Wybierz kategorię:</label>
       <select v-model="category" class="category_input">
+        <option value="science">Nauka</option>
         <option value="politics">Polityka</option>
         <option value="technology">Technologia</option>
         <option value="business">Biznes</option>

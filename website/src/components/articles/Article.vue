@@ -5,12 +5,15 @@ import  RecommendedArticles from './RecommendedArticles.vue'
 import { ref, onMounted,watch} from 'vue'
 import { useRoute,useRouter} from 'vue-router'
 import { getArticleById } from '@/scripts/Scripts.ts'
+import jsCookie from "js-cookie";
+import { toast } from "vue-sonner";
 
 const route = useRoute();
 const router = useRouter();
 const content = ref('')
 const title = ref('')
 var article = [];
+var index = 0;
 const props = defineProps({
   content: { type: String, default: 'param' },
   title: { type: String, default: 'Tytuł' },
@@ -19,7 +22,7 @@ const props = defineProps({
 
 onMounted(() => {
   let category = route.query["category"];
-  let index = route.query["id"];
+  index = route.query["id"];
   const sessionData = Object.values(JSON.parse(sessionStorage.getItem(category) || '[]'));
   // console.log(index)
   // console.log(sessionData)
@@ -35,10 +38,45 @@ watch(() => route.query, () => {
     router.go();
   }
 );
+
+const hasRole = (role) => {
+  if (jsCookie.get("ROLE"))
+    return role.includes(atob(jsCookie.get("ROLE")));
+  else return false;
+};
+
+
+const withdraw = async () =>{
+  try{
+    const url = "/client/articles/withdraw"
+    const response = await fetch(url+`?id=${index}`, {
+      method: "DELETE",
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      const text = await response.json();
+      for (const [key, value] of Object.entries(text)) {
+        setTimeout(() => toast.error(`${key}: ${value}`), 10)
+      }
+      setTimeout(() => toast.error("Wystąpił błąd podczas zapisywania"), 100)
+    }
+    else{
+      toast.success("Artykuł przeniesiony")
+      router.push('/home')
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 </script>
 
 <template>
 
+    <button @click="withdraw" v-if="hasRole('ROLE_REDACTOR')">Cofnij artykuł</button>
     <h1 class="done-article">{{title}}</h1>
     <div id="justText" class="content ql-editor" v-html="content"></div>
   <div class="suggested-articles">
