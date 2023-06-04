@@ -71,11 +71,8 @@ public class UserActionController {
         if (loggedUser.getAuthority().getAuthorityName().equals("ADMIN") || loggedUser.getId().equals(userId)) {
             userActionService.deleteUserById(userId);
             ResponseEntity<String> clientResponse = userActionService.deleteUserEditorialToClient(userId, request);
-            // if (loggedUser.getId().equals(userId)) request.getSession().invalidate();
             if (!clientResponse.getStatusCode().is2xxSuccessful())
                 return new ResponseEntity<>(clientResponse.getStatusCode());
-            // if (loggedUser.getId().equals(userId))
-            //     return basicService.forceUserLogout();
         } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
