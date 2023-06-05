@@ -25,9 +25,12 @@ export default {
   setup(props) {
     const pageClass = ref('');
 
-    const sessionData = Object.values(JSON.parse(sessionStorage.getItem(props.category) || '[]'));
-    const article = getArticleById(sessionData, props.articleUrl);
-    var articleCategory=article[0].category;
+    if(props.category && props.articleUrl){
+      const sessionData = Object.values(JSON.parse(sessionStorage.getItem(props.category) || '[]'));
+      const article = getArticleById(sessionData, props.articleUrl);
+      var articleCategory=article[0].category;
+    }
+
     onMounted(() => {
       if (props.category === 'politics') {
         pageClass.value = 'politics';

@@ -30,7 +30,7 @@
   </div>
   <div class="table-context">
     <table-lite
-        :is-static-mode="true"
+        :is-static-mode="false"
         :columns="table.columns"
         :rows="table.rows"
         :total="table.totalRecordCount"
@@ -62,12 +62,14 @@ const editModalOpen = ref(false);
 const addModalOpen = ref(false);
 const deleteModalOpen = ref(false);
 const selectedOption = ref("default");
-var textInput = ref("");
 const data = reactive([]);
+var textInput = ref("");
 var selectedUser = ref("null");
 var url = 'null';
 var page = 0;
 var size = 10;
+const rowCount = ref(0);
+
 const selectedRole = ref("DEFAULT");
 const authorityNameMap = {
   DEFAULT: 'Wszystkie role',
@@ -139,7 +141,8 @@ const fetchUsers = async () =>{
             supplier: responseJson[i]["supplier"],
           });
         }
-       }
+      }
+      rowCount.value = Number(response.headers.get('X-Total-Count'));
     }
   } catch (error) {
     console.log(error);
@@ -205,11 +208,11 @@ const table = reactive({
       },
   ],
   rows: computed(() => {
+    console.log(data)
       return data
-       .filter((x) => x.authorityName = authorityNameMap[x.authorityName])
   }),
   totalRecordCount: computed(() => {
-      return table.rows.length;
+      return rowCount.value;
   }),
   sortable: {
       order: "id",
@@ -231,12 +234,9 @@ function addListeners(className, listenerFunction) {
 
 const tableLoadingFinish = () => {
   table.isLoading = false;
-  // addListeners("topic", changeTopicListener);
-  if (jsCookie.get('role') == 'admin' || jsCookie.get('role') == 'redactor')
-      addListeners("state", changeStateListener);
   
-    addListeners("deleteButton", activateDeleteModal);
-    addListeners("editButton", activateEditModal);
+  addListeners("deleteButton", activateDeleteModal);
+  addListeners("editButton", activateEditModal);
 };
 
 const handleRoleChange = (e) => {

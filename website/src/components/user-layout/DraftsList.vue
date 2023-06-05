@@ -74,7 +74,8 @@ const fetchData = async (page = 0, order = "id", sort = "desc", search = "") =>{
 
     if (!response.ok) {
       const text = await response.text();
-      toast.error(text)
+      console.log(text);
+      toast.error("Wystąpił błąd podczas pobierania artykułów")
     }
     else{
       const responseJson = await response.json();

@@ -34,7 +34,8 @@ import LoginGoogle from "@/components/buttons/LoginGoogle.vue";
 
     if (!response.ok) {
       const text = await response.text();
-      toast.error(text)
+      console.log(text);
+      toast.error("Wystąpił błąd podczas logowania")
     }
     else{
       

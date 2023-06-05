@@ -68,7 +68,8 @@
   
       if (!response.ok) {
         const text = await response.text();
-        toast.error(text)
+        console.log(text);
+        toast.error("Wystąpił błąd podczas pobierania danych")
       }
       else{
         const responseJson = await response.json();
