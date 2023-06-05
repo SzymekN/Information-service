@@ -14,16 +14,16 @@ import java.util.List;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("SELECT a FROM Article a LEFT JOIN FETCH a.endorsements e " +
-             "JOIN FETCH a.journalist j")
+             "JOIN FETCH a.journalist j ORDER BY a.dateOfSubmission DESC")
     List<Article> findAll();
     @Query("SELECT a FROM Article a LEFT JOIN FETCH a.endorsements e " +
-            "JOIN FETCH a.journalist j WHERE a.category = :category")
+            "JOIN FETCH a.journalist j WHERE a.category = :category ORDER BY a.dateOfSubmission DESC")
     List<Article> findByCategory(@Param("category") String category);
     @Query("SELECT a FROM Article a LEFT JOIN FETCH a.endorsements e " +
-            "JOIN FETCH a.journalist j")
+            "JOIN FETCH a.journalist j ORDER BY a.dateOfSubmission DESC")
     Slice<Article> findAllPaged(Pageable pageable);
     @Query("SELECT a FROM Article a LEFT JOIN FETCH a.endorsements e " +
-            "JOIN FETCH a.journalist j WHERE a.category = :category")
+            "JOIN FETCH a.journalist j WHERE a.category = :category ORDER BY a.dateOfSubmission DESC")
     Slice<Article> findByCategoryPaged(@Param("category") String category, Pageable pageable);
 
     @Modifying
