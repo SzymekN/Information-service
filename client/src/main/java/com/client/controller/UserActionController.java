@@ -73,11 +73,8 @@ public class UserActionController {
         if (loggedUser.getAuthority().getAuthorityName().equals("ADMIN") || loggedUser.getId().equals(userId)) {
             userActionService.deleteUserById(userId);
             ResponseEntity<String> editorialResponse = userActionService.deleteUserClientToEditorial(userId, request);
-            // if (loggedUser.getId().equals(userId)) request.getSession().invalidate();
             if (!editorialResponse.getStatusCode().is2xxSuccessful())
                 return new ResponseEntity<>(editorialResponse.getStatusCode());
-            // if (loggedUser.getId().equals(userId))
-            //     return basicService.forceUserLogout();
         } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
@@ -108,7 +105,7 @@ public class UserActionController {
         User loggedUser = userChecker.get();
 
         if (!loggedUser.getAuthority().getAuthorityName().equals("ADMIN")
-                && (userEditDto.getPasswordToConfirm() == null || !passwordEncoder.matches(userEditDto.getPasswordToConfirm(), loggedUser.getPassword())))
+                && (userEditDto.getPasswordToConfirm() == null || !passwordEncoder.matches(userEditDto.getPasswordToConfirm(), loggedUser.getPassword())) && !loggedUser.getUserDetails().getSupplier().equals("GOOGLE"))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Insufficient privileges - you are neither admin nor provided the right password!");
 
         if (loggedUser.getAuthority().getAuthorityName().equals("ADMIN") || loggedUser.getId().equals(userId)) {
