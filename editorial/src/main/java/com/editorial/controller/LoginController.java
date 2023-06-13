@@ -39,9 +39,4 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password!");
         }
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> testMessageAfterLogin() {
-        return ResponseEntity.ok("WELCOME");
-    }
 }

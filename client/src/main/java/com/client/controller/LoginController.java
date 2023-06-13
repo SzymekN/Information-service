@@ -112,9 +112,4 @@ public class LoginController {
 
         return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(WEBSITE_URL)).build();
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> testMessageAfterLogin() {
-        return ResponseEntity.ok("WELCOME");
-    }
 }
