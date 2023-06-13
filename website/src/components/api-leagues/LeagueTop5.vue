@@ -83,7 +83,8 @@ setup() {
 
 <style scoped>
  .section_content {
-  max-width:80%;
+  max-width:76%;
+   float: left;
 }
 img {
   max-width: 35px;
@@ -99,6 +100,7 @@ img {
   float: right;
   min-width: 20%;
   box-shadow: 2px 2px 20px -10px;
+  margin-right: 1%;
 }
 
 .scores-table {

@@ -31,8 +31,8 @@ export default {
     const article = getArticleById(sessionData, props.articleUrl);
     var articleCategory=article[0].category;
     onMounted(() => {
-      if (props.category === 'politics') {
-        pageClass.value = 'politics';
+      if (props.category === 'politics' || props.category === 'science' || props.category === 'technology' || props.category === 'business') {
+        pageClass.value = 'wider';
       } else {
         pageClass.value = 'other';
       }
@@ -55,7 +55,7 @@ export default {
   font-size: 1vmax;
 }
 
-.politics {
+.wider {
   height: 27.7vmax;
 }
 

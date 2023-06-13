@@ -76,7 +76,7 @@ const withdraw = async () =>{
 
 <template>
 
-    <button @click="withdraw" v-if="hasRole('ROLE_REDACTOR')">Cofnij artykuł</button>
+    <button @click="withdraw" v-if="hasRole('ROLE_REDACTOR')" class="back-btn">Cofnij artykuł</button>
     <h1 class="done-article">{{title}}</h1>
     <div id="justText" class="content ql-editor" v-html="content"></div>
   <div class="suggested-articles">
@@ -90,7 +90,7 @@ const withdraw = async () =>{
   margin-left: 2%;
 }
 .suggested-articles {
-  width: 23%;
+  width: 22%;
   margin-left: 2%;
   float: right;
   min-height: 100px;
@@ -98,6 +98,7 @@ const withdraw = async () =>{
   border-radius: 10px;
   padding: 2%;
   box-shadow: 2px 2px 20px -10px;
+  margin-right: 1%;
 }
 .content > h2, .content > h1 {
   width: 100%;
@@ -118,4 +119,18 @@ const withdraw = async () =>{
   box-shadow: 2px 2px 20px -10px;
 }
 
+.back-btn {
+  border: none;
+  font-size: 0.9rem;
+  background-color: rgba(149, 206, 255, 0.2);
+  border-radius: 50px;
+  padding: 1%;
+  box-shadow: 2px 2px 20px -10px;
+
+}
+
+.back-btn:hover{
+  background: #222222;
+  color: white;
+}
 </style>

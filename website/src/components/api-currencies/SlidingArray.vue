@@ -89,6 +89,7 @@ export default {
   border-radius: 10px;
   background: white;
   box-shadow: 2px 2px 20px -10px;
+  margin-right: 2%;
 }
 .react-horizontal-scrolling-menu--scroll-container1 {
   box-sizing: content-box;

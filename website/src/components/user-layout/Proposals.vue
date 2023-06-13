@@ -148,13 +148,20 @@ const table = reactive({
           sortable: true,
           display: function (row) {
             let color = "#e8b53f";
-            if (row.acceptance == "PENDING")
+            let colorBg = "#fff"
+            if (row.acceptance == "PENDING"){
               color = "#e8b53f";
-            if (row.acceptance == "ACCEPTED")
+              colorBg = "rgba(245,245,220,0.5)"
+            }
+            if (row.acceptance == "ACCEPTED"){
               color = "#05a32f";
-            if (row.acceptance == "DECLINED")
+              colorBg = "rgba(217,246,198,0.5)"
+            }
+            if (row.acceptance == "DECLINED"){
               color = "#a31505";
-            
+              colorBg = "rgba(252,207,211,0.5)"
+            }
+
             if (atob(jsCookie.get('ROLE')) == 'ROLE_ADMIN' || atob(jsCookie.get('ROLE')) == 'ROLE_REDACTOR'){
               var acceptanceSelect = document.createElement("select");
               acceptanceSelect.setAttribute("name", "acceptance");
@@ -162,7 +169,10 @@ const table = reactive({
               acceptanceSelect.setAttribute("class", "acceptance");
               acceptanceSelect.setAttribute("topicTitle", row.title);
               acceptanceSelect.setAttribute("topicId", row.id);
-              acceptanceSelect.setAttribute("style", "width:100%;color:"+color);
+              acceptanceSelect.setAttribute("style", "width: 100%;\n" +
+                  "    border-radius: 5px;\n" +
+                  "    padding: 5%;\n" +
+                  "    background: " +colorBg + "; color:"+color);
 
               let pendingOption = document.createElement("option");
               pendingOption.setAttribute("value", "PENDING");
