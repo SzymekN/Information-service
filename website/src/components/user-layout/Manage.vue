@@ -470,8 +470,7 @@ function addUser(userData) {
   // Check if all values are present
   for (const key in fieldValues) {
     if (!fieldValues[key]) {
-      console.log(`Missing value for ${key}.`);
-      return;
+      setTimeout(() => toast.error(`Missing value for ${key}`), 10)
     }
   }
 

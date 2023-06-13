@@ -8,7 +8,7 @@
                 <img :src="article.image" :alt="article.title" />
             </div>
             <div class="title-container">
-                <h3>{{ article.title }}</h3>
+                <p class="recommended-title">{{ article.title }}</p>
             </div>
             </router-link>
         </div>
@@ -76,25 +76,37 @@
 .article-container {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 10px;
-  border-bottom: 1px solid gray; 
   padding-bottom: 10px;
   min-width: 100%;
 }
 
+
 a.router-link-active.router-link-exact-active.recommendedLink{
   min-width: 100%;
+  box-shadow: 2px 15px 10px -17px;
+  padding: 2%;
 }
 
+ a.router-link-active.router-link-exact-active.recommendedLink:hover{
+   background: aliceblue;
+    border-radius: 10px;
+   box-shadow: 2px 2px 20px -10px;
+ }
+
+
+.recommended-title {
+  font-size: 1vmax;
+  font-weight: 500;
+}
 .article-container:last-child {
   border-bottom: none; 
 }
 
 .image-container {
-  width: 95px;
-  height: 59px;
-  margin-right: 10px;
-  float:left;
+  width: 45%;
+  height: 5vmax;
+  margin: 3% 3% 3% 0%;
+  float: left;
 }
 
 .image-container img {
@@ -105,7 +117,7 @@ a.router-link-active.router-link-exact-active.recommendedLink{
 
 .title-container {
   display: flex;
-  justify-content: center;
+  justify-content: left;
 }
 
 .title-container h3 {

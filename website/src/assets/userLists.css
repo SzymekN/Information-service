@@ -86,8 +86,8 @@ select:hover{
 
 .editButton img,
 .deleteButton img{
-    width: 20px;
-    height: 20px;
+    width: 8px;
+    height: 8px;
     cursor: pointer;
 }
 
@@ -95,9 +95,8 @@ button.editButton,
 button.deleteButton{
     border-radius: 10%;
     padding:0;
-    padding-top: 3px;
-    width: 30px;
-    height: 30px;
+    width: 10px;
+    height: 10px;
 }
 
 button.deleteButton{

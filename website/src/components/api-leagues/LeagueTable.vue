@@ -116,6 +116,7 @@ export default {
   padding: 1%;
   font-size: 0.6rem;
   box-shadow: 2px 2px 20px -10px;
+  margin-right: 2%;
 }
 .button-container {
   display: flex;

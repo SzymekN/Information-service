@@ -32,10 +32,10 @@ export default {
     }
 
     onMounted(() => {
-      if (props.category === 'politics') {
-        pageClass.value = 'politics';
+      if (props.category === 'politics' || props.category === 'science' || props.category === 'technology' || props.category === 'business') {
+        pageClass.value = 'wider';
       } else {
-        pageClass.value = 'other';
+      pageClass.value = 'other';
       }
     });
 
@@ -55,8 +55,12 @@ export default {
   text-align: center;
 }
 
-.politics {
+.wider {
   height: 13vmax;
+}
+
+.sport {
+  height: 12vmax;
 }
 
 .other {
