@@ -30,14 +30,14 @@ public class SecurityConfig {
                         configurer.requestMatchers("/").permitAll()
                                 .requestMatchers("/editorial/login").permitAll()
                                 .requestMatchers("/editorial/login/v2").permitAll()
-                                .requestMatchers("/editorial/registration").permitAll()//later only for users with the ADMIN role
+                                .requestMatchers("/editorial/registration").permitAll()
                                 .requestMatchers("/editorial/registration/fc").permitAll()
                                 .requestMatchers("/editorial/validate").permitAll()
-                                .requestMatchers("/editorial/registration/**").permitAll()//later only for users with the ADMIN role
+                                .requestMatchers("/editorial/registration/**").permitAll()
                                 .requestMatchers("/editorial/actions/get/users").hasRole("ADMIN")
                                 .requestMatchers("/editorial/actions/user/info").hasAnyRole("USER", "ADMIN", "JOURNALIST", "REDACTOR", "CORRECTOR")
                                 .requestMatchers("/editorial/actions/**").hasAnyRole("USER", "ADMIN", "JOURNALIST", "REDACTOR", "CORRECTOR")
-                                .requestMatchers("/editorial/test").hasAnyRole("JOURNALIST", "USER", "ADMIN") // journalist only previously
+                                .requestMatchers("/editorial/test").hasAnyRole("JOURNALIST", "USER", "ADMIN")
                                 .requestMatchers("/editorial/proposal").hasAnyRole("JOURNALIST", "REDACTOR")
                                 .requestMatchers("/editorial/draft").hasAnyRole("JOURNALIST")
                                 .requestMatchers("/editorial/correct").hasAnyRole("CORRECTOR", "REDACTOR")

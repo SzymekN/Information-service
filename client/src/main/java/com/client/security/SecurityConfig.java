@@ -46,11 +46,8 @@ public class SecurityConfig {
                 .logout(configurer -> configurer
                         .logoutUrl("/client/logout")
                         .logoutSuccessUrl("/client/login?logout")
-                        //.invalidateHttpSession(true)
                         .deleteCookies("ROLE")
                         .permitAll())
-                //.invalidateHttpSession(true)
-                //.deleteCookies("SESSION"))
                 .exceptionHandling(configurer -> configurer.accessDeniedPage("/client/denied"))
                 .csrf().disable()
                 .build();
