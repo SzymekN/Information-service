@@ -74,7 +74,6 @@ const fetchArticles = async () => {
   }
 
   const handleScroll = () => {
-    // console.log(window.innerHeight + document.documentElement.scrollTop, document.documentElement.offsetHeight, isLoading.value)
     if (window.innerHeight + document.documentElement.scrollTop <= document.documentElement.offsetHeight || isLoading.value) {
       return;
     }

@@ -15,7 +15,6 @@ const hasRole = () => {
 
 <template>
   <Toaster richColors position="top-center" />
-  <!--MARK: 1. HEADER-->
   <header>
     <router-link to="/">
       <img alt="Vue logo" class="logo" src="../assets/globe.png" width="50" height="50" />
@@ -32,13 +31,11 @@ const hasRole = () => {
     </div>
   </header>
 
-  <!--MARK: 2. NAVIGATION BAR-->
   <nav>
     <UserPanelNav/>
   </nav>
 
   <div>
-    <!--MARK: 3. MAIN CONTENT-->
     <main>
       <RouterView/>
     </main>
