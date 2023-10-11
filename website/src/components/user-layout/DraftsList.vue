@@ -1,16 +1,9 @@
 <!-- https://vue3-lite-table.vercel.app/usage -->
-<!-- TODO:
-  1. User has only possibility to change own topics
-  2. Change fake data to fetching from database
-  3. As admin/redactor possibility to change all topics, approve or reject
--->
-
 <template>
 
   <div class="properties">
     <div class="input-add">
       <label>Nowy artykuł:</label>
-      <!-- <input v-model="newDraftTitle" /> -->
       <router-link :to="{name: 'edit'}"><button>Stwórz</button></router-link>
     </div>
     <div class="input-look">
@@ -89,7 +82,6 @@ const fetchData = async (page = 0, order = "id", sort = "desc", search = "") =>{
           content: responseJson[i]["content"],
         });
         articlesMap.value.set(data[i]["id"], data[i]);
-        // fetchData = data.length;
       }
       rowCount.value = Number(response.headers.get('X-Total-Count'));
     }

@@ -423,7 +423,6 @@ const activateAddModal = () => {
 
 const fetchAddUser = async (newUser) =>{
   url='/editorial/registration';
-  // console.log(newUser);
  
   try {
     const response = await fetch(url, {
@@ -445,7 +444,6 @@ const fetchAddUser = async (newUser) =>{
 
         // Fetch the updated list of users
         fetchUsers();
-        // TO DO: success alert
     }
   } catch (error) {
     console.log(error);

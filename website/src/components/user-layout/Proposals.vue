@@ -1,13 +1,5 @@
 <!-- https://vue3-lite-table.vercel.app/usage -->
-<!-- TODO:
-    1. User has only possibility to change own topics
-    2. Change fake data to fetching from database
-    3. As admin/redactor possibility to change all topics, approve or reject
--->
-
 <template>
-  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
-
   <div class="properties">
     <form @submit.prevent>
       <div class="input-add">
@@ -52,8 +44,6 @@ import { toast } from "vue-sonner";
 import SearchImage from "@/assets/icons8-search.svg";
 import TableLite from 'vue3-table-lite'
 
-// TODO: replace with fetched data
-// Fake Data for 'asc' sortable
 const data = reactive([]);
 var url = '/editorial/proposal?';
 var size = 10;

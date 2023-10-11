@@ -88,7 +88,7 @@ import { ref, Ref} from "vue";
 import { weatherApiKey } from '../../Keys'
 import jsCookie from 'js-cookie';
 
-const weatherUrl = 'https://api.openweathermap.org/data/2.5/onecall?exclude=minutely,hourly';
+const weatherUrl = 'https://api.openweathermap.org/data/3.0/onecall?exclude=minutely,hourly';
 const weather = ref<WeatherModel>();
 
 export function useWeather() {

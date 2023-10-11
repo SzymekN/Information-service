@@ -13,15 +13,12 @@ const logout = () => {
     credentials: 'same-origin',
   })
   .then(response => {
-    // Handle the response from the server
     if (response.ok) {
-      // Logout successful, do something
       jsCookie.remove('role');
       jsCookie.remove('ROLE');
       toast.success('Wylogowano pomyślnie');
       window.location.href = "/";
     } else {
-      // Logout failed, do something
       toast.error('Wystąpił błąd podczas wylogowywania');
     }
   })

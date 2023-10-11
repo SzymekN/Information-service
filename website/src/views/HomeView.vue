@@ -7,7 +7,6 @@ import LoginButton from "@/components/buttons/LoginButton.vue";
 
 </script>
 <template>
-<!--MARK: 1. HEADER-->
   <Toaster  richColors position="top-center" closeButton />
   <header>
   <router-link to="/">
@@ -22,25 +21,17 @@ import LoginButton from "@/components/buttons/LoginButton.vue";
    </div>
   </header>
 
-<!--MARK: 2. NAVIGATION BAR-->
   <nav>
     <TheNavBar />
   </nav>
 
   <div>
-    <!--MARK: 3. MAIN CONTENT-->
     <main>
       <RouterView/>
     </main>
-
-    <!--MARK: 4. DYNAMIC SECTION-->
-    <!-- <section>
-      <TheRightSection />
-    </section> -->
   </div>
 
 
-<!--  MARK: 5. FOOTER-->
   <footer>
     <Footer/>
   </footer>
